@@ -1,0 +1,3 @@
+# Example: Thesis Abstract (Input)
+
+It is important to emphasize that the methodology employed in this comprehensive study, which was conducted during the year 2023 at Stanford University located in California, USA, involved a thorough and detailed analysis of n=150 participants who were carefully selected through a rigorous screening process. The results obtained from this investigation indicate that there could possibly potentially suggest a statistically significant correlation between variable X and variable Y, although it should be noted that further research may be needed to confirm these preliminary findings.
