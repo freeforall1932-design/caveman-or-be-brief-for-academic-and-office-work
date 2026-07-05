@@ -1,17 +1,18 @@
-# caveman-or-be-brief-for-academic-and-office-work
+# caveman-grug-orcaveman-be-brief-for-academic-and-office-work
 as simple as the name
 
 here yes here do whatever you want here
 
 i dunno if rule restrict though just download or fork it
-main branch is default 1.0 claude skill usage only
 
-look up branches for any popular model as of writing
+main page for claude normal be brief 1.0 and grug caveman 2.0 version
+
+universal folder have qwen claude gemini etc caveman brief 1.5 version
 
 work for cli , desktop app, custom instruction or preference setting injection
 
-if i feel motivated to test and stuff ill push it to main branch
+just download .zip or .skill
 
-and uh release it to release features for download
+lots of junk on the file list theres more on folder universal 
 
-or just download it directly on branches
+for other model refer to version here like how frontier do numbering
