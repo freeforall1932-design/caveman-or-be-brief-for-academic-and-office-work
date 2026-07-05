@@ -1,4 +1,4 @@
-# caveman-grug-orcaveman-be-brief-for-academic-and-office-work
+# caveman-grug-or-caveman-be-brief-for-academic-and-office-work
 as simple as the name
 
 here yes here do whatever you want here
