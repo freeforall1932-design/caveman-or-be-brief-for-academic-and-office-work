@@ -1,0 +1,27 @@
+# Sample Review Output (caveman-review mode)
+
+Input document: `thesis-input.md`
+
+## Fix List
+
+```
+L1: 🟡 data: Replace '2023' with '[YEAR]' for universal template
+L1: 🟡 data: Replace 'Stanford University' with '[INSTITUTION]' for universal template
+L1: 🟡 data: Replace 'California, USA' with '[LOCATION]' for universal template
+L1: 🟡 data: Replace 'n=150' with 'n=[SAMPLE_SIZE]' for universal template
+L1: 🔴 typo: 'could possibly potentially suggest' → redundant hedges, use 'suggest'
+L1: 🟡 logic: Remove 'although it should be noted' - throat-clearing phrase
+```
+
+## How to Apply
+
+1. Open original DOCX/PDF file
+2. Go to line 1 (abstract paragraph)
+3. Apply each fix sequentially
+4. Save as universal template version
+
+## After Fixes (Universal Template)
+
+"It is important to emphasize that the methodology employed in this comprehensive study, which was conducted during the year [YEAR] at [INSTITUTION] located in [LOCATION], involved a thorough and detailed analysis of n=[SAMPLE_SIZE] participants who were carefully selected through a rigorous screening process. The results obtained from this investigation indicate that there suggest a statistically significant correlation between variable X and variable Y, further research may be needed to confirm these preliminary findings."
+
+Then run caveman compression on the templated version for final output.
