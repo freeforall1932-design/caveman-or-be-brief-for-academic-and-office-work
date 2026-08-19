@@ -1,11 +1,6 @@
----
+## Metadata
 name: caveman-compress
-description: Compress documents ~46% while preserving all data. English & Indonesian.
-  Uses the deletion test (latest caveman method). Code blocks preserved exactly.
-version: 4.0
-mode: full
-triggers: ["compress this", "summarize dense", "condense", "ringkas dokumen"]
----
+description: Compress long documents (~46% token savings) before sending to AI. Preserves 100% of data, citations, code. EN & ID. Triggers: "compress this", "condense", "ringkas dokumen".
 
 # Caveman Compress
 
@@ -14,14 +9,12 @@ Shrink long documents before sending to AI. Saves ~46% input tokens while keepin
 
 ## The Deletion Test
 
-For every sentence: **if I delete this, does the reader lose a fact, a number, a name,
-a decision, or a logical link?**
+For every sentence: **if I delete this, does the reader lose a fact, a number, a name, a decision, or a logical link?**
 
 - No loss → cut or fold into the sentence next to it
 - Real loss → keep, exactly as precise as it was
 
-Never invent figures to replace vagueness. Cutting padding makes room for substance; it doesn't
-paper over gaps.
+Never invent figures to replace vagueness. Cutting padding makes room for substance; it doesn't paper over gaps.
 
 ## Cut
 
@@ -72,8 +65,7 @@ Output: "Metodologi (2024, Universitas Indonesia): n=150 partisipan."
 - Code blocks exact (Python, R, etc.)
 
 ## Ralph Wiggum Verification (optional)
-With `ralph once`: after compression, verify no data loss in one pass — spot-check numbers,
-names, citations against the original. Report: "Data check: 100% preserved." or list discrepancies.
+With `ralph once`: after compression, verify no data loss in one pass — spot-check numbers, names, citations against the original. Report: "Data check: 100% preserved." or list discrepancies.
 
 ## Output
 Return ONLY compressed text. No commentary.
