@@ -2,6 +2,8 @@
 
 **Paste these markdown files into any model's custom instructions / system prompt.**
 
+Download all seven files at once: [`../pseudo-skills.zip`](../pseudo-skills.zip).
+
 Models like **Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** don't have a Claude-style
 skill system. For them, a "pseudo-skill" is simply a markdown file you paste at conversation
 start or into Settings → Custom Instructions. That's it — the model treats it as standing

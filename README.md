@@ -18,14 +18,14 @@
 |--------|----------|-------|
 | **Claude app/web skills** (upload ZIP) | Claude Desktop app (Windows/Mac), claude.ai, Cowork — via Customize → Skills | `claude-skills/app/zips/` — 6 ready-made ZIPs |
 | **Claude Code skills** (folder + SKILL.md) | Claude Code, Codex CLI, Cursor, OpenClaw (SKILL.md standard) | `claude-skills/code/` + `.claude/skills/` (auto-loads in this repo) |
-| **Pseudo-skills** (frontmatter-free .md) | Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi — paste into custom instructions | `pseudo-skills/` |
+| **Pseudo-skills** (frontmatter-free .md) | Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi — paste into custom instructions | `pseudo-skills/` or download `pseudo-skills.zip` |
 | **Custom instructions** (.md) | Claude Desktop (Windows), Claude.ai, Qwen app (Android), Gemini | `caveman-universal/custom-instructions/` |
 
 **Quick answer — yes, it ports to Claude and other frontier models:**
 
 - **Claude app on Windows / claude.ai:** upload a ZIP from `claude-skills/app/zips/` in **Customize → Skills** (enable *Code execution and file creation* first). Works on Free/Pro/Max/Team/Enterprise.
 - **Claude Code:** open this repo (skills auto-load from `.claude/skills/`) or copy `claude-skills/code/*` to `~/.claude/skills/`.
-- **Other frontier apps (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi):** no skill system — paste `pseudo-skills/*.md` into custom instructions. Same behavior, manual trigger.
+- **Other frontier apps (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi):** no skill system — download [`pseudo-skills.zip`](pseudo-skills.zip) (all 7 files) or paste `pseudo-skills/*.md` into custom instructions. Same behavior, manual trigger.
 
 ## Packaging — how to install
 
@@ -51,7 +51,7 @@ slows your deadline work because it only activates when you invoke it.
 
 1. **Claude app/web:** Settings → Capabilities → enable *Code execution and file creation*, then Customize → Skills → + → Create skill → Upload a skill → pick `claude-skills/app/zips/caveman-be-brief.zip`
 2. **Claude Code:** open this repo (skills in `.claude/skills/` load automatically), or `cp -r claude-skills/code/* ~/.claude/skills/`
-3. **Models without skills (Gemini/Qwen/ChatGPT/Grok/etc.):** paste `pseudo-skills/caveman-be-brief.md` into custom instructions
+3. **Models without skills (Gemini/Qwen/ChatGPT/Grok/etc.):** extract `pseudo-skills.zip` or paste `pseudo-skills/caveman-be-brief.md` into custom instructions
 4. **Grug thinking:** install `caveman-be-brief` (combined) or `grug-reasoning` (standalone)
 
 ### Which File to Use (all in `caveman-universal/custom-instructions/` unless noted)
@@ -139,6 +139,7 @@ ralph on   → full iterative improvement (polish, quality)
 │   │   └── zips/                    ← 6 ready-to-upload ZIPs (caveman-be-brief, ralph-wiggum, ...)
 │   ├── code/                        ← Claude Code format (SKILL.md, YAML frontmatter)
 │   └── README.md                    ← verified install guide for every platform
+├── pseudo-skills.zip                ← downloadable bundle of all 7 pseudo-skill files
 ├── pseudo-skills/                   ← frontmatter-free .md — paste into Gemini/Qwen/ChatGPT/etc.
 ├── caveman-universal/               ← the library
 │   ├── custom-instructions/         ← adaptive, lite, micro, grug, claude, qwen
