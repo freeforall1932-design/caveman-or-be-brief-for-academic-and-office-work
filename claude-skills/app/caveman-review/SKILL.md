@@ -1,6 +1,7 @@
-## Metadata
+---
 name: caveman-review
-description: One-line line-numbered review comments for documents (thesis, reports, DOCX/PDF). Format: L42: 🔴 bug: fix X. EN & ID. Triggers: "review this", "check errors", "proofread", "cek".
+description: "One-line line-numbered review comments for documents (thesis, reports, DOCX/PDF). Format: L42: 🔴 bug: fix X. EN & ID. Triggers: \"review this\", \"check errors\", \"proofread\", \"cek\"."
+---
 
 # Caveman Review
 

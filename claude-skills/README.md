@@ -1,21 +1,23 @@
 # Claude Skills — Verified Installation Guide
 
-Two skill formats exist, verified against Anthropic's official documentation (support.claude.com, 2026):
+Claude app/web and Claude Code now use the **same** Agent Skills format, verified against Anthropic's documentation (2026):
 
 | Surface | Format | File | Description limit |
 |---------|--------|------|-------------------|
-| **Claude app & website** (Customize > Skills) | `## Metadata` section | `skill.md` (lowercase) | 200 chars |
+| **Claude app & website** (Customize > Skills) | `---` YAML frontmatter | `SKILL.md` (uppercase) | 200 chars |
 | **Claude Code / agent SDK** | `---` YAML frontmatter | `SKILL.md` (uppercase) | 1024 chars |
+
+The ZIP **must** contain `folder/SKILL.md` and `SKILL.md` **must** start with `---` on line 1. `skill.md` or a `## Metadata` block will fail upload (`SKILL.md must start with YAML frontmatter (---)`).
 
 ```
 claude-skills/
 ├── app/          # Claude app & claude.ai (upload ZIP)
-│   ├── caveman-be-brief/skill.md      # ALL-IN-ONE: grug + caveman + be brief
-│   ├── caveman/skill.md               # cut-the-fluff compression
-│   ├── caveman-compress/skill.md      # document condensing
-│   ├── caveman-review/skill.md        # line-numbered review
-│   ├── grug-reasoning/skill.md        # internal Grug thinking only
-│   ├── ralph-wiggum/skill.md          # optional polish loop (OFF by default)
+│   ├── caveman-be-brief/SKILL.md      # ALL-IN-ONE: grug + caveman + be brief
+│   ├── caveman/SKILL.md               # cut-the-fluff compression
+│   ├── caveman-compress/SKILL.md      # document condensing
+│   ├── caveman-review/SKILL.md        # line-numbered review
+│   ├── grug-reasoning/SKILL.md        # internal Grug thinking only
+│   ├── ralph-wiggum/SKILL.md          # optional polish loop (OFF by default)
 │   └── zips/                          # ready-to-upload packages
 └── code/         # Claude Code & SKILL.md-standard agents
     ├── caveman-be-brief/SKILL.md
@@ -66,7 +68,7 @@ Verified: works on **Free, Pro, Max, Team, Enterprise** plans. Requires **code e
 ### Install each skill
 1. In **Customize → Skills**, click **"+" → "+ Create skill" → "Upload a skill"**.
 2. Upload a ZIP from `claude-skills/app/zips/` (e.g. `caveman-be-brief.zip`, `ralph-wiggum.zip`).
-3. Claude reads `skill.md`, shows a summary — confirm.
+3. Claude reads `SKILL.md` (YAML frontmatter required), shows a summary — confirm.
 4. **Toggle the skill ON** (uploaded ≠ enabled). Leave `ralph-wiggum` OFF until you need polish.
 5. Test with a trigger prompt (e.g. "review this doc" / "caveman mode — draft this section").
 
@@ -137,8 +139,8 @@ and rely on the commands — it's OFF by default and only loops when you say "ra
 
 ## Format notes (for edits)
 
-- **app/** skills: `## Metadata` block with `name` (≤64 chars) + `description` (≤200 chars), then markdown body. ZIP must contain the **folder as root** (folder/skill.md), not loose files.
-- **code/** skills: `---` YAML frontmatter with `name` (kebab-case, must match folder name) + `description` (≤1024 chars), then markdown body.
+- **app/** skills: `SKILL.md` starting with `---` YAML frontmatter (`name` ≤64 chars + `description` ≤200 chars), then markdown body. ZIP must contain the **folder as root** (`folder/SKILL.md`), not loose files.
+- **code/** skills: same `---` YAML frontmatter with `name` (kebab-case, must match folder name) + `description` (≤1024 chars), then markdown body.
 - Keep `app/`, `code/`, `caveman-universal/skills/`, and `pseudo-skills/` in sync when rules change.
 - Re-zip after editing: `cd claude-skills/app && zip -r zips/<name>.zip <name>/`
 

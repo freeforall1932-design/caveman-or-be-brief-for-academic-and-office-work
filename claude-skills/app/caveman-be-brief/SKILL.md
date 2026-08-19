@@ -1,6 +1,7 @@
-## Metadata
+---
 name: caveman-be-brief
-description: All-in-one academic/office mode: Grug internal reasoning + caveman cut-the-fluff. Professional prose, zero wasted words, all facts kept. EN & ID. Trigger: "caveman", "be brief", "grug", "ringkas".
+description: "All-in-one academic/office mode: Grug internal reasoning + caveman cut-the-fluff. Professional prose, zero wasted words, all facts kept. EN & ID. Trigger: \"caveman\", \"be brief\", \"grug\", \"ringkas\"."
+---
 
 # Caveman Be Brief — All-in-One (Grug + Caveman)
 

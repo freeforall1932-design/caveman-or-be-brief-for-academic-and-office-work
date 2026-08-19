@@ -1,6 +1,7 @@
-## Metadata
+---
 name: ralph-wiggum
-description: Optional iterative polish loop. Repeats a task to refine output when quality > speed. OFF by default. Commands: "ralph on", "ralph off", "ralph once", "ralph max 3". Complements caveman skills.
+description: "Optional iterative polish loop. Repeats a task to refine output when quality > speed. OFF by default. Commands: \"ralph on\", \"ralph off\", \"ralph once\", \"ralph max 3\". Complements caveman skills."
+---
 
 # Ralph Wiggum Loop — Optional Iterative Improvement
 

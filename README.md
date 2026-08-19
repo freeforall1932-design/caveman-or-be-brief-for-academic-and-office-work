@@ -135,7 +135,7 @@ Source: original caveman benchmarks + independent replication (JetBrains, commun
 ├── README.md                        ← you are here
 ├── claude-reasoning-caveman.skill   ← Grug engine (single-file skill)
 ├── claude-skills/
-│   ├── app/                         ← Claude app/web format (skill.md + zips/)
+│   ├── app/                         ← Claude app/web format (SKILL.md YAML + zips/)
 │   │   └── zips/                    ← 6 ready-to-upload ZIPs
 │   ├── code/                        ← Claude Code format (SKILL.md, YAML frontmatter)
 │   └── README.md                    ← verified install guide for every platform

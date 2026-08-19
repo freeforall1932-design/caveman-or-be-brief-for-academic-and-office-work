@@ -1,6 +1,7 @@
-## Metadata
+---
 name: caveman
-description: Cut fluff from documents (thesis, reports, emails) keeping every fact, number, citation. Professional prose, zero wasted words. English & Indonesian. Trigger: "caveman", "be concise", "ringkas".
+description: "Cut fluff from documents (thesis, reports, emails) keeping every fact, number, citation. Professional prose, zero wasted words. English & Indonesian. Trigger: \"caveman\", \"be concise\", \"ringkas\"."
+---
 
 # Caveman — Cut the Fluff (latest method)
 
