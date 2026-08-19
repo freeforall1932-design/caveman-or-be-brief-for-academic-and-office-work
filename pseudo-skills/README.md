@@ -23,37 +23,26 @@ EN+ID catalogs, code preservation, Grug examples, Ralph loop, safety). They omit
    - **Grok / DeepSeek / Kimi:** paste at conversation start, or system prompt if supported
 4. Done. Active until you say `"normal mode"` / `"stop caveman"` / `"stop grug"`
 
-## Recommended vs optional
+```
+★  caveman-be-brief.md                 recommended daily driver
+○  ralph-wiggum.md                     optional polish (OFF until "ralph on")
+○  caveman-compress.md                 optional one-shot (shrink input)
+○  caveman-review.md                   optional one-shot (line punch-list)
+△  caveman.md + grug-reasoning.md      modular — this pair OR caveman-be-brief, never both
+   README.md                           do not paste
+```
 
-| File | Role | Install? |
-|------|------|----------|
-| `caveman-be-brief.md` | **PRIMARY.** Grug think + caveman speak. Daily driver. | **Recommended — paste this** |
-| `ralph-wiggum.md` | Polish loop. OFF until you say `ralph on`. | Optional — add when quality > speed |
-| `caveman-compress.md` | Shrink long docs for *input* (~46%). | Optional — one-shot |
-| `caveman-review.md` | Line-numbered issue list only. | Optional — one-shot |
-| `caveman.md` | Speak layer only (no Grug). | Modular alternative — **do not pair with be-brief** |
-| `grug-reasoning.md` | Think layer only (full examples). | Modular alternative — **do not pair with be-brief** |
-| `README.md` | This guide. | Do not paste |
+### Combo TL;DR
 
-## Combos (safe)
+| | Paste | Use |
+|-|-------|-----|
+| **A** | `caveman-be-brief.md` | default |
+| **B** | A + `ralph-wiggum.md` | polish |
+| **C** | A or B + compress and/or review | long PDF / punch-list |
+| **D** | `caveman.md` + `grug-reasoning.md` | same as A, two files |
+| **E** | D + `ralph-wiggum.md` | same as B, two files |
 
-| Combo | Paste these | Use when |
-|-------|-------------|----------|
-| **A — Daily driver** | `caveman-be-brief.md` only | Almost always |
-| **B — Deadline + polish switch** | `caveman-be-brief.md` + `ralph-wiggum.md` | Thesis polish; say `ralph off` until you need it |
-| **C — Dense input then write** | session 1: `caveman-compress.md`; session 2: `caveman-be-brief.md` | 50-page PDF → then draft |
-| **D — Scan then fix** | `caveman-review.md` then `caveman-be-brief.md` | Want a punch list first |
-| **E — Modular (no all-in-one)** | `caveman.md` + `grug-reasoning.md` | You want layers separate |
-| **E+Ralph** | `caveman.md` + `grug-reasoning.md` + `ralph-wiggum.md` | Modular + polish |
-
-## Warnings — do not do this
-
-- **Do not paste `caveman-be-brief.md` together with `caveman.md` or `grug-reasoning.md`.** Duplicate instructions fight each other and burn tokens.
-- **Do not paste every file in the zip.** Pick a combo.
-- **Do not leave Ralph on for deadline work.** Default is off. `ralph on` multiplies token cost.
-- **Do not compress code, LaTeX, citation keys, or numbers.** Built into every file; if a model still rewrites a code block, say "preserve code exactly".
-- **Do not overwrite originals.** Skills require `_v2` / `_backup`.
-- **Claude users:** do not use this zip. Use `claude-skills/app/zips/` (app) or `claude-skills/code/` (Claude Code).
+**Don't:** `caveman-be-brief.md` + `caveman.md` · `caveman-be-brief.md` + `grug-reasoning.md` · paste the whole zip. Claude users: use `claude-skills/`, not this folder.
 
 ## Ralph Wiggum on/off (deadline vs polish)
 

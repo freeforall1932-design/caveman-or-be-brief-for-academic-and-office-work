@@ -27,52 +27,33 @@
 - **Claude Code:** open this repo (skills auto-load from `.claude/skills/`) or copy `claude-skills/code/*` to `~/.claude/skills/`.
 - **Other frontier apps (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi):** no skill system — download [`pseudo-skills.zip`](pseudo-skills.zip) or paste one combo from `pseudo-skills/` (see [How to use pseudo-skills](#how-to-use-pseudo-skills)). Same rules as Claude skills, no YAML.
 
-## Artifacts — recommended vs optional
+## What to install
+
+Claude app: upload the `.zip`. Everyone else: paste the matching `.md` from [`pseudo-skills.zip`](pseudo-skills.zip).
 
 ```
-★  caveman-be-brief.zip / .md          RECOMMENDED daily driver
-                                       Grug think + caveman speak. Install / paste this.
-
-○  ralph-wiggum.zip / .md              OPTIONAL polish
-                                       Add only if you want a loop. OFF until "ralph on".
-
-○  caveman-compress.zip / .md          OPTIONAL one-shot
-                                       Shrink long input ~46%. Safe with be-brief.
-
-○  caveman-review.zip / .md            OPTIONAL one-shot
-                                       Line-numbered punch list. Safe with be-brief.
-
-△  caveman.zip / .md                   MODULAR speak-only
-⚠  grug-reasoning.zip / .md            MODULAR think-only
-                                       Use these TWO together INSTEAD of be-brief.
-                                       Do NOT pair either with caveman-be-brief.
-
-△  claude-reasoning-caveman.skill      SINGLE-FILE Grug (Claude Code / .skill loaders)
-                                       Redundant if be-brief or grug-reasoning is already on.
-
-★  pseudo-skills.zip                   RECOMMENDED bundle for NON-CLAUDE models
-                                       Extract, then paste ONE combo. Do not upload to Claude Skills.
+★  caveman-be-brief.zip / .md              recommended daily driver
+○  ralph-wiggum.zip / .md                  optional polish (OFF until "ralph on")
+○  caveman-compress.zip / .md              optional one-shot (shrink input)
+○  caveman-review.zip / .md                optional one-shot (line punch-list)
+△  caveman.zip / .md + grug-reasoning.zip / .md
+                                           modular — use this pair OR caveman-be-brief, never both
+★  pseudo-skills.zip                       non-Claude only (extract, paste one combo)
+△  claude-reasoning-caveman.skill          single-file Grug — skip if caveman-be-brief
+                                           or grug-reasoning is already installed
 ```
 
-### Warnings
+### Combo TL;DR
 
-- **Pick one think+speak package.** `caveman-be-brief` already includes Grug + caveman. Do not also install `caveman` + `grug-reasoning`.
-- **Ralph is OFF by default.** Installing it does nothing until you say `ralph on` / `ralph once` / `ralph max N`. Deadline? Leave it out.
-- **Claude ZIPs ≠ pseudo-skills.** Claude app gets `claude-skills/app/zips/`. Everyone else pastes `.md` from `pseudo-skills.zip`.
-- **Never overwrite originals** (`_v2` / `_backup`). **Never compress** code blocks, LaTeX, citation keys, or numbers.
-- **Languages:** English and Indonesian only.
+| | Stack | Use |
+|-|-------|-----|
+| **A** | `caveman-be-brief` only | default |
+| **B** | A + `ralph-wiggum` | polish (`ralph on`) |
+| **C** | A or B + `caveman-compress` and/or `caveman-review` | long PDF / punch-list |
+| **D** | `caveman` + `grug-reasoning` | same as A, two files |
+| **E** | D + `ralph-wiggum` | same as B, two files |
 
-### Combos
-
-| Combo | Claude app (upload) | Other models (paste) | When |
-|-------|---------------------|----------------------|------|
-| **A — Daily driver** | `caveman-be-brief.zip` only | `caveman-be-brief.md` only | Default. Deadline-safe. |
-| **B — Daily + polish** | A + `ralph-wiggum.zip` | A + `ralph-wiggum.md` | Thesis / journal polish |
-| **C — Daily + tools** | A or B + compress and/or review | same `.md` files | Long PDF in, or punch-list first |
-| **D — Modular** | `caveman.zip` + `grug-reasoning.zip` | `caveman.md` + `grug-reasoning.md` | Same as A, two layers |
-| **D+Ralph** | D + `ralph-wiggum` | D + `ralph-wiggum.md` | Same as B, two layers |
-
-**Illegal pairs:** `caveman-be-brief` + `caveman` · `caveman-be-brief` + `grug-reasoning` · `caveman-be-brief` + `claude-reasoning-caveman.skill` · pasting every file in `pseudo-skills.zip`.
+**Don't:** `caveman-be-brief` + `caveman` · `caveman-be-brief` + `grug-reasoning` · `caveman-be-brief` + `claude-reasoning-caveman.skill` · paste the whole zip.
 
 ## How to use pseudo-skills
 
