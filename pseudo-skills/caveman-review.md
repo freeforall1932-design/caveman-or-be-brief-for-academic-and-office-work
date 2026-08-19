@@ -94,3 +94,4 @@ Active until "stop review" / "normal mode".
 - No conclusion: "Total: 4 issues"
 - No explanations beyond brief fix note
 - If zero issues: Output nothing (silent pass)
+

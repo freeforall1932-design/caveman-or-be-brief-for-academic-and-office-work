@@ -91,3 +91,4 @@ L25: 🔴 typo: 'menunjukan' → 'menunjukkan' (ejaan baku)
 - No conclusion: "Total: 4 issues"
 - No explanations beyond brief fix note
 - If zero issues: Output nothing (silent pass)
+

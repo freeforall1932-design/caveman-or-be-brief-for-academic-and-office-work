@@ -65,3 +65,4 @@ On other models that text is noise. These files are **frontmatter-free**.
 | **Pseudo-skills (this folder)** | **Everything else — paste-in** | `pseudo-skills/` |
 
 Keep the three in sync when updating rules.
+

@@ -116,3 +116,4 @@ Drop caveman when: security warnings, legal disclaimers, irreversible action con
 ## Persistence
 
 Active until "stop caveman" / "normal mode". Default: full. Switch: `/caveman lite|full|ultra`.
+
