@@ -4,6 +4,11 @@
 
 Compress documents ~46% while preserving all data. English & Indonesian. Uses the deletion test (latest caveman method). Code blocks preserved exactly.
 
+Paste this for **input shrinking** (long paper → denser text you can feed another chat). Do not use it as your only daily-driver — it returns compressed text only, no Grug planning.
+
+## Purpose
+Shrink long documents before sending to AI. Saves ~46% input tokens while keeping 100% of facts.
+
 ## The Deletion Test
 
 For every sentence: **if I delete this, does the reader lose a fact, a number, a name, a decision, or a logical link?**

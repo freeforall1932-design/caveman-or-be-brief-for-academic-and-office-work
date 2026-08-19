@@ -2,66 +2,66 @@
 
 **Paste these markdown files into any model's custom instructions / system prompt.**
 
+Download all seven files at once: [`../pseudo-skills.zip`](../pseudo-skills.zip).
+
 Models like **Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** don't have a Claude-style
-skill system. For them, a "pseudo-skill" is simply a markdown file you paste at conversation
-start or into Settings → Custom Instructions. That's it — the model treats it as standing
-instructions for the whole session.
+skill system. A "pseudo-skill" is a frontmatter-free markdown file you paste at conversation
+start or into Settings → Custom Instructions. The model treats it as standing instructions.
+
+These files are **feature-parity** with the Claude Code / Claude app skills (deletion test,
+EN+ID catalogs, code preservation, Grug examples, Ralph loop, safety). They omit YAML /
+`## Metadata` on purpose — those tags waste tokens on non-Claude models.
 
 ## How to use
 
-1. Pick the pseudo-skill you need
+1. Pick **one recommended file** (usually `caveman-be-brief.md`)
 2. Copy the file content
 3. Paste into:
    - **Gemini:** Settings → Custom Instructions
    - **Qwen app (Android/web):** Settings → System Prompt / Custom Instructions
    - **ChatGPT:** Custom instructions (or paste at conversation start)
    - **Grok / DeepSeek / Kimi:** paste at conversation start, or system prompt if supported
-4. Done. The pseudo-skill stays active until you tell it to stop ("normal mode" / "stop caveman" / "stop grug")
+4. Done. Active until you say `"normal mode"` / `"stop caveman"` / `"stop grug"`
 
-## Files
+```
+★  caveman-be-brief.md                 recommended daily driver
+○  ralph-wiggum.md                     optional polish (OFF until "ralph on")
+○  caveman-compress.md                 optional one-shot (shrink input)
+○  caveman-review.md                   optional one-shot (line punch-list)
+△  caveman.md + grug-reasoning.md      modular — this pair OR caveman-be-brief, never both
+   README.md                           do not paste
+```
 
-| Pseudo-Skill | Paste when... | Active until |
-|--------------|---------------|--------------|
-| `caveman-be-brief.md` | All-in-one daily driver (Grug + caveman + be brief) | "stop caveman" / "normal mode" |
-| `grug-reasoning.md` | You want Grug internal reasoning + professional output | "stop grug" / "normal mode" |
-| `caveman.md` | You want token-compressed professional prose | "stop caveman" / "normal mode" |
-| `caveman-compress.md` | You need to shrink long documents for AI input | one-shot |
-| `caveman-review.md` | You want line-numbered document review | one-shot |
-| `ralph-wiggum.md` | Optional polish loop — quality > speed | "ralph off" / "done" |
+### Combo TL;DR
 
-## Ralph Wiggum on/off control (deadline vs polish)
+| | Paste | Use |
+|-|-------|-----|
+| **A** | `caveman-be-brief.md` | default |
+| **B** | A + `ralph-wiggum.md` | polish |
+| **C** | A or B + compress and/or review | long PDF / punch-list |
+| **D** | `caveman.md` + `grug-reasoning.md` | same as A, two files |
+| **E** | D + `ralph-wiggum.md` | same as B, two files |
 
-The `ralph-wiggum.md` pseudo-skill is **OFF by default** — it only loops when you say
-"ralph on". For full token control:
+**Don't:** `caveman-be-brief.md` + `caveman.md` · `caveman-be-brief.md` + `grug-reasoning.md` · paste the whole zip. Claude users: use `claude-skills/`, not this folder.
 
-- **Deadline / low tokens:** don't paste `ralph-wiggum.md`, or delete it from custom
-  instructions. `caveman-be-brief.md` still gives fast one-pass output.
-- **Have time / need polish:** paste it (or keep it) and say "ralph on" / "ralph once".
+## Ralph Wiggum on/off (deadline vs polish)
 
-No coupling: caveman works without Ralph, Ralph only acts when invoked.
+- **Deadline / low tokens:** don't paste `ralph-wiggum.md`. Combo A.
+- **Have time / need polish:** Combo B, then `"ralph on"` / `"ralph once"` / `"ralph max 3"`.
+
+No coupling: caveman works without Ralph.
 
 ## Why no YAML frontmatter?
 
-Claude skill files start with `---` frontmatter (name/description) that the Claude skill loader
-parses. When pasted as plain text into another model, that frontmatter is just noise tokens.
-These pseudo-skill files are **frontmatter-free** — every token does work.
-
-## Ralph Wiggum Loop
-
-All pseudo-skills support the optional loop commands — use them when quality > speed:
-
-```
-ralph off  → one pass (default, for deadlines)
-ralph once → one verification pass
-ralph on   → iterative improvement until quality met
-```
+Claude skill files start with `---` frontmatter that the Claude loader parses.
+On other models that text is noise. These files are **frontmatter-free**.
 
 ## Relationship to native skills
 
 | Format | For | Where |
 |--------|-----|-------|
-| `.skill` / `SKILL.md` | Claude Code & skill-capable agents | `claude-skills/` |
-| YAML-frontmatter skills | Skill-capable platforms | `caveman-universal/skills/` |
+| `.skill` / `SKILL.md` | Claude Code & skill-capable agents | `claude-skills/code/` |
+| Claude app ZIPs | Claude Desktop / claude.ai | `claude-skills/app/zips/` |
 | **Pseudo-skills (this folder)** | **Everything else — paste-in** | `pseudo-skills/` |
 
 Keep the three in sync when updating rules.

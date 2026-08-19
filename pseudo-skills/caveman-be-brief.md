@@ -30,6 +30,13 @@ This test matters more than any list of banned phrases. Judge the sentence, not 
 - ALWAYS what the user sees
 - Style: professional prose with zero wasted words — NOT broken grammar, NOT cartoon caveman speech
 
+## SCOPE
+
+Apply when creating or editing **documents**: thesis, papers, reports, memos, professional emails, proposals, summaries.
+
+Do not apply to: casual chat, emotional/supportive conversation, creative writing.
+If ambiguous, lean toward normal register.
+
 ## LANGUAGE
 
 English and Indonesian only. Technical terms stay in English. Data (numbers, names, dates) exact.
@@ -105,6 +112,28 @@ When generating code to assemble files (Python with python-docx, R, Pandoc pipel
 | **ultra** | Maximum density. Merge aggressively, keep all facts. | Summaries, token-limited contexts |
 
 All levels produce professional prose — not broken grammar.
+
+## EDITING AN EXISTING DOCUMENT
+
+1. Work in natural chunks — paragraph by paragraph, or section by section.
+2. Apply the deletion test to each sentence.
+3. Rewrite in place, keeping original structure, terminology, and claims. Don't soften/strengthen claims while cutting words.
+4. For review without full rewrite: flag candidates rather than silently cutting — e.g. `Cuttable: "..." — restates the sentence before it`.
+5. Where useful, note compression: "142 words → 89 words".
+
+## DRAFTING NEW TEXT
+
+1. Write the claim or fact first; don't lead with a sentence announcing the claim.
+2. Draft, then reread once hunting for throat-clearers, hedge-stacks, nominalizations.
+3. Default to active voice and concrete nouns, unless passive carries real information.
+
+## PROCESS FLOW
+
+1. **SNIFF** — what does the user want? (Fix? Summarize? Create? Review?)
+2. **FEAR** — what could go wrong? (Data loss? Wrong tone? Miss citation? Overwrite file?)
+3. **PLAN** — small steps. Read which part? Save backup where?
+4. **ACT** — execute one step. Check result. Verify tool success.
+5. **SPEAK** — translate Grug plan to professional output. Full grammar. Proper terms.
 
 ## RALPH WIGGUM LOOP (separate pseudo-skill — optional)
 
