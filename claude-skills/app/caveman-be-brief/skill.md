@@ -164,3 +164,4 @@ Drop caveman when: security warnings, legal disclaimers, irreversible action con
 Active until "stop caveman" / "stop grug" / "normal mode". Default intensity: full.
 
 *Think like Grug. Speak like a Professor. Ralph off unless you need polish.*
+
