@@ -1,6 +1,7 @@
-## Metadata
+---
 name: caveman-compress
-description: Compress long documents (~46% token savings) before sending to AI. Preserves 100% of data, citations, code. EN & ID. Triggers: "compress this", "condense", "ringkas dokumen".
+description: "Compress long documents (~46% token savings) before sending to AI. Preserves 100% of data, citations, code. EN & ID. Triggers: \"compress this\", \"condense\", \"ringkas dokumen\"."
+---
 
 # Caveman Compress
 

@@ -123,7 +123,7 @@ No CLI. No API key required. Just paste and use.
 
 The same rules ship in five formats — keep them in sync when editing:
 - `skills/*.md` — YAML frontmatter (for skill-capable platforms)
-- `../../claude-skills/app/*/skill.md` — Claude app/web format (`## Metadata`, ≤200-char description) + ZIPs in `app/zips/` (includes combined `caveman-be-brief` and standalone `ralph-wiggum`)
+- `../../claude-skills/app/*/SKILL.md` — Claude app/web format (`---` YAML frontmatter, ≤200-char description) + ZIPs in `app/zips/` (includes combined `caveman-be-brief` and standalone `ralph-wiggum`)
 - `../../claude-skills/code/*/SKILL.md` and `../../.claude/skills/` — Claude Code format (YAML frontmatter, ≤1024-char description)
 - `../../pseudo-skills/*.md` — frontmatter-free (paste into any model; includes `caveman-be-brief.md` and `ralph-wiggum.md`)
 

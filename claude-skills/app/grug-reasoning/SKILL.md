@@ -1,6 +1,7 @@
-## Metadata
+---
 name: grug-reasoning
-description: Grug-style internal reasoning for academic/office tasks: plan, assess risk, verify facts, keep output professional. Triggers: "/grug", "think like grug", "review this doc", "fix this doc".
+description: "Grug-style internal reasoning for academic/office tasks: plan, assess risk, verify facts, keep output professional. Triggers: \"/grug\", \"think like grug\", \"review this doc\", \"fix this doc\"."
+---
 
 # Grug — Internal Reasoning Engine for Academic & Office Work
 
