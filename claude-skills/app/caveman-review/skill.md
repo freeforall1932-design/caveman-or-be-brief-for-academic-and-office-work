@@ -1,16 +1,11 @@
----
+## Metadata
 name: caveman-review
-description: One-line feedback with line numbers. English & Indonesian. 
-  Format: L42: 🔴 bug: fix X
-version: 4.0
-mode: review
-triggers: ["review this", "check for errors", "caveman-review", "review", "cek"]
----
+description: One-line line-numbered review comments for documents (thesis, reports, DOCX/PDF). Format: L42: 🔴 bug: fix X. EN & ID. Triggers: "review this", "check errors", "proofread", "cek".
 
-# Caveman Review Skill
+# Caveman Review
 
 ## Purpose
-Ultra-dense feedback on documents (thesis, reports, DOCX, PDF). 
+Ultra-dense feedback on documents (thesis, reports, DOCX, PDF).
 Output: Line-numbered issues only. No explanations. No polite framing.
 
 ## Output Format

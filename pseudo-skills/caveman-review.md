@@ -1,17 +1,8 @@
----
-name: caveman-review
-description: One-line feedback with line numbers. English & Indonesian. 
-  Format: L42: 🔴 bug: fix X
-version: 4.0
-mode: review
-triggers: ["review this", "check for errors", "caveman-review", "review", "cek"]
----
+# Caveman Review (Pseudo-Skill)
 
-# Caveman Review Skill
+*Paste into system prompt / custom instructions. Works on any model.*
 
-## Purpose
-Ultra-dense feedback on documents (thesis, reports, DOCX, PDF). 
-Output: Line-numbered issues only. No explanations. No polite framing.
+One-line feedback with line numbers. English & Indonesian. Format: `L42: 🔴 bug: fix X`.
 
 ## Output Format
 ```

@@ -1,185 +1,136 @@
-# Caveman Universal
+# Caveman Universal — Academic & Office Workflow
 
-**Dense, lightweight token compression for academic and office workflows.**  
-Cuts output by ~65% while preserving 100% of technical data, citations, and logic.  
-Universally adaptable: any country, language, thesis, journal, DOCX, or PDF.
+**Dense, professional token compression for thesis, journals, reports, DOCX/PDF review.**
+Cuts output ~65% (chat/prose) while preserving 100% of technical data, citations, and logic.
+Uses the **latest caveman method**: professional prose with zero wasted words (not broken grammar).
+**English & Indonesian only. No CLI — web/app only. Ralph Wiggum loop optional.**
 
 ## Quick Start (Recommended)
 
-**Use `caveman-adaptive-universal.md`** - Minimal instruction (~500 words), zero net token cost.
-- Auto-detects intent: casual → dense output, formal/serious → standard model behavior
-- Handles images, PDFs, DOCX generically without specialization
-- Works with all AI models: Gemini, Claude, Qwen, Grok, Kimi, DeepSeek
-- **Best for**: General purpose queries, fast accurate reasoning, search summaries
+**Use `custom-instructions/caveman-adaptive-universal.md`** (~255 words, zero net token cost).
 
----
+- Auto-detects intent: casual → dense output, formal/serious → standard model behavior
+- Works with all AI models: Claude, Qwen, Gemini, Grok, Kimi, DeepSeek
+- Install: copy into custom instructions / system prompt (Claude app, Qwen app, etc.)
 
 ## Files
 
-**`caveman-adaptive-universal.md`** (RECOMMENDED - ~500 words)
-- Minimal instruction set with zero net token cost
-- Auto-detects intent: casual queries → dense output (~50% compression), formal/serious → standard model behavior
-- Handles images, PDFs, DOCX generically without specialization
-- Compatible with all AI models: Gemini, Claude, Qwen, Grok, Kimi, DeepSeek
-- **Best for**: General purpose use, fast accurate reasoning, search summaries
+### Custom Instructions
 
-**`caveman-lite-universal.md`** (~870 words)
-- More detailed version with expanded examples
-- Same adaptive logic but with more explicit guidance
-- **Best for**: When you want more explicit rules visible to the model
+| File | Words | Best For |
+|------|-------|----------|
+| `caveman-adaptive-universal.md` | ~255 | General purpose, auto-detect intent |
+| `caveman-lite-universal.md` | ~870 | More explicit rules and examples |
+| `caveman-micro-universal.md` | ~85 | Community-validated minimal version |
+| `caveman-grug-universal.md` | ~1.5K | Grug philosophy + compression |
+| `claude.md` | ~350 | Claude-specific setup (Windows app, web) |
+| `qwen.md` | ~350 | Qwen-specific setup (Android app, web) |
 
-**`caveman-grug-universal.md`** (~1.5K words)
-- Full Grug philosophy + Caveman compression
-- Includes decision frameworks, wisdom tables, extensive examples
-- **Best for**: Technical decisions, when you want Grug's simplicity-first reasoning
-- **Note**: Kept for specialized technical tasks; not recommended for general use
+### Skills (for AI Agent Platforms)
 
-## Installation
+| Skill | Purpose |
+|-------|---------|
+| `skills/caveman.md` | Main compression skill (lite/full/ultra, deletion test) |
+| `skills/caveman-compress.md` | Document condensing (~46% input savings) |
+| `skills/caveman-review.md` | One-line fix format for reviews |
 
-### Option 1: Custom Instructions (Persistent)
-Copy the recommended file to your AI's custom instructions:
-- **Recommended (General Use)**: `custom-instructions/caveman-adaptive-universal.md` - Minimal, zero overhead
-- **Alternative (More Examples)**: `custom-instructions/caveman-lite-universal.md` - Expanded guidance
-- **Specialized (Technical Decisions)**: `custom-instructions/caveman-grug-universal.md` - Grug philosophy
-- **Model-Specific**: `custom-instructions/claude.md` or `custom-instructions/qwen.md`
+### References & Docs
 
-### Option 2: Skills (On-Demand)
-Load `skills/caveman.md` into your AI agent platform. Trigger with:
-- "Use caveman mode"
-- "Be concise"
-- "/caveman full"
-- "grug mode" or "think like grug" for Grug philosophy
+| File | What |
+|------|------|
+| `references/patterns.md` | Full phrase catalog, English + Indonesian |
+| `docs/ralph-wiggum-loop.md` | Optional iterative improvement loop |
+| `docs/relationship-with-caveman.md` | How this differs from original caveman |
+| `docs/verification-report.md` | Benchmark results |
+| `docs/debug-analysis.md` | Before/after comparison with original |
+| `docs/debug-test.md` | Test cases |
+| `docs/universal-context-fix.md` | Placeholder standardization rationale |
 
-### Option 3: CLI (No GUI)
-Run directly in terminal (requires `curl` or API access):
-```bash
-# Claude
-./cli-scripts/claude-cli.sh full "Your prompt here"
+## Benchmarks (Honest)
 
-# Qwen
-./cli-scripts/qwen-cli.sh full "Your prompt here"
-```
+| Metric | Value | When |
+|--------|-------|------|
+| Output token savings | ~65% | Chat/prose (thesis, reports, email) |
+| Output token savings | ~8-21% | Structured coding/document tasks |
+| Input token savings | ~46% | After caveman-compress on documents |
+| Data loss | 0% | Verified across all test runs |
+| Instruction overhead | Pays for itself in 2-3 responses | Via output compression |
 
-### Option 4: Universal Injection (Any AI Model)
-Paste the appropriate file at conversation start or upload as reference document:
-- **For general use** (recommended): `custom-instructions/caveman-adaptive-universal.md`
-- **For more explicit guidance**: `custom-instructions/caveman-lite-universal.md`
-- **For technical decision-making**: `custom-instructions/caveman-grug-universal.md`
+Source: [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) benchmarks + community replication (JetBrains, independent benchmarks).
 
-Works with: Gemini, Grok, Kimi, DeepSeek, and any model supporting custom instructions.
+## Ralph Wiggum Loop
 
-## Usage Examples
+| Command | Effect | Token Cost |
+|---------|--------|------------|
+| `ralph off` | Default. One pass. Fast. | None |
+| `ralph once` | One verification pass. | ~2x output |
+| `ralph on` | Full loop till quality met. | Variable |
+| `ralph max 3` | Max 3 iterations. | ~3x output |
 
-### Academic Thesis
-**Input**:  
-"It is important to note that the results from Smith et al. (2023) could possibly suggest a correlation..."
+**Deadline:** "Saya butuh cepat, token terbatas" → ralph off
+**Quality:** "Saya punya waktu, perlu hasil maksimal" → ralph on
 
-**Output**:  
-"Smith et al. (2023) suggest a correlation..."
+## Language
 
-### Office Report
-**Input**:  
-"Moving forward, we should perhaps consider potentially optimizing the workflow to possibly improve efficiency."
+English and Indonesian. Technical terms stay in English. Code blocks unchanged.
+Citations preserved exactly.
 
-**Output**:  
-"Optimize workflow to improve efficiency."
-
-### Document Review (PDF/DOCX)
-1. Convert to Markdown: `pandoc document.pdf -o doc.md`
-2. Run review: `/caveman-review doc.md`
-3. Get fix list: `L15: 🔴 typo: 'recieve' → 'receive'`
-4. Apply fixes in original file.
-
-## Files Structure
+## Structure
 
 ```
 caveman-universal/
-├── README.md                         # This file
-├── skills/
-│   ├── caveman.md                    # Main compression skill
-│   ├── caveman-compress.md           # Document condensing
-│   └── caveman-review.md             # One-line feedback format
-├── custom-instructions/
-│   ├── claude.md                     # Claude-specific setup
-│   ├── qwen.md                       # Qwen-specific setup
-│   ├── caveman-adaptive-universal.md # RECOMMENDED: Minimal (~255 words)
-│   ├── caveman-lite-universal.md     # Expanded examples (~870 words)
-│   └── caveman-grug-universal.md     # Grug philosophy (~1.5K words)
-├── cli-scripts/
-│   ├── claude-cli.sh                 # Claude CLI runner
-│   └── qwen-cli.sh                   # Qwen CLI runner
-└── examples/
-    ├── thesis-input.md               # Sample academic text
-    ├── thesis-output.md              # Compressed result
-    └── report-fixes.txt              # Sample review output
+├── skills/                      # Skills for AI agent platforms
+│   ├── caveman.md
+│   ├── caveman-compress.md
+│   └── caveman-review.md
+├── custom-instructions/         # Copy-paste for Claude/Qwen apps etc.
+│   ├── caveman-adaptive-universal.md  # Recommended
+│   ├── caveman-lite-universal.md
+│   ├── caveman-micro-universal.md     # 85-token version
+│   ├── caveman-grug-universal.md
+│   ├── claude.md
+│   └── qwen.md
+├── references/
+│   └── patterns.md              # Phrase catalog (EN + ID)
+├── examples/
+│   ├── thesis-input.md
+│   ├── thesis-output.md
+│   └── report-fixes.txt
+├── docs/
+│   ├── ralph-wiggum-loop.md
+│   ├── relationship-with-caveman.md
+│   ├── debug-analysis.md
+│   ├── debug-test.md
+│   ├── universal-context-fix.md
+│   └── verification-report.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
 ```
 
-## Benchmark Results
+## Integration
 
-### Caveman Adaptive (Recommended)
-| Metric | Original | Caveman Adaptive | Savings |
-|--------|----------|------------------|---------|
-| Output Tokens (casual) | 1000 | 500 | 50% |
-| Output Tokens (formal) | 1000 | 1000 | 0% (standard mode) |
-| Instruction Overhead | - | ~255 words | Pays for itself in 1-2 responses |
-| Data Loss | 0% | 0% | - |
-| Citation Accuracy | 100% | 100% | - |
+| Method | Best For | How |
+|--------|----------|-----|
+| **Custom Instructions** | Claude Desktop App (Windows), Claude.ai, Qwen Chat, Gemini | Copy `.md` into system prompt |
+| **Claude Code skills** | Claude Code CLI/agents | Copy `../../claude-skills/*` to `~/.claude/skills/` |
+| **Pseudo-skills** | Models without skill support (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi) | Paste `../../pseudo-skills/*.md` into custom instructions |
+| **Android APK** | Qwen, Gemini, other chat apps | Copy `qwen.md` or adaptive file into app settings |
 
-### Caveman Lite (Adaptive)
-| Metric | Original | Caveman Lite | Savings |
-|--------|----------|--------------|---------|
-| Output Tokens (casual) | 1000 | 500 | 50% |
-| Output Tokens (formal) | 1000 | 1000 | 0% (standard mode) |
-| Instruction Overhead | - | ~870 words | Pays for itself in 2-3 responses |
-| Data Loss | 0% | 0% | - |
-| Citation Accuracy | 100% | 100% | - |
+No CLI. No API key required. Just paste and use.
 
-### Caveman Grug (Philosophy-driven)
-| Metric | Original | Caveman Grug | Savings |
-|--------|----------|--------------|---------|
-| Output Tokens | 1000 | 350 | 65% |
-| Input Tokens (compressed) | 500 | 270 | 46% |
-| Data Loss | 0% | 0% | - |
-| Citation Accuracy | 100% | 100% | - |
+## Sync Note
 
-## Which File to Use?
-
-| Use Case | Recommended File | Why |
-|----------|------------------|-----|
-| General queries, random topics, fast search | `caveman-adaptive-universal.md` | Minimal overhead, auto-detects intent |
-| Images + query, PDF/DOCX summaries | `caveman-adaptive-universal.md` | Smart media handling built-in |
-| Technical decisions, "should I use X?" | `caveman-grug-universal.md` | Grug philosophy for practical reasoning |
-| Formal reports, thesis, academic work | Any (auto-detects formal tone) | All switch to standard mode when needed |
-| Maximum token savings | `caveman-grug-universal.md` | Higher compression ratio |
-| Minimal instruction size | `caveman-adaptive-universal.md` | ~500 words vs ~870 vs ~1.5K |
-
-## Grug Philosophy Summary
-
-Based on [The Grug Brained Developer](https://grugbrain.dev/):
-
-- **Complexity very, very bad** — Simple solutions > complex abstractions
-- **Say no** — Reject features that add complexity without clear value
-- **80/20 rule** — 80% value with 20% effort. Good enough beats perfect
-- **Prototype early** — Working demo > abstract design
-- **Test along the way** — Not TDD dogma. Write tests as you understand domain
-- **Chesterton's Fence** — Understand why something exists before changing it
-- **Tool love** — Use debuggers, logging, code completion deeply
-- **Fear FOLD** (Fear Of Looking Dumb) — Admit confusion. Complex = bad, not clever
-
-*Note: Grug philosophy only active in `caveman-grug-universal.md`. `caveman-adaptive-universal.md` and `caveman-lite-universal.md` use pure efficiency without philosophical framework.*
-
-*complexity very, very bad. you say now.*
+The same rules ship in five formats — keep them in sync when editing:
+- `skills/*.md` — YAML frontmatter (for skill-capable platforms)
+- `../../claude-skills/app/*/skill.md` — Claude app/web format (`## Metadata`, ≤200-char description) + ZIPs in `app/zips/` (includes combined `caveman-be-brief` and standalone `ralph-wiggum`)
+- `../../claude-skills/code/*/SKILL.md` and `../../.claude/skills/` — Claude Code format (YAML frontmatter, ≤1024-char description)
+- `../../pseudo-skills/*.md` — frontmatter-free (paste into any model; includes `caveman-be-brief.md` and `ralph-wiggum.md`)
 
 ## License
 
-MIT License - Free for academic and commercial use.
-
-## Contributing
-
-1. Test with your documents (thesis, reports, PDFs)
-2. Report issues or improvements via issue tracker
-3. Include benchmark results in description
+MIT License (see `LICENSE`). The root project uses the Unlicense — see root `LICENSE`.
+Inspired by [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman).
 
 ---
-
-*Inspired by [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman). Adapted for universal academic/office workflows.*
+*English + Indonesia. Ralph optional. Complexity very bad.*

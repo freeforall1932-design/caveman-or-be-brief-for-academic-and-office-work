@@ -5,9 +5,9 @@
 ### 1. Report Issues
 Use issue tracker for:
 - Bugs in compression logic
-- Missing language support
+- Missing language support (English/Indonesian focus)
 - Citation/LaTeX preservation failures
-- CLI script errors
+- Custom-instruction errors in web/app setups
 
 ### 2. Submit Changes
 1. Create a branch: `git checkout -b feature/your-feature`
@@ -23,8 +23,8 @@ Use issue tracker for:
 
 ## Code Style
 - Markdown files: Use YAML frontmatter for skills
-- Shell scripts: POSIX-compatible, no bash-specific features unless required
-- Examples: Use universal placeholders, no specific names/dates
+- No CLI scripts (web/app only)
+- Examples: Use universal placeholders + English/Indonesian examples
 
 ## License
 Contributions fall under the MIT License.
