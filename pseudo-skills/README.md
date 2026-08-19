@@ -5,65 +5,74 @@
 Download all seven files at once: [`../pseudo-skills.zip`](../pseudo-skills.zip).
 
 Models like **Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** don't have a Claude-style
-skill system. For them, a "pseudo-skill" is simply a markdown file you paste at conversation
-start or into Settings → Custom Instructions. That's it — the model treats it as standing
-instructions for the whole session.
+skill system. A "pseudo-skill" is a frontmatter-free markdown file you paste at conversation
+start or into Settings → Custom Instructions. The model treats it as standing instructions.
+
+These files are **feature-parity** with the Claude Code / Claude app skills (deletion test,
+EN+ID catalogs, code preservation, Grug examples, Ralph loop, safety). They omit YAML /
+`## Metadata` on purpose — those tags waste tokens on non-Claude models.
 
 ## How to use
 
-1. Pick the pseudo-skill you need
+1. Pick **one recommended file** (usually `caveman-be-brief.md`)
 2. Copy the file content
 3. Paste into:
    - **Gemini:** Settings → Custom Instructions
    - **Qwen app (Android/web):** Settings → System Prompt / Custom Instructions
    - **ChatGPT:** Custom instructions (or paste at conversation start)
    - **Grok / DeepSeek / Kimi:** paste at conversation start, or system prompt if supported
-4. Done. The pseudo-skill stays active until you tell it to stop ("normal mode" / "stop caveman" / "stop grug")
+4. Done. Active until you say `"normal mode"` / `"stop caveman"` / `"stop grug"`
 
-## Files
+## Recommended vs optional
 
-| Pseudo-Skill | Paste when... | Active until |
-|--------------|---------------|--------------|
-| `caveman-be-brief.md` | All-in-one daily driver (Grug + caveman + be brief) | "stop caveman" / "normal mode" |
-| `grug-reasoning.md` | You want Grug internal reasoning + professional output | "stop grug" / "normal mode" |
-| `caveman.md` | You want token-compressed professional prose | "stop caveman" / "normal mode" |
-| `caveman-compress.md` | You need to shrink long documents for AI input | one-shot |
-| `caveman-review.md` | You want line-numbered document review | one-shot |
-| `ralph-wiggum.md` | Optional polish loop — quality > speed | "ralph off" / "done" |
+| File | Role | Install? |
+|------|------|----------|
+| `caveman-be-brief.md` | **PRIMARY.** Grug think + caveman speak. Daily driver. | **Recommended — paste this** |
+| `ralph-wiggum.md` | Polish loop. OFF until you say `ralph on`. | Optional — add when quality > speed |
+| `caveman-compress.md` | Shrink long docs for *input* (~46%). | Optional — one-shot |
+| `caveman-review.md` | Line-numbered issue list only. | Optional — one-shot |
+| `caveman.md` | Speak layer only (no Grug). | Modular alternative — **do not pair with be-brief** |
+| `grug-reasoning.md` | Think layer only (full examples). | Modular alternative — **do not pair with be-brief** |
+| `README.md` | This guide. | Do not paste |
 
-## Ralph Wiggum on/off control (deadline vs polish)
+## Combos (safe)
 
-The `ralph-wiggum.md` pseudo-skill is **OFF by default** — it only loops when you say
-"ralph on". For full token control:
+| Combo | Paste these | Use when |
+|-------|-------------|----------|
+| **A — Daily driver** | `caveman-be-brief.md` only | Almost always |
+| **B — Deadline + polish switch** | `caveman-be-brief.md` + `ralph-wiggum.md` | Thesis polish; say `ralph off` until you need it |
+| **C — Dense input then write** | session 1: `caveman-compress.md`; session 2: `caveman-be-brief.md` | 50-page PDF → then draft |
+| **D — Scan then fix** | `caveman-review.md` then `caveman-be-brief.md` | Want a punch list first |
+| **E — Modular (no all-in-one)** | `caveman.md` + `grug-reasoning.md` | You want layers separate |
+| **E+Ralph** | `caveman.md` + `grug-reasoning.md` + `ralph-wiggum.md` | Modular + polish |
 
-- **Deadline / low tokens:** don't paste `ralph-wiggum.md`, or delete it from custom
-  instructions. `caveman-be-brief.md` still gives fast one-pass output.
-- **Have time / need polish:** paste it (or keep it) and say "ralph on" / "ralph once".
+## Warnings — do not do this
 
-No coupling: caveman works without Ralph, Ralph only acts when invoked.
+- **Do not paste `caveman-be-brief.md` together with `caveman.md` or `grug-reasoning.md`.** Duplicate instructions fight each other and burn tokens.
+- **Do not paste every file in the zip.** Pick a combo.
+- **Do not leave Ralph on for deadline work.** Default is off. `ralph on` multiplies token cost.
+- **Do not compress code, LaTeX, citation keys, or numbers.** Built into every file; if a model still rewrites a code block, say "preserve code exactly".
+- **Do not overwrite originals.** Skills require `_v2` / `_backup`.
+- **Claude users:** do not use this zip. Use `claude-skills/app/zips/` (app) or `claude-skills/code/` (Claude Code).
+
+## Ralph Wiggum on/off (deadline vs polish)
+
+- **Deadline / low tokens:** don't paste `ralph-wiggum.md`. Combo A.
+- **Have time / need polish:** Combo B, then `"ralph on"` / `"ralph once"` / `"ralph max 3"`.
+
+No coupling: caveman works without Ralph.
 
 ## Why no YAML frontmatter?
 
-Claude skill files start with `---` frontmatter (name/description) that the Claude skill loader
-parses. When pasted as plain text into another model, that frontmatter is just noise tokens.
-These pseudo-skill files are **frontmatter-free** — every token does work.
-
-## Ralph Wiggum Loop
-
-All pseudo-skills support the optional loop commands — use them when quality > speed:
-
-```
-ralph off  → one pass (default, for deadlines)
-ralph once → one verification pass
-ralph on   → iterative improvement until quality met
-```
+Claude skill files start with `---` frontmatter that the Claude loader parses.
+On other models that text is noise. These files are **frontmatter-free**.
 
 ## Relationship to native skills
 
 | Format | For | Where |
 |--------|-----|-------|
-| `.skill` / `SKILL.md` | Claude Code & skill-capable agents | `claude-skills/` |
-| YAML-frontmatter skills | Skill-capable platforms | `caveman-universal/skills/` |
+| `.skill` / `SKILL.md` | Claude Code & skill-capable agents | `claude-skills/code/` |
+| Claude app ZIPs | Claude Desktop / claude.ai | `claude-skills/app/zips/` |
 | **Pseudo-skills (this folder)** | **Everything else — paste-in** | `pseudo-skills/` |
 
 Keep the three in sync when updating rules.

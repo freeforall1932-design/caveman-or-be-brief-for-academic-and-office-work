@@ -4,6 +4,8 @@
 
 **English & Indonesian only. Web/app only — no CLI.**
 
+**v4.0 release note** (recommended vs optional artifacts, illegal pairs, combos): [`RELEASE-v4.0.md`](RELEASE-v4.0.md)
+
 ## What's Here
 
 | Layer | What | File |
