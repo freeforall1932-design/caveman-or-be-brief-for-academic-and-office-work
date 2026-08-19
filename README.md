@@ -31,29 +31,40 @@
 
 Claude app: upload the `.zip`. Everyone else: paste the matching `.md` from [`pseudo-skills.zip`](pseudo-skills.zip).
 
-```
-★  caveman-be-brief.zip / .md              recommended daily driver
-○  ralph-wiggum.zip / .md                  optional polish (OFF until "ralph on")
-○  caveman-compress.zip / .md              optional one-shot (shrink input)
-○  caveman-review.zip / .md                optional one-shot (line punch-list)
-△  caveman.zip / .md + grug-reasoning.zip / .md
-                                           modular — use this pair OR caveman-be-brief, never both
-★  pseudo-skills.zip                       non-Claude only (extract, paste one combo)
-△  claude-reasoning-caveman.skill          single-file Grug — skip if caveman-be-brief
-                                           or grug-reasoning is already installed
-```
+- ★ [caveman-be-brief.zip](claude-skills/app/zips/caveman-be-brief.zip) / [`.md`](pseudo-skills/caveman-be-brief.md)
+  - recommended daily driver
+- ○ [ralph-wiggum.zip](claude-skills/app/zips/ralph-wiggum.zip) / [`.md`](pseudo-skills/ralph-wiggum.md)
+  - optional polish (OFF until `ralph on`)
+- ○ [caveman-compress.zip](claude-skills/app/zips/caveman-compress.zip) / [`.md`](pseudo-skills/caveman-compress.md)
+  - optional one-shot (shrink input)
+- ○ [caveman-review.zip](claude-skills/app/zips/caveman-review.zip) / [`.md`](pseudo-skills/caveman-review.md)
+  - optional one-shot (line punch-list)
+- △ [caveman.zip](claude-skills/app/zips/caveman.zip) / [`.md`](pseudo-skills/caveman.md) + [grug-reasoning.zip](claude-skills/app/zips/grug-reasoning.zip) / [`.md`](pseudo-skills/grug-reasoning.md)
+  - modular — this pair **or** caveman-be-brief, never both
+- ★ [pseudo-skills.zip](pseudo-skills.zip)
+  - non-Claude only (extract, paste one combo)
+- △ [claude-reasoning-caveman.skill](claude-reasoning-caveman.skill)
+  - single-file Grug — skip if caveman-be-brief or grug-reasoning is already installed
 
-### Combo TL;DR
+### Combo
 
-| | Stack | Use |
-|-|-------|-----|
-| **A** | `caveman-be-brief` only | default |
-| **B** | A + `ralph-wiggum` | polish (`ralph on`) |
-| **C** | A or B + `caveman-compress` and/or `caveman-review` | long PDF / punch-list |
-| **D** | `caveman` + `grug-reasoning` | same as A, two files |
-| **E** | D + `ralph-wiggum` | same as B, two files |
+- **A** — `caveman-be-brief`
+  - default
+- **B** — A + `ralph-wiggum`
+  - polish (`ralph on`)
+- **C** — A or B + `caveman-compress` and/or `caveman-review`
+  - long PDF / punch-list
+- **D** — `caveman` + `grug-reasoning`
+  - same as A, two files
+- **E** — D + `ralph-wiggum`
+  - same as B, two files
 
-**Don't:** `caveman-be-brief` + `caveman` · `caveman-be-brief` + `grug-reasoning` · `caveman-be-brief` + `claude-reasoning-caveman.skill` · paste the whole zip.
+**Don't**
+
+- `caveman-be-brief` + `caveman`
+- `caveman-be-brief` + `grug-reasoning`
+- `caveman-be-brief` + `claude-reasoning-caveman.skill`
+- paste the whole zip
 
 ## How to use pseudo-skills
 
