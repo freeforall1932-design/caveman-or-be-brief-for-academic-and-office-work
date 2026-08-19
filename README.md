@@ -1,113 +1,96 @@
 # Caveman or Be Brief — for Academic & Office Work
 
-**A companion to JuliusBrussee's caveman project.** Token-efficient AI communication for thesis writing, journal articles, reports, and DOCX/PDF review. Built around **Grug reasoning** (the thinking layer) + **Caveman compression** (the speaking layer) + optional **Ralph Wiggum loop** (the improvement layer).
+Token-efficient writing for thesis work, journals, reports, and DOCX/PDF review. Professional prose — not cartoon caveman.
 
-**English & Indonesian only. Web/app only — no CLI.**
+A companion to [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman): **Grug** thinks, **caveman** speaks, optional **Ralph** polishes.
 
-## What's Here
+English and Indonesian only. Web/app only — no CLI.
 
-| Layer | What | File |
-|-------|------|------|
-| 🧠 **Grug Engine** | Internal reasoning — planning, fear assessment, tool strategy | `claude-reasoning-caveman.skill` |
-| 🗣 **Caveman Compression** | Token-efficient output — cut fluff, keep data (latest method) | `caveman-universal/` |
-| 🔄 **Ralph Wiggum Loop** | Optional iterative improvement | `caveman-universal/docs/ralph-wiggum-loop.md` |
+## Highlights
 
-## Deployment Formats (pick your platform)
+- Latest caveman method: deletion test, facts and hedges kept, code/LaTeX/citations left untouched
+- Grug reasoning stays internal — you see the tight answer, not the monologue
+- Optional Ralph Wiggum loop for polish (`ralph on`) — off by default
+- Same rules on Claude (upload a ZIP) and everywhere else (paste one `.md`)
 
-| Format | Works on | Where |
-|--------|----------|-------|
-| **Claude app/web skills** (upload ZIP) | Claude Desktop app (Windows/Mac), claude.ai, Cowork — via Customize → Skills | `claude-skills/app/zips/` — 6 ready-made ZIPs |
-| **Claude Code skills** (folder + SKILL.md) | Claude Code, Codex CLI, Cursor, OpenClaw (SKILL.md standard) | `claude-skills/code/` + `.claude/skills/` (auto-loads in this repo) |
-| **Pseudo-skills** (frontmatter-free .md) | Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi — paste into custom instructions | `pseudo-skills/` or download `pseudo-skills.zip` |
-| **Custom instructions** (.md) | Claude Desktop (Windows), Claude.ai, Qwen app (Android), Gemini | `caveman-universal/custom-instructions/` |
-
-**Quick answer — yes, it ports to Claude and other frontier models:**
-
-- **Claude app on Windows / claude.ai:** upload a ZIP from `claude-skills/app/zips/` in **Customize → Skills** (enable *Code execution and file creation* first). Works on Free/Pro/Max/Team/Enterprise.
-- **Claude Code:** open this repo (skills auto-load from `.claude/skills/`) or copy `claude-skills/code/*` to `~/.claude/skills/`.
-- **Other frontier apps (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi):** no skill system — download [`pseudo-skills.zip`](pseudo-skills.zip) or paste one combo from `pseudo-skills/` (see [How to use pseudo-skills](#how-to-use-pseudo-skills)). Same rules as Claude skills, no YAML.
-
-## What to install
+## Install
 
 Claude app: upload the `.zip`. Everyone else: paste the matching `.md` from [`pseudo-skills.zip`](pseudo-skills.zip).
 
-```
-★  caveman-be-brief.zip / .md              recommended daily driver
-○  ralph-wiggum.zip / .md                  optional polish (OFF until "ralph on")
-○  caveman-compress.zip / .md              optional one-shot (shrink input)
-○  caveman-review.zip / .md                optional one-shot (line punch-list)
-△  caveman.zip / .md + grug-reasoning.zip / .md
-                                           modular — use this pair OR caveman-be-brief, never both
-★  pseudo-skills.zip                       non-Claude only (extract, paste one combo)
-△  claude-reasoning-caveman.skill          single-file Grug — skip if caveman-be-brief
-                                           or grug-reasoning is already installed
-```
+- ★ [caveman-be-brief.zip](claude-skills/app/zips/caveman-be-brief.zip) / [`.md`](pseudo-skills/caveman-be-brief.md)
+  - recommended daily driver
+- ○ [ralph-wiggum.zip](claude-skills/app/zips/ralph-wiggum.zip) / [`.md`](pseudo-skills/ralph-wiggum.md)
+  - optional polish (OFF until `ralph on`)
+- ○ [caveman-compress.zip](claude-skills/app/zips/caveman-compress.zip) / [`.md`](pseudo-skills/caveman-compress.md)
+  - optional one-shot (shrink input)
+- ○ [caveman-review.zip](claude-skills/app/zips/caveman-review.zip) / [`.md`](pseudo-skills/caveman-review.md)
+  - optional one-shot (line punch-list)
+- △ [caveman.zip](claude-skills/app/zips/caveman.zip) / [`.md`](pseudo-skills/caveman.md) + [grug-reasoning.zip](claude-skills/app/zips/grug-reasoning.zip) / [`.md`](pseudo-skills/grug-reasoning.md)
+  - modular — this pair **or** caveman-be-brief, never both
+- ★ [pseudo-skills.zip](pseudo-skills.zip)
+  - non-Claude only (extract, paste one combo)
+- △ [claude-reasoning-caveman.skill](claude-reasoning-caveman.skill)
+  - single-file Grug — skip if caveman-be-brief or grug-reasoning is already installed
 
-### Combo TL;DR
+### Combo
 
-| | Stack | Use |
-|-|-------|-----|
-| **A** | `caveman-be-brief` only | default |
-| **B** | A + `ralph-wiggum` | polish (`ralph on`) |
-| **C** | A or B + `caveman-compress` and/or `caveman-review` | long PDF / punch-list |
-| **D** | `caveman` + `grug-reasoning` | same as A, two files |
-| **E** | D + `ralph-wiggum` | same as B, two files |
+- **A** — `caveman-be-brief`
+  - default
+- **B** — A + `ralph-wiggum`
+  - polish (`ralph on`)
+- **C** — A or B + `caveman-compress` and/or `caveman-review`
+  - long PDF / punch-list
+- **D** — `caveman` + `grug-reasoning`
+  - same as A, two files
+- **E** — D + `ralph-wiggum`
+  - same as B, two files
 
-**Don't:** `caveman-be-brief` + `caveman` · `caveman-be-brief` + `grug-reasoning` · `caveman-be-brief` + `claude-reasoning-caveman.skill` · paste the whole zip.
+**Don't**
 
-## How to use pseudo-skills
+- `caveman-be-brief` + `caveman`
+- `caveman-be-brief` + `grug-reasoning`
+- `caveman-be-brief` + `claude-reasoning-caveman.skill`
+- paste the whole zip
 
-Models without a skill loader (Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot) cannot upload Claude ZIPs. You **paste** a markdown file. Behavior matches the Claude skills (deletion test, EN+ID, code preserve, Grug hidden, Ralph optional).
+## Quick start
 
-### What you do
+**Claude app / claude.ai** — Settings → Capabilities → enable *Code execution and file creation*, then Customize → Skills → Upload → [`caveman-be-brief.zip`](claude-skills/app/zips/caveman-be-brief.zip). Free/Pro/Max/Team/Enterprise.
 
-1. Download [`pseudo-skills.zip`](pseudo-skills.zip) and extract it, **or** open `pseudo-skills/` in this repo.
-2. Open **one** file from a combo above (start with `caveman-be-brief.md`).
-3. Copy the **entire** file.
-4. Paste into:
-   - **Gemini** — Settings → Custom Instructions
-   - **Qwen** (app / web) — Settings → System Prompt / Custom Instructions
-   - **ChatGPT** — Custom instructions, or paste at the start of a chat
-   - **Grok / DeepSeek / Kimi / Copilot** — paste at conversation start (or system prompt if the app has one)
-5. Start working. Say `caveman`, `be brief`, `ringkas`, or just write as usual — the instructions stay on.
+**Claude Code** — open this repo (skills auto-load from `.claude/skills/`), or `cp -r claude-skills/code/* ~/.claude/skills/`.
 
-### What you should expect
+**Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** — no skill uploader. Download [`pseudo-skills.zip`](pseudo-skills.zip), extract, copy **one** combo file (start with `caveman-be-brief.md`), paste into custom instructions or at the start of a chat.
+
+Then write as usual, or say `caveman`, `be brief`, or `ringkas`. Stop with `stop caveman` / `stop grug` / `normal mode`.
 
 | You see | You should not see |
 |---------|-------------------|
-| Tight professional prose (full grammar) | Cartoon caveman / broken English in the reply |
+| Tight professional prose (full grammar) | Cartoon caveman / broken English |
 | Facts, numbers, citations, hedges kept | Invented figures or stripped “may / suggests” |
 | Code / LaTeX / `[@Cite2023]` unchanged | “Compressed” code that no longer runs |
-| Optional word-count note (`142 → 89`) | Grug internal monologue (that stays hidden) |
-| Until you say `stop caveman` / `stop grug` / `normal mode` | Skills turning off by themselves |
+| Optional word-count note (`142 → 89`) | Grug internal monologue |
+| Until you say stop | Skills turning off by themselves |
 
 **Intensity:** `lite` (emails, journals) · `full` (default, thesis) · `ultra` (summaries). Say `/caveman lite` or “use lite”.
 
-**Ralph (only if you also pasted `ralph-wiggum.md`):**
+**Ralph** (only if `ralph-wiggum` is also installed):
 
 ```
-ralph off   → one pass (default)
+ralph off   → one pass (default, deadlines)
 ralph once  → one extra check
 ralph on    → loop until you say stop / done
 ralph max 3 → cap at 3 passes
 ```
 
-**One-shots:** paste `caveman-compress.md` to shrink a long source *before* another chat. Paste `caveman-review.md` when you want `L15: 🔴 typo: …` only, not a rewrite.
+**One-shots:** `caveman-compress` shrinks a long source *before* another chat. `caveman-review` prints `L15: 🔴 typo: …` only — not a rewrite.
 
-Full pairing notes: [`pseudo-skills/README.md`](pseudo-skills/README.md).
+Pairing notes for paste-in models: [`pseudo-skills/README.md`](pseudo-skills/README.md). Platform matrix: [`claude-skills/README.md`](claude-skills/README.md).
 
-## Quick Start (Claude)
+## Thinner alternatives
 
-1. **Claude app/web:** Settings → Capabilities → enable *Code execution and file creation*, then Customize → Skills → Upload → `claude-skills/app/zips/caveman-be-brief.zip`
-2. **Claude Code:** open this repo, or `cp -r claude-skills/code/* ~/.claude/skills/`
-3. **Grug thinking:** install `caveman-be-brief` (combined) **or** `grug-reasoning` (standalone) — not both with be-brief
+Optional copy-paste files in `caveman-universal/custom-instructions/` — lighter than a full skill.
 
-### Extra copy-paste instructions (optional, thinner than skills)
-
-All in `caveman-universal/custom-instructions/` unless noted.
-
-| Use Case | File |
-|----------|------|
+| Use | File |
+|-----|------|
 | Minimal, zero-overhead | `caveman-adaptive-universal.md` |
 | More explicit rules | `caveman-lite-universal.md` |
 | Community-validated 85-token version | `caveman-micro-universal.md` |
@@ -116,32 +99,26 @@ All in `caveman-universal/custom-instructions/` unless noted.
 | Qwen-specific (Android, web) | `qwen.md` |
 | Full phrase catalog (EN + ID) | `caveman-universal/references/patterns.md` |
 
-## Method (Latest)
+## Method
 
-This project uses the **latest official caveman method**: professional prose with zero wasted words — *not* broken grammar. Core rule is the **deletion test**: *if I delete this, does the reader lose a fact, a number, a name, a decision, or a logical link?* No loss → cut. Real loss → keep, exact.
+Latest official caveman method: professional prose with zero wasted words — *not* broken grammar. **Deletion test:** if you delete this, does the reader lose a fact, a number, a name, a decision, or a logical link? No loss → cut. Real loss → keep, exact.
 
-### Code preservation (for AI file generation)
+When the model writes code to assemble files (python-docx, R, Pandoc, …), **code blocks stay byte-for-byte exact.** Surrounding prose is compressed. Inline code, paths, LaTeX, and citation keys stay verbatim.
 
-When the AI generates code to assemble files (Python with python-docx, R, Pandoc pipelines, etc.),
-**code blocks must remain byte-for-byte exact — never compressed.** Surrounding prose is compressed;
-the code itself is a technical artifact. Inline code, file paths, LaTeX equations, and citation keys
-are preserved verbatim. This is built into every skill and instruction file so generated documents
-never break.
+## vs official caveman
 
-## What's Different From the Official Project
+This is a **companion**, not a replacement. [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) (v2.1) is a compression engine for tool output, logs, and JSON, plus MCP (`npx caveman-shrink`). Use that for everyday coding. Use this for academic/office writing.
 
-| Area | Official caveman (v2.1) | This project |
-|------|-------------------------|--------------|
-| **Method** | Cut-the-fluff prose | Same latest method (deletion test) |
-| **Languages** | Universal | **English + Indonesian only** |
-| **Deployment** | CLI, MCP, npm, agent SDK | **Web/app only — no CLI** |
-| **Reasoning layer** | None | **Grug engine** (internal thinking) |
-| **Iteration** | None | **Ralph Wiggum loop** (optional, separate) |
-| **Engine model** | Compression engine for tool output | AI-prompt-based compression only |
-| **Code in output** | Preserved | **Preserved exactly** (Python/R file assembly) |
-| **Token claims** | 65% flat | **Honest split: ~65% chat/prose, ~8–21% structured tasks** |
-
-## Benchmarks (Honest)
+| | Official caveman | This project |
+|--|------------------|--------------|
+| Method | Cut-the-fluff prose | Same deletion test |
+| Languages | Universal | **English + Indonesian only** |
+| Deploy | CLI, MCP, npm, agent SDK | **Web/app only — no CLI** |
+| Reasoning | None | **Grug** (hidden) |
+| Iteration | None | **Ralph** (optional, separate) |
+| Engine | Compresses tool output | Prompt-based only |
+| Code in output | Preserved | **Preserved exactly** |
+| Token claims | 65% flat | **~65% chat/prose, ~8–21% structured tasks** |
 
 | Metric | Value | When |
 |--------|-------|------|
@@ -150,38 +127,9 @@ never break.
 | Input token savings | ~46% | After caveman-compress on documents |
 | Data loss | 0% | Verified across all test runs |
 
-Source: original caveman benchmarks + independent replication (JetBrains, community tests).
+Source: original caveman benchmarks + independent replication (JetBrains, community tests). Full notes: [`caveman-universal/docs/relationship-with-caveman.md`](caveman-universal/docs/relationship-with-caveman.md).
 
-## Relationship to Original Caveman
-
-This is a **companion**, not a replacement. The original [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) (v2.1, 92K+ stars) provides:
-
-- A real compression engine for tool outputs, logs, JSON
-- MCP middleware (`npx caveman-shrink`)
-- Support for 30+ coding agents
-
-This project provides:
-- **Grug reasoning engine** — the thinking layer original caveman doesn't ship
-- **Document-focused workflow** — thesis, journals, reports, DOCX/PDF
-- **Optional Ralph Wiggum loop** — iterative improvement when quality matters
-- **English + Indonesian** — targeted language support
-
-**Use both together:** original caveman for everyday coding, this project for academic/office writing. See [`caveman-universal/docs/relationship-with-caveman.md`](caveman-universal/docs/relationship-with-caveman.md).
-
-## Ralph Wiggum Loop (Optional)
-
-```
-ralph off  → one pass, speed priority (default, for deadlines)
-ralph once → one verification pass (quick double-check)
-ralph on   → full iterative improvement (polish, quality)
-```
-
-**Deadline mode:** Leave OFF. Say "I want it fast, I don't have tokens to spare."
-**Quality mode:** Turn ON. "I have time, I need this polished."
-
-Ralph is a **separate, independently-toggleable skill** — zero coupling.
-
-## Repository Map
+## Repository map
 
 ```
 ├── README.md                        ← you are here
