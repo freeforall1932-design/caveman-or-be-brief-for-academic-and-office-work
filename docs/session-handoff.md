@@ -78,31 +78,42 @@ These came from the user explicitly. Do not reverse them without asking.
 
 Deferred, in rough priority order. Each is independent.
 
-1. **Verify the three unverified profiles.** Cursor, Copilot and OpenCode are
+1. **Fix CodeQL — the one red check, and it is pre-existing.**
+   `.github/workflows/codeql.yml` is the unmodified GitHub template: its
+   `strategy.matrix.include` is an **empty list** (the language entries were
+   never filled in). An empty matrix produces zero jobs, and GitHub marks the
+   run failed. It has failed on `main` since 2026-08-19, including at `885b30b`,
+   the commit this branch started from — so it is **not** a regression from this
+   work.
+   Fix: populate the matrix, most likely `- language: python` with
+   `build-mode: none` (the repo is Python; `actions` is another candidate for
+   the workflow files). Left out of PR #10 deliberately to keep that PR
+   reviewable. Verify by pushing and watching the run, rather than assuming.
+2. **Verify the three unverified profiles.** Cursor, Copilot and OpenCode are
    `tested_agent_version: "unverified"` — documentation review only, no binary
    probe. Needs those tools installed locally. The profile validator refuses to
    let a profile claim a version it never tested, so this is a real gap, not a
    formality.
-2. **Run an actual SkillOpt training loop.** Never executed end-to-end — it needs
+3. **Run an actual SkillOpt training loop.** Never executed end-to-end — it needs
    a real API key. `train` currently fails at `get_target_client()` with a dummy
    key, which is expected, not a bug. Until this runs, the training path is
    wired but unproven.
-3. **Determine Qwen Chat Agent's real conventions.** Whether it parses
+4. **Determine Qwen Chat Agent's real conventions.** Whether it parses
    `SKILL.md` frontmatter is unknown; no public spec exists. If the user can
    test it empirically, upgrade `profiles/qwen-agent.json` from
    paste-only to real skills and drop the `skills: null`.
-4. **Consider renaming `be-brief-output` → `be-brief-prose`.** The user's chosen
+5. **Consider renaming `be-brief-output` → `be-brief-prose`.** The user's chosen
    option said `be-brief-prose`; it shipped as `be-brief-output` to pair
    symmetrically with `caveman-output`. Content matches the intent. A rename
    touches the variant dir, `VARIANT_ORDER`, and regenerates all packs.
-5. **Bump the SkillOpt pin deliberately.** CI pins `skillopt==0.2.0` (blocking on
+6. **Bump the SkillOpt pin deliberately.** CI pins `skillopt==0.2.0` (blocking on
    PRs). A weekly scheduled run installs latest and is allowed to fail, so
    upstream drift surfaces there first.
-6. **Re-check upstream caveman.** v2.7.0 was the reference. If a newer release
+7. **Re-check upstream caveman.** v2.7.0 was the reference. If a newer release
    changed the non-negotiables (invented abbreviations, arrows in prose,
    auto-clarity), `variants/caveman-output/` and the evaluator need updating
    together.
-7. **Reconsider `scripts/` and `assets/` in the skills.** Omitted deliberately —
+8. **Reconsider `scripts/` and `assets/` in the skills.** Omitted deliberately —
    there is nothing genuinely executable here, and adding one to tick a spec box
    would be cargo-culting. Revisit only if a real helper emerges.
 
