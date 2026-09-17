@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caveman-skillopt"
+version = "0.1.0"
+description = "SkillOpt environment that trains the caveman / be-brief / grug skill documents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Unlicense" }
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# SkillOpt itself is an extra: this package's reward function and dataset
+# are usable without it (see `python -m caveman_skillopt.score`).
+skillopt = ["skillopt>=0.2.0"]
+dev = ["pytest>=7.0", "skillopt>=0.2.0"]
+
+[project.urls]
+Homepage = "https://github.com/freeforall1932-design/caveman-or-be-brief-for-academic-and-office-work"
+SkillOpt-fork = "https://github.com/freeforall1932-design/SkillOpt-fork"
+Upstream-SkillOpt = "https://github.com/microsoft/SkillOpt"
+
+[tool.setuptools]
+packages = ["caveman_skillopt", "caveman_skillopt.envs", "caveman_skillopt.envs.caveman_brief"]
+
+[tool.setuptools.package-data]
+"caveman_skillopt.envs.caveman_brief" = ["prompts/*.md", "skills/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

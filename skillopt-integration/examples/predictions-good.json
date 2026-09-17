@@ -1,0 +1,21 @@
+{
+  "_comment": "Hand-written reference outputs for the test split. Used by `python -m caveman_skillopt.score` as a known-good baseline, and as a worked example of what each register's output contract looks like in practice.",
+
+  "shipments-be-brief": "Many shipments processed during the observation period were delayed, mainly due to gaps in shift-handover procedures.",
+
+  "limitations-be-brief": "Limitations: sample size small (n=150); participants drawn from a single region (Surabaya). The cross-sectional design rules out causal inference, so findings may not generalise to other populations.",
+
+  "connection-pooling-unified": "Pooling reuses open database connections instead of opening a new one per request, which avoids repeating the handshake on every call.",
+
+  "meeting-request-unified": "Could we meet next week to review the annual report draft? The submission deadline is 14 March. Let me know what time suits you.",
+
+  "ggplot-script-caveman": "Use ggplot2 with a column geometry and a minimal theme. Brand colour #2C7FB8.\n\n```r\nlibrary(ggplot2)\n\nggplot(df, aes(x = month, y = revenue)) +\n  geom_col(fill = \"#2C7FB8\") +\n  theme_minimal()\n```",
+
+  "auth-bug-grug-reasoning": "<thinking>sniff: user want fix for early logout. fear: point at wrong file or mangle the diff. plan: name the operator, show the one-line patch. act: check the middleware comparison. speak: plain prose plus the patch.</thinking>The authentication middleware checks token expiry with a strict less-than test, so a token is rejected during its final second. Switching to less-than-or-equal-to fixes it:\n\n```diff\n- if token.expires_at < now:\n+ if token.expires_at <= now:\n```",
+
+  "meeting-request-grug-reasoning": "<thinking>sniff: user want a short meeting request. fear: lose the deadline or sound curt. plan: keep deadline, ask for time, cut the padding. act: write it. speak: professional.</thinking>Could we meet next week to review the annual report draft? The submission deadline is 14 March — let me know what time works for you.",
+
+  "methodology-grug-reasoning": "<thinking>sniff: user want a tighter methodology paragraph. fear: drop a number or the instrument name. plan: keep all four figures and both author names, cut the throat-clearers. act: rewrite sentence by sentence. speak: professional prose.</thinking>Method: 1,240 survey responses were collected over six months; 1,087 remained after cleaning (87.7% retention). The instrument was adapted from Santoso and Wijaya and showed a Cronbach's alpha of 0.89. Informed consent was obtained from all participants.",
+
+  "status-update-grug-reasoning": "<thinking>sniff: user want a status note. fear: bury the risk, or lose the coverage figure. plan: three lines — done, in progress, risk. act: write it. speak: professional.</thinking>Q1 status: the API is complete at 95% test coverage. Frontend work continues, estimated ready Friday. Spend is under forecast. Risk: vendor delay; mitigation is a backup supplier."
+}

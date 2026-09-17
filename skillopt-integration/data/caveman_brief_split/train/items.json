@@ -1,0 +1,582 @@
+[
+  {
+    "id": "auth-bug-caveman",
+    "task_type": "agent_reply",
+    "register": "caveman",
+    "language": "en",
+    "source": "There is a bug that is located in the authentication middleware. The check that is performed on the token expiry is currently using a strict less-than comparison operator, when in actual fact it really ought to be using a less-than-or-equal-to comparison instead. The fix for this is shown below.",
+    "instruction": "My JWT refresh logs users out one second early. What is wrong?",
+    "must_keep": [
+      "authentication middleware",
+      "token expiry"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "- if token.expires_at < now:\n+ if token.expires_at <= now:\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "connection-pooling-caveman",
+    "task_type": "agent_reply",
+    "register": "caveman",
+    "language": "en",
+    "source": "Connection pooling is a technique whereby the system reuses connections that are already open, instead of creating a brand new connection for each and every individual request that comes in. The main reason why this is done is that it avoids the overhead that is associated with repeating the handshake process over and over again.",
+    "instruction": "Explain database connection pooling.",
+    "must_keep": [],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "docx-script-caveman",
+    "task_type": "code_assist",
+    "register": "caveman",
+    "language": "en",
+    "source": "I was wondering if you could possibly help me out with a small task that I have been struggling with for quite some time now. What I am essentially trying to achieve here is to be able to generate a DOCX file that contains a heading followed by a paragraph of text, and I have been given to understand that the python-docx library would probably be the most appropriate tool for this particular purpose. The heading needs to say 'Laporan Tahunan' and the paragraph needs to say 'Ringkasan eksekutif'.",
+    "instruction": "Explain briefly how to generate the report file, then give the script.",
+    "must_keep": [
+      "python-docx",
+      "Laporan Tahunan",
+      "Ringkasan eksekutif"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "from docx import Document\n\ndoc = Document()\ndoc.add_heading(\"Laporan Tahunan\", level=1)\ndoc.add_paragraph(\"Ringkasan eksekutif\")\ndoc.save(\"laporan.docx\")\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "docx-script-unified",
+    "task_type": "code_assist",
+    "register": "unified",
+    "language": "en",
+    "source": "I was wondering if you could possibly help me out with a small task that I have been struggling with for quite some time now. What I am essentially trying to achieve here is to be able to generate a DOCX file that contains a heading followed by a paragraph of text, and I have been given to understand that the python-docx library would probably be the most appropriate tool for this particular purpose. The heading needs to say 'Laporan Tahunan' and the paragraph needs to say 'Ringkasan eksekutif'.",
+    "instruction": "Explain briefly how to generate the report file, then give the script.",
+    "must_keep": [
+      "python-docx",
+      "Laporan Tahunan",
+      "Ringkasan eksekutif"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "from docx import Document\n\ndoc = Document()\ndoc.add_heading(\"Laporan Tahunan\", level=1)\ndoc.add_paragraph(\"Ringkasan eksekutif\")\ndoc.save(\"laporan.docx\")\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "exec-summary-id-be-brief",
+    "task_type": "office_email",
+    "register": "be_brief",
+    "language": "id",
+    "source": "Sebagai kesimpulan, dapat disimpulkan bahwa kinerja unit layanan pelanggan selama kuartal ini menunjukkan peningkatan yang cukup signifikan apabila dibandingkan dengan kuartal sebelumnya. Waktu respons rata-rata berhasil diturunkan dari 48 jam menjadi 12 jam, dan tingkat kepuasan pelanggan mengalami kenaikan sebesar 14%. Meskipun demikian, masih terdapat beberapa area yang memerlukan perhatian lebih lanjut, terutama yang berkaitan dengan proses eskalasi tiket.",
+    "instruction": "Buat ringkasan eksekutif yang padat dari teks ini.",
+    "must_keep": [],
+    "must_keep_numbers": [
+      48,
+      12,
+      14
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "exec-summary-id-unified",
+    "task_type": "office_email",
+    "register": "unified",
+    "language": "id",
+    "source": "Sebagai kesimpulan, dapat disimpulkan bahwa kinerja unit layanan pelanggan selama kuartal ini menunjukkan peningkatan yang cukup signifikan apabila dibandingkan dengan kuartal sebelumnya. Waktu respons rata-rata berhasil diturunkan dari 48 jam menjadi 12 jam, dan tingkat kepuasan pelanggan mengalami kenaikan sebesar 14%. Meskipun demikian, masih terdapat beberapa area yang memerlukan perhatian lebih lanjut, terutama yang berkaitan dengan proses eskalasi tiket.",
+    "instruction": "Buat ringkasan eksekutif yang padat dari teks ini.",
+    "must_keep": [],
+    "must_keep_numbers": [
+      48,
+      12,
+      14
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "ggplot-script-grug-reasoning",
+    "task_type": "code_assist",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "It is important to note that, when it comes to the visualisation of monthly revenue data, there are a great many different approaches that one could potentially take. However, in my experience, the approach that tends to work the best in the vast majority of cases is to make use of the ggplot2 package, and in particular to utilise a column geometry together with a minimal theme. The colour that we have standardised on across the organisation is #2C7FB8.",
+    "instruction": "Show the shortest working R chart call for monthly revenue.",
+    "must_keep": [
+      "ggplot2",
+      "#2C7FB8"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "library(ggplot2)\n\nggplot(df, aes(x = month, y = revenue)) +\n  geom_col(fill = \"#2C7FB8\") +\n  theme_minimal()\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "ggplot-script-unified",
+    "task_type": "code_assist",
+    "register": "unified",
+    "language": "en",
+    "source": "It is important to note that, when it comes to the visualisation of monthly revenue data, there are a great many different approaches that one could potentially take. However, in my experience, the approach that tends to work the best in the vast majority of cases is to make use of the ggplot2 package, and in particular to utilise a column geometry together with a minimal theme. The colour that we have standardised on across the organisation is #2C7FB8.",
+    "instruction": "Show the shortest working R chart call for monthly revenue.",
+    "must_keep": [
+      "ggplot2",
+      "#2C7FB8"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "library(ggplot2)\n\nggplot(df, aes(x = month, y = revenue)) +\n  geom_col(fill = \"#2C7FB8\") +\n  theme_minimal()\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "intervention-be-brief",
+    "task_type": "academic_prose",
+    "register": "be_brief",
+    "language": "en",
+    "source": "The results of the analysis indicate that the intervention was associated with a reduction in systolic blood pressure of approximately 6.4 mmHg, although it should be emphasised that this effect may be attributable, at least in part, to changes in concomitant medication rather than to the intervention itself. Furthermore, it is important to note that the observed difference did not reach conventional levels of statistical significance, with p = 0.07.",
+    "instruction": "Tighten this results paragraph. Keep the clinical hedge.",
+    "must_keep": [
+      "systolic blood pressure"
+    ],
+    "must_keep_numbers": [
+      6.4,
+      0.07
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "may"
+    ],
+    "code_spans": [],
+    "target_compression": 0.45,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "intervention-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "en",
+    "source": "The results of the analysis indicate that the intervention was associated with a reduction in systolic blood pressure of approximately 6.4 mmHg, although it should be emphasised that this effect may be attributable, at least in part, to changes in concomitant medication rather than to the intervention itself. Furthermore, it is important to note that the observed difference did not reach conventional levels of statistical significance, with p = 0.07.",
+    "instruction": "Tighten this results paragraph. Keep the clinical hedge.",
+    "must_keep": [
+      "systolic blood pressure"
+    ],
+    "must_keep_numbers": [
+      6.4,
+      0.07
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "may"
+    ],
+    "code_spans": [],
+    "target_compression": 0.45,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "keterbatasan-be-brief",
+    "task_type": "academic_prose",
+    "register": "be_brief",
+    "language": "id",
+    "source": "Perlu diketahui bahwa penelitian ini memiliki beberapa keterbatasan yang perlu dipertimbangkan. Pertama-tama, ukuran sampel tergolong kecil, yaitu sebanyak 150 partisipan, dan selain itu seluruh partisipan direkrut dari satu wilayah geografis, yaitu Surabaya. Di samping itu, desain penelitian bersifat potong lintang, sehingga tidak dimungkinkan untuk menarik kesimpulan mengenai hubungan sebab-akibat. Oleh karena itu, temuan mungkin tidak dapat digeneralisasi ke populasi lain.",
+    "instruction": "Ringkas bagian keterbatasan ini tanpa kehilangan data.",
+    "must_keep": [
+      "Surabaya",
+      "potong lintang"
+    ],
+    "must_keep_numbers": [
+      150
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "mungkin"
+    ],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "keterbatasan-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "id",
+    "source": "Perlu diketahui bahwa penelitian ini memiliki beberapa keterbatasan yang perlu dipertimbangkan. Pertama-tama, ukuran sampel tergolong kecil, yaitu sebanyak 150 partisipan, dan selain itu seluruh partisipan direkrut dari satu wilayah geografis, yaitu Surabaya. Di samping itu, desain penelitian bersifat potong lintang, sehingga tidak dimungkinkan untuk menarik kesimpulan mengenai hubungan sebab-akibat. Oleh karena itu, temuan mungkin tidak dapat digeneralisasi ke populasi lain.",
+    "instruction": "Ringkas bagian keterbatasan ini tanpa kehilangan data.",
+    "must_keep": [
+      "Surabaya",
+      "potong lintang"
+    ],
+    "must_keep_numbers": [
+      150
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "mungkin"
+    ],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "laporan-bulanan-be-brief",
+    "task_type": "office_email",
+    "register": "be_brief",
+    "language": "id",
+    "source": "Dengan ini saya ingin menyampaikan laporan mengenai perkembangan proyek selama bulan berjalan. Perlu dicatat bahwa pekerjaan integrasi API telah selesai dilaksanakan dengan cakupan pengujian sebesar 95%. Sementara itu, untuk bagian antarmuka pengguna, pengerjaan masih berlangsung dan diperkirakan akan selesai pada hari Jumat. Dari sisi anggaran, pengeluaran saat ini masih berada di bawah perkiraan. Namun demikian, terdapat satu risiko yang perlu diwaspadai, yaitu keterlambatan dari pihak vendor.",
+    "instruction": "Ringkas laporan bulanan ini menjadi catatan singkat.",
+    "must_keep": [
+      "API"
+    ],
+    "must_keep_numbers": [
+      95
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "laporan-bulanan-grug-reasoning",
+    "task_type": "office_email",
+    "register": "grug_reasoning",
+    "language": "id",
+    "source": "Dengan ini saya ingin menyampaikan laporan mengenai perkembangan proyek selama bulan berjalan. Perlu dicatat bahwa pekerjaan integrasi API telah selesai dilaksanakan dengan cakupan pengujian sebesar 95%. Sementara itu, untuk bagian antarmuka pengguna, pengerjaan masih berlangsung dan diperkirakan akan selesai pada hari Jumat. Dari sisi anggaran, pengeluaran saat ini masih berada di bawah perkiraan. Namun demikian, terdapat satu risiko yang perlu diwaspadai, yaitu keterlambatan dari pihak vendor.",
+    "instruction": "Ringkas laporan bulanan ini menjadi catatan singkat.",
+    "must_keep": [
+      "API"
+    ],
+    "must_keep_numbers": [
+      95
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "laporan-bulanan-unified",
+    "task_type": "office_email",
+    "register": "unified",
+    "language": "id",
+    "source": "Dengan ini saya ingin menyampaikan laporan mengenai perkembangan proyek selama bulan berjalan. Perlu dicatat bahwa pekerjaan integrasi API telah selesai dilaksanakan dengan cakupan pengujian sebesar 95%. Sementara itu, untuk bagian antarmuka pengguna, pengerjaan masih berlangsung dan diperkirakan akan selesai pada hari Jumat. Dari sisi anggaran, pengeluaran saat ini masih berada di bawah perkiraan. Namun demikian, terdapat satu risiko yang perlu diwaspadai, yaitu keterlambatan dari pihak vendor.",
+    "instruction": "Ringkas laporan bulanan ini menjadi catatan singkat.",
+    "must_keep": [
+      "API"
+    ],
+    "must_keep_numbers": [
+      95
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "limitations-grug-reasoning",
+    "task_type": "academic_prose",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "It should be noted that the present study has a number of limitations that need to be taken into consideration when interpreting the results. First of all, the sample size was relatively small, with a total of 150 participants, and furthermore, all of the participants were recruited from a single geographic region, namely Surabaya. In addition to this, the design of the study was cross-sectional in nature, which means that it is not possible to draw any conclusions about causality. The findings may therefore not generalise to other populations.",
+    "instruction": "Rewrite the limitations section more concisely.",
+    "must_keep": [
+      "Surabaya",
+      "cross-sectional"
+    ],
+    "must_keep_numbers": [
+      150
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "may"
+    ],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "limitations-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "en",
+    "source": "It should be noted that the present study has a number of limitations that need to be taken into consideration when interpreting the results. First of all, the sample size was relatively small, with a total of 150 participants, and furthermore, all of the participants were recruited from a single geographic region, namely Surabaya. In addition to this, the design of the study was cross-sectional in nature, which means that it is not possible to draw any conclusions about causality. The findings may therefore not generalise to other populations.",
+    "instruction": "Rewrite the limitations section more concisely.",
+    "must_keep": [
+      "Surabaya",
+      "cross-sectional"
+    ],
+    "must_keep_numbers": [
+      150
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "may"
+    ],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "methodology-be-brief",
+    "task_type": "academic_prose",
+    "register": "be_brief",
+    "language": "en",
+    "source": "The purpose of this section is to describe the methodology that was employed in order to conduct the analysis. A total of 1,240 survey responses were collected over a period of six months, and after the process of data cleaning was completed, 1,087 responses were retained for the final analysis, which represents a retention rate of 87.7%. The instrument that was used was adapted from the work of Santoso and Wijaya, and it demonstrated a Cronbach's alpha of 0.89. It is worth mentioning that informed consent was obtained from each and every participant prior to their participation in the study.",
+    "instruction": "Compress this methodology paragraph without losing any data.",
+    "must_keep": [
+      "Santoso",
+      "Wijaya",
+      "Cronbach"
+    ],
+    "must_keep_numbers": [
+      1240,
+      1087,
+      87.7,
+      0.89
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "methodology-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "en",
+    "source": "The purpose of this section is to describe the methodology that was employed in order to conduct the analysis. A total of 1,240 survey responses were collected over a period of six months, and after the process of data cleaning was completed, 1,087 responses were retained for the final analysis, which represents a retention rate of 87.7%. The instrument that was used was adapted from the work of Santoso and Wijaya, and it demonstrated a Cronbach's alpha of 0.89. It is worth mentioning that informed consent was obtained from each and every participant prior to their participation in the study.",
+    "instruction": "Compress this methodology paragraph without losing any data.",
+    "must_keep": [
+      "Santoso",
+      "Wijaya",
+      "Cronbach"
+    ],
+    "must_keep_numbers": [
+      1240,
+      1087,
+      87.7,
+      0.89
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "metodologi-id-be-brief",
+    "task_type": "academic_prose",
+    "register": "be_brief",
+    "language": "id",
+    "source": "Pada dasarnya, tujuan dari bagian ini adalah untuk menjelaskan metodologi yang digunakan dalam penelitian. Sebanyak 1.240 respons survei berhasil dikumpulkan selama periode enam bulan, dan setelah proses pembersihan data selesai dilakukan, sebanyak 1.087 respons dipertahankan untuk analisis akhir, yang mana hal ini merepresentasikan tingkat retensi sebesar 87,7%. Instrumen yang digunakan diadaptasi dari Santoso dan Wijaya dengan nilai Cronbach's alpha sebesar 0,89.",
+    "instruction": "Padatkan paragraf metodologi ini. Data harus tetap utuh.",
+    "must_keep": [
+      "Santoso",
+      "Wijaya",
+      "Cronbach"
+    ],
+    "must_keep_numbers": [
+      1240,
+      1087,
+      87.7,
+      0.89
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "metodologi-id-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "id",
+    "source": "Pada dasarnya, tujuan dari bagian ini adalah untuk menjelaskan metodologi yang digunakan dalam penelitian. Sebanyak 1.240 respons survei berhasil dikumpulkan selama periode enam bulan, dan setelah proses pembersihan data selesai dilakukan, sebanyak 1.087 respons dipertahankan untuk analisis akhir, yang mana hal ini merepresentasikan tingkat retensi sebesar 87,7%. Instrumen yang digunakan diadaptasi dari Santoso dan Wijaya dengan nilai Cronbach's alpha sebesar 0,89.",
+    "instruction": "Padatkan paragraf metodologi ini. Data harus tetap utuh.",
+    "must_keep": [
+      "Santoso",
+      "Wijaya",
+      "Cronbach"
+    ],
+    "must_keep_numbers": [
+      1240,
+      1087,
+      87.7,
+      0.89
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "react-rerender-caveman",
+    "task_type": "agent_reply",
+    "register": "caveman",
+    "language": "en",
+    "source": "The reason why your React component is re-rendering is likely to be because you are creating a brand new object reference on each and every render cycle. When you pass an inline object as a prop, React's shallow comparison will see it as a different object every single time, and this is what triggers the re-render. What I would recommend that you do in this situation is to use useMemo in order to memoize the object.",
+    "instruction": "Why does my React component re-render every time?",
+    "must_keep": [
+      "useMemo",
+      "React"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.6,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "react-rerender-grug-reasoning",
+    "task_type": "agent_reply",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "The reason why your React component is re-rendering is likely to be because you are creating a brand new object reference on each and every render cycle. When you pass an inline object as a prop, React's shallow comparison will see it as a different object every single time, and this is what triggers the re-render. What I would recommend that you do in this situation is to use useMemo in order to memoize the object.",
+    "instruction": "Why does my React component re-render every time?",
+    "must_keep": [
+      "useMemo",
+      "React"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.6,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "react-rerender-unified",
+    "task_type": "agent_reply",
+    "register": "unified",
+    "language": "en",
+    "source": "The reason why your React component is re-rendering is likely to be because you are creating a brand new object reference on each and every render cycle. When you pass an inline object as a prop, React's shallow comparison will see it as a different object every single time, and this is what triggers the re-render. What I would recommend that you do in this situation is to use useMemo in order to memoize the object.",
+    "instruction": "Why does my React component re-render every time?",
+    "must_keep": [
+      "useMemo",
+      "React"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.6,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "shipments-unified",
+    "task_type": "academic_prose",
+    "register": "unified",
+    "language": "en",
+    "source": "It is important to note that, over the course of the observation period, a significant number of the shipments that were processed experienced delays which could possibly be attributed to a variety of different factors, including but not limited to handover procedures between shifts. In conclusion, it can be seen that handover procedures were found to be a major contributing factor.",
+    "instruction": "Tighten this paragraph for a report.",
+    "must_keep": [
+      "shipments",
+      "delays",
+      "handover procedures"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "status-update-be-brief",
+    "task_type": "office_email",
+    "register": "be_brief",
+    "language": "en",
+    "source": "I just wanted to take a moment to give you a quick update on where we are with the Q1 deliverables. As you may already be aware, the API work has now been completed and it currently has a test coverage of 95%. With regard to the frontend, that is still very much a work in progress, and our current estimate is that it will be ready by Friday. In terms of the budget, we are presently running under forecast. There is one risk that I would like to flag, which is that there has been a delay on the vendor side, and our proposed mitigation for this is to line up a backup supplier.",
+    "instruction": "Rewrite this status update as a tight internal note.",
+    "must_keep": [
+      "Q1",
+      "API"
+    ],
+    "must_keep_numbers": [
+      95
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "status-update-unified",
+    "task_type": "office_email",
+    "register": "unified",
+    "language": "en",
+    "source": "I just wanted to take a moment to give you a quick update on where we are with the Q1 deliverables. As you may already be aware, the API work has now been completed and it currently has a test coverage of 95%. With regard to the frontend, that is still very much a work in progress, and our current estimate is that it will be ready by Friday. In terms of the budget, we are presently running under forecast. There is one risk that I would like to flag, which is that there has been a delay on the vendor side, and our proposed mitigation for this is to line up a backup supplier.",
+    "instruction": "Rewrite this status update as a tight internal note.",
+    "must_keep": [
+      "Q1",
+      "API"
+    ],
+    "must_keep_numbers": [
+      95
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  }
+]

@@ -46,3 +46,10 @@ htmlcov/
 .DS_Store
 Thumbs.db
 ```
+
+# SkillOpt training output
+runs/
+
+# Python packaging (skillopt-integration)
+*.egg-info/
+.pytest_cache/

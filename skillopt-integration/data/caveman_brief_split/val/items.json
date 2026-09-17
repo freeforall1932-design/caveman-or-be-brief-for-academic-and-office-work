@@ -1,0 +1,192 @@
+[
+  {
+    "id": "auth-bug-unified",
+    "task_type": "agent_reply",
+    "register": "unified",
+    "language": "en",
+    "source": "There is a bug that is located in the authentication middleware. The check that is performed on the token expiry is currently using a strict less-than comparison operator, when in actual fact it really ought to be using a less-than-or-equal-to comparison instead. The fix for this is shown below.",
+    "instruction": "My JWT refresh logs users out one second early. What is wrong?",
+    "must_keep": [
+      "authentication middleware",
+      "token expiry"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "- if token.expires_at < now:\n+ if token.expires_at <= now:\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "connection-pooling-grug-reasoning",
+    "task_type": "agent_reply",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "Connection pooling is a technique whereby the system reuses connections that are already open, instead of creating a brand new connection for each and every individual request that comes in. The main reason why this is done is that it avoids the overhead that is associated with repeating the handshake process over and over again.",
+    "instruction": "Explain database connection pooling.",
+    "must_keep": [],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 120,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "docx-script-grug-reasoning",
+    "task_type": "code_assist",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "I was wondering if you could possibly help me out with a small task that I have been struggling with for quite some time now. What I am essentially trying to achieve here is to be able to generate a DOCX file that contains a heading followed by a paragraph of text, and I have been given to understand that the python-docx library would probably be the most appropriate tool for this particular purpose. The heading needs to say 'Laporan Tahunan' and the paragraph needs to say 'Ringkasan eksekutif'.",
+    "instruction": "Explain briefly how to generate the report file, then give the script.",
+    "must_keep": [
+      "python-docx",
+      "Laporan Tahunan",
+      "Ringkasan eksekutif"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [
+      "from docx import Document\n\ndoc = Document()\ndoc.add_heading(\"Laporan Tahunan\", level=1)\ndoc.add_paragraph(\"Ringkasan eksekutif\")\ndoc.save(\"laporan.docx\")\n"
+    ],
+    "target_compression": 0.3,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "exec-summary-id-grug-reasoning",
+    "task_type": "office_email",
+    "register": "grug_reasoning",
+    "language": "id",
+    "source": "Sebagai kesimpulan, dapat disimpulkan bahwa kinerja unit layanan pelanggan selama kuartal ini menunjukkan peningkatan yang cukup signifikan apabila dibandingkan dengan kuartal sebelumnya. Waktu respons rata-rata berhasil diturunkan dari 48 jam menjadi 12 jam, dan tingkat kepuasan pelanggan mengalami kenaikan sebesar 14%. Meskipun demikian, masih terdapat beberapa area yang memerlukan perhatian lebih lanjut, terutama yang berkaitan dengan proses eskalasi tiket.",
+    "instruction": "Buat ringkasan eksekutif yang padat dari teks ini.",
+    "must_keep": [],
+    "must_keep_numbers": [
+      48,
+      12,
+      14
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "intervention-grug-reasoning",
+    "task_type": "academic_prose",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "The results of the analysis indicate that the intervention was associated with a reduction in systolic blood pressure of approximately 6.4 mmHg, although it should be emphasised that this effect may be attributable, at least in part, to changes in concomitant medication rather than to the intervention itself. Furthermore, it is important to note that the observed difference did not reach conventional levels of statistical significance, with p = 0.07.",
+    "instruction": "Tighten this results paragraph. Keep the clinical hedge.",
+    "must_keep": [
+      "systolic blood pressure"
+    ],
+    "must_keep_numbers": [
+      6.4,
+      0.07
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "may"
+    ],
+    "code_spans": [],
+    "target_compression": 0.45,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "keterbatasan-grug-reasoning",
+    "task_type": "academic_prose",
+    "register": "grug_reasoning",
+    "language": "id",
+    "source": "Perlu diketahui bahwa penelitian ini memiliki beberapa keterbatasan yang perlu dipertimbangkan. Pertama-tama, ukuran sampel tergolong kecil, yaitu sebanyak 150 partisipan, dan selain itu seluruh partisipan direkrut dari satu wilayah geografis, yaitu Surabaya. Di samping itu, desain penelitian bersifat potong lintang, sehingga tidak dimungkinkan untuk menarik kesimpulan mengenai hubungan sebab-akibat. Oleh karena itu, temuan mungkin tidak dapat digeneralisasi ke populasi lain.",
+    "instruction": "Ringkas bagian keterbatasan ini tanpa kehilangan data.",
+    "must_keep": [
+      "Surabaya",
+      "potong lintang"
+    ],
+    "must_keep_numbers": [
+      150
+    ],
+    "must_keep_citations": [],
+    "hedges": [
+      "mungkin"
+    ],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "meeting-request-be-brief",
+    "task_type": "office_email",
+    "register": "be_brief",
+    "language": "en",
+    "source": "I hope this message finds you well. I am writing to you today because I was wondering whether you might possibly have some time available at any point during the course of next week in order for us to be able to get together and discuss the draft of the annual report. I think it would probably be a good idea if we could touch base before the submission deadline, which as you know is on the 14th of March. Please do let me know what might work best for you.",
+    "instruction": "Shorten this email. Keep it polite but trim the padding.",
+    "must_keep": [
+      "annual report"
+    ],
+    "must_keep_numbers": [
+      14
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.5,
+    "reasoning_budget_tokens": 160,
+    "max_output_tokens": 400
+  },
+  {
+    "id": "metodologi-id-grug-reasoning",
+    "task_type": "academic_prose",
+    "register": "grug_reasoning",
+    "language": "id",
+    "source": "Pada dasarnya, tujuan dari bagian ini adalah untuk menjelaskan metodologi yang digunakan dalam penelitian. Sebanyak 1.240 respons survei berhasil dikumpulkan selama periode enam bulan, dan setelah proses pembersihan data selesai dilakukan, sebanyak 1.087 respons dipertahankan untuk analisis akhir, yang mana hal ini merepresentasikan tingkat retensi sebesar 87,7%. Instrumen yang digunakan diadaptasi dari Santoso dan Wijaya dengan nilai Cronbach's alpha sebesar 0,89.",
+    "instruction": "Padatkan paragraf metodologi ini. Data harus tetap utuh.",
+    "must_keep": [
+      "Santoso",
+      "Wijaya",
+      "Cronbach"
+    ],
+    "must_keep_numbers": [
+      1240,
+      1087,
+      87.7,
+      0.89
+    ],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  },
+  {
+    "id": "shipments-grug-reasoning",
+    "task_type": "academic_prose",
+    "register": "grug_reasoning",
+    "language": "en",
+    "source": "It is important to note that, over the course of the observation period, a significant number of the shipments that were processed experienced delays which could possibly be attributed to a variety of different factors, including but not limited to handover procedures between shifts. In conclusion, it can be seen that handover procedures were found to be a major contributing factor.",
+    "instruction": "Tighten this paragraph for a report.",
+    "must_keep": [
+      "shipments",
+      "delays",
+      "handover procedures"
+    ],
+    "must_keep_numbers": [],
+    "must_keep_citations": [],
+    "hedges": [],
+    "code_spans": [],
+    "target_compression": 0.55,
+    "reasoning_budget_tokens": 200,
+    "max_output_tokens": 700
+  }
+]

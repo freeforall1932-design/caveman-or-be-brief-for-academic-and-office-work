@@ -1,0 +1,27 @@
+# ──────────────────────────────────────────────────────────────
+# grug — internal reasoning voice (never shown to the user)
+# ──────────────────────────────────────────────────────────────
+# Register: grug_reasoning. Scores the <thinking> trace against the
+# SNIFF → FEAR → PLAN → ACT → SPEAK flow and the internal word
+# budget, AND scores the visible answer against the professional
+# contract (grug voice must never leak).
+#
+#   python -m caveman_skillopt.train --config skillopt-integration/configs/grug.yaml
+
+_base_: _base_/default.yaml
+
+env:
+  name: caveman_brief
+  skill_init: skillopt-integration/caveman_skillopt/envs/caveman_brief/skills/initial_grug.md
+  split_dir: skillopt-integration/data/caveman_brief_split
+  out_root: runs/grug
+  workers: 8
+  max_completion_tokens: 8192
+  register_filter: grug_reasoning
+
+train:
+  num_epochs: 4
+  batch_size: 20
+
+optimizer:
+  learning_rate: 4

@@ -1,0 +1,26 @@
+{
+  "split_mode": "manual_stratified",
+  "split_seed": 42,
+  "split_ratio": "train:val:test = 6:2:2",
+  "counts": {
+    "train": 27,
+    "val": 9,
+    "test": 9
+  },
+  "registers": [
+    "be_brief",
+    "caveman",
+    "grug_reasoning",
+    "unified"
+  ],
+  "task_types": [
+    "academic_prose",
+    "agent_reply",
+    "code_assist",
+    "office_email"
+  ],
+  "languages": [
+    "en",
+    "id"
+  ]
+}

@@ -1,0 +1,25 @@
+# ──────────────────────────────────────────────────────────────
+# be-brief — professional prose compression (academic / office)
+# ──────────────────────────────────────────────────────────────
+# Register: be_brief. Professional prose, full grammar, zero wasted
+# words. English + Indonesian. This is the daily driver of the repo.
+#
+#   python -m caveman_skillopt.train --config skillopt-integration/configs/be-brief.yaml
+
+_base_: _base_/default.yaml
+
+env:
+  name: caveman_brief
+  skill_init: skillopt-integration/caveman_skillopt/envs/caveman_brief/skills/initial.md
+  split_dir: skillopt-integration/data/caveman_brief_split
+  out_root: runs/be_brief
+  workers: 8
+  max_completion_tokens: 4096
+  register_filter: be_brief
+
+train:
+  num_epochs: 4
+  batch_size: 20
+
+optimizer:
+  learning_rate: 4
