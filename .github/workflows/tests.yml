@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   pull_request:
   workflow_dispatch:
+  # Weekly un-pinned run of the SkillOpt integration job, to surface upstream
+  # drift. It is allowed to fail; the pinned run on pull requests is not.
+  schedule:
+    - cron: "0 6 * * 1"
 
 jobs:
   pack-tests:
@@ -65,7 +69,16 @@ jobs:
   skillopt-integration:
     name: SkillOpt integration
     runs-on: ubuntu-latest
-    continue-on-error: true   # needs the SkillOpt package; keep the suite green if upstream is unavailable
+    # Blocking on pull requests and pushes, because the install is pinned and
+    # therefore deterministic. The weekly scheduled run installs the latest
+    # upstream instead and is allowed to fail, so an upstream breaking change
+    # is reported on its own schedule rather than turning unrelated pull
+    # requests red.
+    #
+    # Pinning is what makes blocking safe. An un-pinned blocking job breaks
+    # this repository's CI whenever upstream publishes; an un-pinned
+    # non-blocking job is neither a gate nor reproducible.
+    continue-on-error: ${{ github.event_name == 'schedule' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -76,8 +89,16 @@ jobs:
       - name: Install with SkillOpt
         run: |
           python -m pip install --upgrade pip pytest
-          python -m pip install skillopt
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python -m pip install --upgrade skillopt
+          else
+            python -m pip install skillopt==0.2.0
+          fi
           python -m pip install -e skillopt-integration
+
+      - name: Report resolved versions
+        run: |
+          python -m pip list 2>/dev/null | grep -i -E '^(skillopt|caveman-skillopt) ' || true
 
       - name: Run the full suite
         run: pytest skillopt-integration/tests -q

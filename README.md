@@ -153,10 +153,10 @@ paraphrased:
 
 | Variant | Use |
 |---|---|
-| [`unified`](coding-agents/variants/unified.md) | ★ default — one agent, both chat and documents |
-| [`be-brief-output`](coding-agents/variants/be-brief-output.md) | documents, full grammar |
-| [`caveman-output`](coding-agents/variants/caveman-output.md) | terse developer chat |
-| [`grug-reasoning`](coding-agents/variants/grug-reasoning.md) | reasoning layer, no output rules |
+| [`unified`](coding-agents/variants/unified/SKILL.md) | ★ default — one agent, both chat and documents |
+| [`be-brief-output`](coding-agents/variants/be-brief-output/SKILL.md) | documents, full grammar |
+| [`caveman-output`](coding-agents/variants/caveman-output/SKILL.md) | terse developer chat |
+| [`grug-reasoning`](coding-agents/variants/grug-reasoning/SKILL.md) | reasoning layer, no output rules |
 
 Generated per-agent packs (paste file, `SKILL.md`, or Cursor `.mdc` — whichever
 the agent actually reads):
@@ -227,10 +227,11 @@ python -m caveman_skillopt.score \
 │   ├── references/                  ← EN+ID phrase catalog + official upstream files
 │   ├── examples/                    ← thesis in/out, report fixes
 │   └── docs/                        ← ralph loop, relationship, benchmarks, tests
-├── coding-agents/                   ← agent CLIs (Qwen Code, Claude Code, Codex, …)
+├── coding-agents/                   ← 7 agents (Qwen Chat, Qwen Code, Claude, Codex, …)
 │   ├── philosophy/                  ← grug · caveman · be-brief · conflicts · sources
-│   ├── variants/                    ← 4 rule documents (source of truth)
-│   ├── profiles/                    ← 6 agent profiles + schema
+│   ├── variants/                    ← 4 skill directories (source of truth)
+│   │   └── <variant>/                ← SKILL.md + references/ + examples.md
+│   ├── profiles/                    ← 7 agent profiles + schema
 │   ├── packs/                       ← GENERATED per-agent files + zip
 │   └── compile.py                   ← variants + profiles → packs
 ├── skillopt-integration/            ← SkillOpt training environment
@@ -238,8 +239,16 @@ python -m caveman_skillopt.score \
 │   ├── configs/                     ← one YAML per variant
 │   ├── data/caveman_brief_split/    ← 45 items, 27 / 9 / 9
 │   └── tests/                       ← 39 tests
+├── docs/                            ← session handoff + improvement log
 └── .claude/skills/                  ← auto-loads when this repo is opened in Claude Code
 ```
+
+## Project docs
+
+- [`docs/session-handoff.md`](docs/session-handoff.md) — current state, standing
+  constraints, work list, and gotchas. Read this first when picking the work back up.
+- [`docs/improvement-log.md`](docs/improvement-log.md) — substantive changes and why,
+  newest first.
 
 ## License
 
