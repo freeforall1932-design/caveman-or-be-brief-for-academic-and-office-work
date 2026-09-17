@@ -1,0 +1,27 @@
+# ──────────────────────────────────────────────────────────────
+# caveman — terse output, fragments allowed (official contract)
+# ──────────────────────────────────────────────────────────────
+# Register: caveman. Follows JuliusBrussee/caveman: drop articles,
+# fragments OK, never touch code / commands / exact errors.
+# Trained separately from be-brief because the output registers
+# genuinely conflict.
+#
+#   python -m caveman_skillopt.train --config skillopt-integration/configs/caveman.yaml
+
+_base_: _base_/default.yaml
+
+env:
+  name: caveman_brief
+  skill_init: skillopt-integration/caveman_skillopt/envs/caveman_brief/skills/initial_caveman.md
+  split_dir: skillopt-integration/data/caveman_brief_split
+  out_root: runs/caveman
+  workers: 8
+  max_completion_tokens: 4096
+  register_filter: caveman
+
+train:
+  num_epochs: 4
+  batch_size: 20
+
+optimizer:
+  learning_rate: 4

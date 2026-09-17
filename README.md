@@ -60,6 +60,8 @@ Claude app: upload the `.zip`. Everyone else: paste the matching `.md` from [`ps
 
 **Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** — no skill uploader. Download [`pseudo-skills.zip`](pseudo-skills.zip), extract, copy **one** combo file (start with `caveman-be-brief.md`), paste into custom instructions or at the start of a chat.
 
+**Coding agents (Qwen Code, Claude Code, Codex, Cursor, Copilot, OpenCode)** — different job, different section: [`coding-agents/`](coding-agents/README.md).
+
 Then write as usual, or say `caveman`, `be brief`, or `ringkas`. Stop with `stop caveman` / `stop grug` / `normal mode`.
 
 | You see | You should not see |
@@ -129,6 +131,84 @@ This is a **companion**, not a replacement. [JuliusBrussee/caveman](https://gith
 
 Source: original caveman benchmarks + independent replication (JetBrains, community tests). Full notes: [`caveman-universal/docs/relationship-with-caveman.md`](caveman-universal/docs/relationship-with-caveman.md).
 
+## Coding agents — Qwen Code, Claude Code, Codex, Cursor, Copilot, OpenCode
+
+A separate section for agent CLIs: [`coding-agents/`](coding-agents/README.md).
+
+The three philosophies this repo is built on do **not** fully agree, and a
+coding agent is where that disagreement bites. Caveman says *drop articles,
+fragments OK*. Be-brief says *professional prose, never broken grammar*. Grug
+is a reasoning voice that must never reach the user.
+
+[`coding-agents/philosophy/conflicts.md`](coding-agents/philosophy/conflicts.md)
+states each conflict and resolves it by destination. The one-line answer:
+
+> **grug decides, caveman measures, be-brief writes, and nobody touches the
+> code.**
+
+Four ready variants, taken from the actual upstream sources —
+[grugbrain.dev](https://grugbrain.dev/) and
+[JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — not
+paraphrased:
+
+| Variant | Use |
+|---|---|
+| [`unified`](coding-agents/variants/unified/SKILL.md) | ★ default — one agent, both chat and documents |
+| [`be-brief-output`](coding-agents/variants/be-brief-output/SKILL.md) | documents, full grammar |
+| [`caveman-output`](coding-agents/variants/caveman-output/SKILL.md) | terse developer chat |
+| [`grug-reasoning`](coding-agents/variants/grug-reasoning/SKILL.md) | reasoning layer, no output rules |
+
+Generated per-agent packs (paste file, `SKILL.md`, or Cursor `.mdc` — whichever
+the agent actually reads):
+
+| Agent | Instruction file |
+|---|---|
+| Qwen Code | `QWEN.md` · `.qwen/skills/` |
+| Claude Code | `CLAUDE.md` · `.claude/skills/` |
+| Codex CLI | `AGENTS.md` · `~/.codex/skills/` |
+| Cursor | `.cursor/rules/*.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` · `AGENTS.md` |
+| OpenCode | `AGENTS.md` |
+
+Load **one** output register at a time. `grug-reasoning` is the exception — it
+has no output rules, so it composes with either.
+
+## Train the skills, don't hand-tune them
+
+[`skillopt-integration/`](skillopt-integration/README.md) connects this repo to
+[**SkillOpt**](https://github.com/microsoft/SkillOpt) (via
+[`freeforall1932-design/SkillOpt-fork`](https://github.com/freeforall1932-design/SkillOpt-fork)),
+which treats the skill document as the trainable state of a frozen model and
+optimises it behind a held-out validation gate. The output is a
+`best_skill.md` that costs zero extra inference-time calls.
+
+```bash
+pip install skillopt && pip install -e skillopt-integration
+
+python -m caveman_skillopt.train --config skillopt-integration/configs/be-brief.yaml
+# or: caveman.yaml · grug.yaml · coding-agent.yaml
+```
+
+The reward function encodes the philosophy — fact and hedge retention,
+byte-exact code, compression achieved, register fidelity — and gates out the
+degenerate "copy the input verbatim" solution. It scores **per register**, so
+the four variants can be trained separately instead of averaged into mush.
+
+Reference vs naive baseline on the held-out test split:
+
+| Baseline | Mean reward | Hard pass |
+|---|---|---|
+| hand-written reference | 0.978 | 100% |
+| source echoed back | 0.638 | 0% |
+
+Score any outputs without spending tokens:
+
+```bash
+python -m caveman_skillopt.score \
+    --split-dir skillopt-integration/data/caveman_brief_split \
+    --split test --predictions my_outputs.json
+```
+
 ## Repository map
 
 ```
@@ -147,8 +227,28 @@ Source: original caveman benchmarks + independent replication (JetBrains, commun
 │   ├── references/                  ← EN+ID phrase catalog + official upstream files
 │   ├── examples/                    ← thesis in/out, report fixes
 │   └── docs/                        ← ralph loop, relationship, benchmarks, tests
+├── coding-agents/                   ← 7 agents (Qwen Chat, Qwen Code, Claude, Codex, …)
+│   ├── philosophy/                  ← grug · caveman · be-brief · conflicts · sources
+│   ├── variants/                    ← 4 skill directories (source of truth)
+│   │   └── <variant>/                ← SKILL.md + references/ + examples.md
+│   ├── profiles/                    ← 7 agent profiles + schema
+│   ├── packs/                       ← GENERATED per-agent files + zip
+│   └── compile.py                   ← variants + profiles → packs
+├── skillopt-integration/            ← SkillOpt training environment
+│   ├── caveman_skillopt/            ← adapter · dataloader · rollout · evaluator
+│   ├── configs/                     ← one YAML per variant
+│   ├── data/caveman_brief_split/    ← 45 items, 27 / 9 / 9
+│   └── tests/                       ← 39 tests
+├── docs/                            ← session handoff + improvement log
 └── .claude/skills/                  ← auto-loads when this repo is opened in Claude Code
 ```
+
+## Project docs
+
+- [`docs/session-handoff.md`](docs/session-handoff.md) — current state, standing
+  constraints, work list, and gotchas. Read this first when picking the work back up.
+- [`docs/improvement-log.md`](docs/improvement-log.md) — substantive changes and why,
+  newest first.
 
 ## License
 

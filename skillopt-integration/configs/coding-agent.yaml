@@ -1,0 +1,37 @@
+# ──────────────────────────────────────────────────────────────
+# coding-agent — unified variant for coding agents
+# ──────────────────────────────────────────────────────────────
+# Register: unified. Grug reasons internally, prose answers, code /
+# commands / paths / error strings stay byte-exact. This is the
+# variant shipped to Qwen Code, Claude Code, Codex, Cursor,
+# Copilot and OpenCode.
+#
+# The default target backend here is qwen_chat because that is the
+# agent this section was built for; switch target_backend (and
+# model.target) to train for any other agent.
+#
+#   python -m caveman_skillopt.train --config skillopt-integration/configs/coding-agent.yaml
+
+_base_: _base_/default.yaml
+
+model:
+  optimizer_backend: openai_chat
+  target_backend: qwen_chat
+  target: qwen-plus
+  reasoning_effort: medium
+
+env:
+  name: caveman_brief
+  skill_init: skillopt-integration/caveman_skillopt/envs/caveman_brief/skills/initial_coding_agent.md
+  split_dir: skillopt-integration/data/caveman_brief_split
+  out_root: runs/coding_agent
+  workers: 8
+  max_completion_tokens: 4096
+  register_filter: unified
+
+train:
+  num_epochs: 4
+  batch_size: 20
+
+optimizer:
+  learning_rate: 4

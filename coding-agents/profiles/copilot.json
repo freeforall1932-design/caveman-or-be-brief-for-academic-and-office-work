@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "id": "copilot",
+  "display_name": "GitHub Copilot",
+  "vendor": "GitHub / Microsoft",
+  "homepage": "https://docs.github.com/en/copilot",
+  "binary_names": [
+    "copilot",
+    "gh"
+  ],
+  "install": "https://docs.github.com/en/copilot/get-started",
+  "wire_protocol": "openai-chat",
+  "instruction": {
+    "method": "file",
+    "format": "markdown",
+    "frontmatter": false,
+    "global_paths": [],
+    "project_paths": [
+      ".github/copilot-instructions.md",
+      ".github/instructions/*.instructions.md",
+      "AGENTS.md"
+    ],
+    "notes": ".github/copilot-instructions.md is the repo-wide surface. Scoped instructions live in .github/instructions/*.instructions.md with YAML frontmatter (applyTo for path globs, excludeAgent to hide a file from code-review or coding-agent). The Copilot coding agent additionally reads AGENTS.md, CLAUDE.md and GEMINI.md, including nested AGENTS.md files for subdirectories."
+  },
+  "skills": null,
+  "recommended_variant": "unified",
+  "quirks": [
+    "applyTo uses glob patterns; without excludeAgent, a file is used by all agents. Set excludeAgent: \"code-review\" to keep a writing-style rule out of review passes.",
+    "AGENTS.md is the portable option here and is read by Copilot, Codex, Cursor and OpenCode \u2014 one file, four agents."
+  ],
+  "verification": {
+    "tested_agent_version": "unverified",
+    "last_verified_at": "2026-09-17",
+    "verified_by": "documentation review of GitHub changelog entries for copilot-instructions.md, .github/instructions/*.instructions.md (applyTo, excludeAgent), and AGENTS.md support in the coding agent.",
+    "source": "https://github.blog/changelog/2025-08-28-copilot-coding-agent-now-supports-agents-md-custom-instructions/"
+  },
+  "maintainer": null
+}

@@ -1,0 +1,68 @@
+# ──────────────────────────────────────────────────────────────
+# caveman_brief base configuration
+# ──────────────────────────────────────────────────────────────
+# A trimmed copy of SkillOpt's own configs/_base_/default.yaml.
+#
+# The SkillOpt PyPI wheel does not ship its configs/ directory, and
+# `_base_` paths are resolved relative to the config file, so this
+# repository carries the subset of defaults the caveman_brief
+# environment actually reads. Anything omitted falls back to the
+# trainer's own default.
+#
+# Full upstream defaults:
+#   https://github.com/microsoft/SkillOpt/blob/main/configs/_base_/default.yaml
+# Fork used by this repo:
+#   https://github.com/freeforall1932-design/SkillOpt-fork
+
+model:
+  backend: openai_chat
+  optimizer: gpt-4.1
+  target: gpt-4.1
+  optimizer_backend: openai_chat     # openai_chat | claude_chat | qwen_chat | minimax_chat
+  target_backend: openai_chat        # chat backends plus codex_exec / claude_code_exec / cursor_exec
+  reasoning_effort: medium
+
+train:
+  num_epochs: 4
+  train_size: 0
+  batch_size: 40
+  accumulation: 1
+  seed: 42
+
+gradient:
+  minibatch_size: 8
+  merge_batch_size: 8
+  analyst_workers: 8
+  failure_only: false
+
+optimizer:
+  learning_rate: 4          # max edits per step (the textual learning rate)
+  min_learning_rate: 2
+  lr_scheduler: cosine      # constant | linear | cosine | autonomous
+  lr_control_mode: fixed
+  skill_update_mode: patch  # patch | rewrite_from_suggestions | full_rewrite_minibatch
+  use_slow_update: true
+  slow_update_samples: 20
+  use_meta_skill: true
+
+evaluation:
+  use_gate: true            # validation gating — never accept a skill that got worse
+  sel_env_num: 0
+  test_env_num: 0
+  eval_test: true
+  gate_metric: hard         # hard = contract kept; soft = shaped reward
+
+env:
+  name: caveman_brief
+  skill_init: ""
+  split_mode: split_dir
+  split_seed: 42
+  split_dir: ""
+  data_path: ""
+  split_output_dir: ""
+  exec_timeout: 120
+  out_root: ""
+  workers: 8
+  limit: 0
+  max_completion_tokens: 4096
+  register_filter: ""       # "" = all registers; or be_brief | caveman | unified | grug_reasoning

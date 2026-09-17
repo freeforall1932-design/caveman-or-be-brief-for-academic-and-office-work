@@ -1,0 +1,45 @@
+{
+  "schema_version": "1",
+  "id": "codex",
+  "display_name": "OpenAI Codex CLI",
+  "vendor": "OpenAI",
+  "homepage": "https://developers.openai.com/codex",
+  "binary_names": [
+    "codex"
+  ],
+  "install": "npm i -g @openai/codex",
+  "wire_protocol": "openai-responses",
+  "instruction": {
+    "method": "file",
+    "format": "markdown",
+    "frontmatter": false,
+    "global_paths": [
+      "~/.codex/AGENTS.md"
+    ],
+    "project_paths": [
+      "AGENTS.md"
+    ],
+    "notes": "AGENTS.md is read from the project root and, for user-level defaults, from ~/.codex/AGENTS.md."
+  },
+  "skills": {
+    "supported": true,
+    "format": "skill-md",
+    "user_dirs": [
+      "~/.codex/skills"
+    ],
+    "project_dirs": [],
+    "notes": "Codex discovers user-level skills only; there is no project-level skills directory in the Codex convention."
+  },
+  "recommended_variant": "unified",
+  "quirks": [
+    "Codex has no project-level skill directory, so a repo that wants to ship instructions should use AGENTS.md at the root.",
+    "AGENTS.md is the most portable surface in this list \u2014 Copilot, Cursor and OpenCode read it too. Prefer it when you want one file to work everywhere."
+  ],
+  "verification": {
+    "tested_agent_version": "0.153.0",
+    "last_verified_at": "2026-09-17",
+    "verified_by": "documentation review; version pinned from the official caveman profile (agents/profiles/codex.json), verified there by a local pinned-binary probe.",
+    "source": "https://developers.openai.com/codex"
+  },
+  "maintainer": null
+}

@@ -1,0 +1,14 @@
+# SkillOpt integration layer for the caveman / be-brief / grug skill family.
+#
+# Minimal install (scoring + dataset only, no API calls):
+#   pip install -r requirements.txt
+#
+# Full install (actual training):
+#   pip install skillopt
+#   pip install -e .
+
+pyyaml>=6.0
+
+# Training backend — install separately so the reward function and the
+# dataset stay usable in CI without pulling the whole SkillOpt stack.
+# skillopt>=0.2.0
