@@ -441,7 +441,14 @@ def main() -> None:
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(PACKS_DIR.rglob("*")):
             if path.is_file() and path != zip_path:
-                archive.write(path, path.relative_to(PACKS_DIR))
+                info = zipfile.ZipInfo(str(path.relative_to(PACKS_DIR)))
+                # Fixed timestamp so the archive is byte-reproducible. Without
+                # this, every compile run produces a different zip and CI's
+                # "are the generated packs stale?" check fails on noise.
+                info.date_time = (1980, 1, 1, 0, 0, 0)
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 0o644 << 16
+                archive.writestr(info, path.read_bytes())
 
     n_agents = len(profiles)
     n_variants = len([k for k in VARIANT_ORDER if k in variants])
