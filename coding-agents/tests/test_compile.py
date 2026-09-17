@@ -8,6 +8,7 @@ for the agent it targets.
 from __future__ import annotations
 
 import json
+import yaml
 import re
 import subprocess
 import sys
@@ -48,7 +49,7 @@ def test_expected_agents_exist(agent):
 def test_qwen_is_a_first_class_profile():
     """Qwen Code is why this section exists — it must not silently regress."""
     profile = json.loads((ROOT / "profiles" / "qwen.json").read_text(encoding="utf-8"))
-    assert profile["display_name"] == "Qwen Code"
+    assert profile["display_name"].startswith("Qwen Code")
     assert "~/.qwen/QWEN.md" in profile["instruction"]["global_paths"]
     assert "QWEN.md" in profile["instruction"]["project_paths"]
     assert profile["skills"]["supported"] is True
@@ -102,8 +103,12 @@ def test_all_four_variants_load_with_frontmatter():
 
 def test_variant_layers_are_declared():
     variants = compile_mod.load_variants()
-    assert variants["grug-reasoning"].meta["layer"] == "reasoning"
-    assert variants["caveman-output"].meta["layer"] == "output"
+    # Layers carry a parenthetical about which output skill they pair with, so
+    # assert on the leading word rather than the whole string.
+    assert variants["grug-reasoning"].meta["layer"].startswith("reasoning")
+    assert variants["caveman-output"].meta["layer"].startswith("output")
+    assert variants["be-brief-output"].meta["layer"].startswith("output")
+    assert variants["grug-reasoning"].meta["register"] == "grug_reasoning"
     assert variants["be-brief-output"].meta["register"] == "be_brief"
     assert variants["caveman-output"].meta["register"] == "caveman"
 
@@ -167,3 +172,105 @@ def test_zip_is_generated(compiled):
         assert "README.md" in names
         assert "qwen/unified.md" in names
         assert not any(name.endswith(".zip") for name in names)
+
+
+# ── Qwen Chat Agent ──────────────────────────────────────────────────────────
+
+
+def test_qwen_agent_profile_exists_and_is_honest():
+    """The Qwen Chat agent is a distinct product from the Qwen Code CLI.
+
+    It is a hosted agent with an uploadable workspace. Whether it parses
+    SKILL.md frontmatter is unknown, so the profile must say so rather than
+    claim a skill convention it has not earned.
+    """
+    profile = json.loads(
+        (ROOT / "profiles" / "qwen-agent.json").read_text(encoding="utf-8")
+    )
+    assert profile["id"] == "qwen-agent"
+    assert profile["wire_protocol"] == "web-workspace"
+    assert profile["instruction"]["method"] == "upload"
+    assert profile["instruction"]["paste_dir"] == "workspace"
+    assert profile["skills"] is None  # unverified — not claimed as supported
+    assert profile["verification"]["tested_agent_version"] == "unverified"
+
+
+def test_qwen_agent_gets_a_workspace_folder(compiled):
+    """Uploadable files land in workspace/, because there is no config dir."""
+    workspace = compiled / "qwen-agent" / "workspace"
+    assert workspace.is_dir()
+    for key in ("unified", "be-brief-output", "caveman-output", "grug-reasoning"):
+        assert (workspace / f"{key}.md").is_file()
+        # No frontmatter: this route must work as plain text.
+        assert not (workspace / f"{key}.md").read_text(encoding="utf-8").startswith("---\n")
+
+
+def test_no_profile_claims_a_path_it_cannot_name():
+    """A hosted workspace agent must not be forced to invent a config path."""
+    qa = json.loads((ROOT / "profiles" / "qwen-agent.json").read_text(encoding="utf-8"))
+    assert qa["instruction"]["project_paths"] == []
+    assert qa["instruction"]["global_paths"] == []
+
+
+# ── spec conformance: are these real skills, not text files? ─────────────────
+
+
+_NAME_RE = compile_mod.re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+
+
+@pytest.mark.parametrize("skill_dir", sorted(ROOT.joinpath("variants").glob("*")))
+def test_skill_meets_the_agent_skills_spec(skill_dir):
+    """The checklist that separates a real skill from instructional prose."""
+    skill = skill_dir / "SKILL.md"
+    raw = skill.read_text(encoding="utf-8")
+    match = compile_mod._FRONTMATTER_RE.match(raw)
+    assert match, f"{skill_dir.name}: no YAML frontmatter"
+    meta = yaml.safe_load(match.group(1))
+
+    name = meta.get("name", "")
+    assert _NAME_RE.match(name), f"{skill_dir.name}: name {name!r} is not a slug"
+    assert len(name) <= 64
+    assert name == skill_dir.name, f"name {name!r} must match directory {skill_dir.name!r}"
+
+    description = meta.get("description", "")
+    assert 0 < len(description) <= 1024
+    assert not compile_mod.re.match(
+        r"\s*(you|your)\b", description.strip(), compile_mod.re.I
+    ), "description must be third person"
+
+    body_lines = raw[match.end():].strip().splitlines()
+    assert len(body_lines) <= 500, f"{skill_dir.name}: body is {len(body_lines)} lines"
+
+    # Progressive disclosure: support files ship beside SKILL.md, one level deep.
+    refs = skill_dir / "references"
+    if refs.is_dir():
+        assert not list(refs.rglob("*/*.md")), "reference files must be one level deep"
+    assert (skill_dir / "examples.md").is_file()
+
+
+def test_generated_skill_dirs_ship_their_support_files(compiled):
+    """A skill whose references stay behind is just a text file again."""
+    for agent in ("qwen", "claude", "codex"):
+        skills = compiled / agent / "skills"
+        for skill in skills.glob("*/SKILL.md"):
+            assert skill.read_text(encoding="utf-8").startswith("---\n")
+            source = ROOT / "variants" / skill.parent.name
+            for ref in (source / "references").glob("*.md"):
+                assert (skill.parent / "references" / ref.name).is_file(), (
+                    f"{agent}/{skill.parent.name}: missing {ref.name}"
+                )
+            assert (skill.parent / "examples.md").is_file()
+
+
+def test_pasted_files_are_self_contained(compiled):
+    """A pasted file has no filesystem beside it — support content is inlined."""
+    text = (compiled / "qwen-agent" / "workspace" / "be-brief-output.md").read_text(
+        encoding="utf-8"
+    )
+    assert not text.startswith("---\n")
+    assert "## Reference material (inlined)" in text
+    assert "## Worked examples" in text
+    # Cut-list content is present, not merely linked.
+    assert "Indonesian — cut" in text
+    # Links that would break outside the repo are plain text.
+    assert "](../../" not in text

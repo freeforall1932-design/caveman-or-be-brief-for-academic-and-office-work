@@ -1,13 +1,13 @@
 {
   "schema_version": "1",
   "id": "qwen",
-  "display_name": "Qwen Code",
+  "display_name": "Qwen Code (CLI)",
   "vendor": "QwenLM",
   "homepage": "https://github.com/QwenLM/qwen-code",
   "binary_names": [
     "qwen"
   ],
-  "install": "npm i -g @qwen-code/qwen-code",
+  "install": "npm i -g @qwen-code/qwen-code@latest",
   "wire_protocol": "openai-chat",
   "instruction": {
     "method": "file",
@@ -34,13 +34,15 @@
   },
   "recommended_variant": "unified",
   "quirks": [
+    "Qwen Code is the actively maintained CLI (v0.24.0, released 2026-09-16). It is NOT the same product as the Qwen Chat agent \u2014 see profiles/qwen-agent.json.",
     "A structured <thinking> trace is the natural fit here: Qwen models expose reasoning, so the grug variant's internal trace costs little and reads cleanly.",
-    "The official caveman profile disables skill levels (project/user/extension/bundled) when wrapping through its proxy. If you route Qwen Code through a proxy that injects its own system settings, the AGENTS.md/QWEN.md file route is more reliable than the skills directory."
+    "Skills are model-invoked: Qwen Code matches your request against the description field. A vague description means the skill never fires.",
+    "Skill directories are watched during a normal session and refresh automatically; bare mode needs a restart."
   ],
   "verification": {
-    "tested_agent_version": "0.22.3",
+    "tested_agent_version": "0.24.0",
     "last_verified_at": "2026-09-17",
-    "verified_by": "documentation review: Qwen Code settings (context files, context.fileName) and Agent Skills docs; binary version pinned from the official caveman profile (agents/profiles/qwen.json).",
+    "verified_by": "npm registry (@qwen-code/qwen-code dist-tags.latest = 0.24.0, published 2026-09-16) and GitHub releases (v0.24.0, 2026-09-16); instruction-file conventions from the Qwen Code docs.",
     "source": "https://github.com/QwenLM/qwen-code/blob/main/docs/users/configuration/settings.md"
   },
   "maintainer": null

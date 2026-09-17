@@ -25,7 +25,8 @@ from**, because this repo ships prompts, not a runtime.
 | `homepage` | URI | Docs root. |
 | `binary_names` | string[] | Matched against argv basename for auto-detection. |
 | `install` | string | One-line install hint shown when the binary is missing. |
-| `wire_protocol` | enum | `openai-chat` · `anthropic-messages` · `openai-responses` · `gemini-generatecontent` |
+| `wire_protocol` | enum | `openai-chat` · `openai-responses` · `anthropic-messages` · `acp` · `web-workspace` |
+| | | `web-workspace` = a hosted agent with an uploadable workspace and no CLI. It has **no config directory**, so `global_paths`/`project_paths` do not apply and `instruction.paste_dir` is required instead. |
 | `instruction` | object | Where the agent reads instructions — see below. |
 | `verification` | object | What was tested and how — see below. |
 
@@ -44,11 +45,12 @@ from**, because this repo ships prompts, not a runtime.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `method` | `"file"` | How instructions are delivered. Only `file` today. |
+| `method` | enum | `file` (written into the repo or home directory) · `upload` (attached to a hosted agent's workspace, or pasted into a session). |
 | `format` | enum | `markdown` · `mdc` · `skill-md`. Drives how `compile.py` renders frontmatter. |
 | `frontmatter` | bool | Whether the agent **at the paste path** parses YAML frontmatter. |
 | `global_paths` | string[] | User-level instruction files (`~` = home). |
-| `project_paths` | string[] | Repo-level instruction files. |
+| `project_paths` | string[] | Repo-level instruction files. Empty for `web-workspace` agents. |
+| `paste_dir` | string | **Required when `wire_protocol` is `web-workspace`.** Subdirectory of the pack that holds the uploadable files. |
 | `notes` | string | Anything load-bearing about discovery order or config. |
 
 `frontmatter` is deliberately about the **paste path**, not the agent. Qwen
@@ -109,3 +111,37 @@ which records them as local pinned-binary probes. The three marked
 2. Run `python coding-agents/compile.py` — it validates and generates.
 3. Run `pytest coding-agents/tests -q`.
 4. Add a row to the table in [`../README.md`](../README.md).
+
+
+---
+
+## Two Qwen surfaces, two profiles
+
+`qwen.json` and `qwen-agent.json` are different products and are deliberately
+kept apart:
+
+| | `qwen` (Qwen Code) | `qwen-agent` (Qwen Chat Agent) |
+|---|---|---|
+| What it is | Terminal CLI | Agent mode inside Qwen Chat |
+| Config | `QWEN.md`, `~/.qwen/skills/` | none — files are uploaded or pasted |
+| `wire_protocol` | `openai-chat` | `web-workspace` |
+| `instruction.method` | `file` | `upload` |
+| Skills | verified (`supported: true`) | **unknown** (`skills: null`) |
+| Safe route | either | plain `.md`, no frontmatter |
+
+### On Qwen Code being "abandoned"
+
+It is not, as of the last check on **2026-09-17**:
+
+- npm `@qwen-code/qwen-code` `dist-tags.latest` = **0.24.0**, published 2026-09-16
+- GitHub release **v0.24.0**, published 2026-09-16
+- Repository `QwenLM/qwen-code` last pushed **2026-09-17**, ~27.9k stars, not archived
+
+The profile previously pinned `0.22.3`, a version inherited from the official
+caveman profile registry; that is now corrected to `0.24.0`. Note that the npm
+package name is `@qwen-code/qwen-code` — a package named `qwen-coder` does not
+exist on the registry.
+
+This does not make `qwen-agent` any less valid. The Qwen Chat agent is a real,
+separate surface with genuinely unknown instruction-file conventions, and it is
+the reason the plain-text fallback must stay.

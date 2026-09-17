@@ -1,4 +1,4 @@
-# Qwen Code — install
+# Qwen Code (CLI) — install
 
 Vendor: QwenLM · <https://github.com/QwenLM/qwen-code>
 
@@ -11,7 +11,7 @@ Vendor: QwenLM · <https://github.com/QwenLM/qwen-code>
 | Caveman — terse register for developer chat | [`caveman-output.md`](caveman-output.md) | Official caveman register. Fragments OK, code never touched. |
 | Grug — internal reasoning layer (no output rules) | [`grug-reasoning.md`](grug-reasoning.md) | Pair with an output variant — this one governs decisions only. |
 
-★ = recommended default for Qwen Code.
+★ = recommended default for Qwen Code (CLI).
 
 **Load one output register at a time.** `be-brief-output` and
 `caveman-output` contradict each other on grammar; loading both gives you
@@ -21,7 +21,7 @@ rules, so it composes with either one.
 
 ## Install
 
-Install the agent: `npm i -g @qwen-code/qwen-code`
+Install the agent: `npm i -g @qwen-code/qwen-code@latest`
 
 ### Option A — paste into the instruction file
 
@@ -49,12 +49,14 @@ Generated, frontmatter-complete skill files: [`skills/`](skills/).
 
 ## Quirks
 
+- Qwen Code is the actively maintained CLI (v0.24.0, released 2026-09-16). It is NOT the same product as the Qwen Chat agent — see profiles/qwen-agent.json.
 - A structured <thinking> trace is the natural fit here: Qwen models expose reasoning, so the grug variant's internal trace costs little and reads cleanly.
-- The official caveman profile disables skill levels (project/user/extension/bundled) when wrapping through its proxy. If you route Qwen Code through a proxy that injects its own system settings, the AGENTS.md/QWEN.md file route is more reliable than the skills directory.
+- Skills are model-invoked: Qwen Code matches your request against the description field. A vague description means the skill never fires.
+- Skill directories are watched during a normal session and refresh automatically; bare mode needs a restart.
 
 ## Verification
 
-- Tested agent version: `0.22.3`
+- Tested agent version: `0.24.0`
 - Last verified: 2026-09-17
-- Verified by: documentation review: Qwen Code settings (context files, context.fileName) and Agent Skills docs; binary version pinned from the official caveman profile (agents/profiles/qwen.json).
+- Verified by: npm registry (@qwen-code/qwen-code dist-tags.latest = 0.24.0, published 2026-09-16) and GitHub releases (v0.24.0, 2026-09-16); instruction-file conventions from the Qwen Code docs.
 - Source: <https://github.com/QwenLM/qwen-code/blob/main/docs/users/configuration/settings.md>

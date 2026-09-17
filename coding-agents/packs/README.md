@@ -14,7 +14,8 @@ Sources of truth: [`../variants/`](../variants/) (the four rule documents) and
 | [GitHub Copilot](copilot/README.md) | `.github/copilot-instructions.md, .github/instructions/*.instructions.md` | unified |
 | [Cursor](cursor/README.md) | `.cursor/rules/*.mdc, AGENTS.md` | unified |
 | [OpenCode](opencode/README.md) | `AGENTS.md` | unified |
-| [Qwen Code](qwen/README.md) | `QWEN.md` | unified |
+| [Qwen Chat Agent](qwen-agent/README.md) | `` | unified |
+| [Qwen Code (CLI)](qwen/README.md) | `QWEN.md` | unified |
 
 ## Variants
 

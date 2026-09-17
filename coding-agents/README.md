@@ -2,7 +2,8 @@
 
 The rest of this repository targets **Claude (app/web) and paste-in chat
 models** for academic and office writing. This section targets **coding
-agents** — Qwen Code, Claude Code, Codex, Cursor, Copilot, OpenCode — where
+agents** — Qwen Chat Agent, Qwen Code, Claude Code, Codex, Cursor, Copilot,
+OpenCode — where
 the same three philosophies apply to a different job: reading and writing
 code, not chapters.
 
@@ -26,6 +27,7 @@ resolves each conflict by destination. The short version:
 
 | Agent | Instruction file | Recommended |
 |---|---|---|
+| [Qwen Chat Agent](packs/qwen-agent/README.md) | upload `workspace/*.md` into the workspace, or paste | `unified` |
 | [Qwen Code](packs/qwen/README.md) | `QWEN.md` / `~/.qwen/QWEN.md`, or `.qwen/skills/` | `unified` |
 | [Claude Code](packs/claude/README.md) | `CLAUDE.md`, or `.claude/skills/` | `unified` |
 | [Codex CLI](packs/codex/README.md) | `AGENTS.md` (no project skills dir) | `unified` |
@@ -44,10 +46,10 @@ Sources of truth live in [`variants/`](variants/). Everything in
 
 | Variant | Layer | What it governs | Use when |
 |---|---|---|---|
-| [`unified`](variants/unified.md) | reasoning + output | **Recommended default.** Assigns each philosophy to a layer where it does not collide. | One agent, both jobs — developer chat *and* documents |
-| [`be-brief-output`](variants/be-brief-output.md) | output | Professional prose, full grammar, zero wasted words | Thesis, journal, report, memo, professional email |
-| [`caveman-output`](variants/caveman-output.md) | output | Terse register, fragments OK, code never touched | Chat replies to a developer |
-| [`grug-reasoning`](variants/grug-reasoning.md) | reasoning | **No output rules at all.** How the agent decides. | Pair with either output variant |
+| [`unified`](variants/unified/SKILL.md) | reasoning + output | **Recommended default.** Assigns each philosophy to a layer where it does not collide. | One agent, both jobs — developer chat *and* documents |
+| [`be-brief-output`](variants/be-brief-output/SKILL.md) | output | Professional prose, full grammar, zero wasted words | Thesis, journal, report, memo, professional email |
+| [`caveman-output`](variants/caveman-output/SKILL.md) | output | Terse register, fragments OK, code never touched | Chat replies to a developer |
+| [`grug-reasoning`](variants/grug-reasoning/SKILL.md) | reasoning | **No output rules at all.** How the agent decides. | Pair with either output variant |
 
 ### Load exactly one output register
 
@@ -76,9 +78,23 @@ is exactly why it must never leak into user-facing text.
 
 ---
 
-## Why Qwen Code specifically
+## Why Qwen specifically
 
-Qwen Code is the priority target here, for two reasons.
+There are **two Qwen surfaces** and they are not the same product.
+
+**Qwen Chat Agent** ([`packs/qwen-agent/`](packs/qwen-agent/)) is the agent mode
+inside Qwen Chat, with a workspace you attach files to. It has no config
+directory and no CLI. Whether it parses `SKILL.md` frontmatter is **unknown** —
+no public specification was found — so its pack ships plain `.md` files with no
+frontmatter, which read as ordinary text either way. That is the pseudo-skill
+route, and it is the dependable one.
+
+**Qwen Code** ([`packs/qwen/`](packs/qwen/)) is the terminal CLI, actively
+maintained (v0.24.0 released 2026-09-16). It reads `QWEN.md` and discovers
+`.qwen/skills/<name>/SKILL.md`, so its pack ships both the paste files and real
+skill directories.
+
+Both are priority targets, for two reasons.
 
 First, its instruction surface is a plain Markdown context file
 (`QWEN.md`, configurable via `context.fileName`), plus a genuine skills
@@ -115,12 +131,13 @@ away and you get mush.
 coding-agents/
 ├── README.md              ← you are here
 ├── philosophy/            ← the three upstream philosophies, plus the conflicts
-├── variants/              ← 4 rule documents — SOURCE OF TRUTH
-├── profiles/              ← 6 agent profiles (JSON) + schema.md
+├── variants/              ← 4 skill directories — SOURCE OF TRUTH
+│   └── <variant>/         ← SKILL.md + references/ + examples.md
+├── profiles/              ← 7 agent profiles (JSON) + schema.md
 ├── packs/                 ← GENERATED: per-agent × per-variant files + zip
 │   └── coding-agents.zip
 ├── compile.py             ← variants + profiles → packs
-└── tests/                 ← 24 tests on profiles and generated output
+└── tests/                 ← 33 tests on profiles and generated output
 ```
 
 **Do not hand-edit `packs/`.** Change `variants/` or `profiles/`, then:
@@ -135,7 +152,9 @@ pytest coding-agents/tests -q
 | Output | Format | Why |
 |---|---|---|
 | `packs/<agent>/<variant>.md` | plain Markdown, **frontmatter stripped** | Pasted into a context file, where frontmatter is noise billed on every request |
-| `packs/<agent>/skills/<variant>/SKILL.md` | YAML frontmatter (`name` + `description`) | Claude Code, Qwen Code and Codex require it to discover a skill |
+| `packs/<agent>/skills/<variant>/SKILL.md` | full frontmatter, emitted verbatim | Claude Code, Qwen Code and Codex require it to discover a skill; the optional fields are what make it a skill rather than a text file |
+| `packs/<agent>/skills/<variant>/references/*.md` | plain markdown | progressive disclosure — loaded only when the task needs them |
+| `packs/<agent>/<variant>.md` | no frontmatter | paste route; support material inlined, because a pasted file has no filesystem beside it |
 | `packs/cursor/rules/<variant>.mdc` | `description` + `globs` + `alwaysApply` | Cursor **ignores** a plain `.md` file in `.cursor/rules/` — the `.mdc` extension and frontmatter are load-bearing |
 
 Agents with no verified skill convention (Cursor, Copilot, OpenCode) get the

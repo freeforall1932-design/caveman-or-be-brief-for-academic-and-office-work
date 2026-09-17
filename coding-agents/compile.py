@@ -65,9 +65,23 @@ _FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n?", re.DOTALL)
 
 @dataclass
 class Variant:
+    """A skill: SKILL.md body plus its progressive-disclosure support files."""
     key: str
     body: str
     meta: dict = field(default_factory=dict)
+    references: "dict[str, str]" = field(default_factory=dict)
+    examples: str = ""
+    raw: str = ""  # the SKILL.md exactly as authored — frontmatter included
+
+    @property
+    def is_packaged(self) -> bool:
+        """True when this variant ships as a directory with support files.
+
+        A real skill keeps its reference material in separate files so the
+        agent loads it only when needed. A flat instruction file has nowhere
+        to put them, which is exactly why it stays a pseudo-skill.
+        """
+        return bool(self.references or self.examples)
 
     @property
     def name(self) -> str:
@@ -82,7 +96,7 @@ class Variant:
 
 def load_variants() -> dict[str, Variant]:
     variants: dict[str, Variant] = {}
-    for path in sorted(VARIANTS_DIR.glob("*.md")):
+    for path in sorted(VARIANTS_DIR.glob("*/SKILL.md")):
         raw = path.read_text(encoding="utf-8")
         match = _FRONTMATTER_RE.match(raw)
         meta: dict = {}
@@ -103,7 +117,25 @@ def load_variants() -> dict[str, Variant]:
             folded = re.search(r"^description:\s*>\s*\n((?:\s+\S.*\n?)+)", match.group(1), re.M)
             if folded:
                 meta["description"] = re.sub(r"\s+", " ", folded.group(1)).strip()
-        variants[path.stem] = Variant(key=path.stem, body=body.strip() + "\n", meta=meta)
+        key = path.parent.name
+        skill_dir = path.parent
+        references: dict[str, str] = {}
+        for ref in sorted((skill_dir / "references").glob("*.md")):
+            references[ref.name] = ref.read_text(encoding="utf-8").strip()
+        examples_path = skill_dir / "examples.md"
+        examples = (
+            examples_path.read_text(encoding="utf-8").strip()
+            if examples_path.exists()
+            else ""
+        )
+        variants[key] = Variant(
+            key=key,
+            body=body.strip() + "\n",
+            meta=meta,
+            references=references,
+            examples=examples,
+            raw=raw,
+        )
     return variants
 
 
@@ -113,6 +145,11 @@ REQUIRED_PROFILE_KEYS = (
 )
 REQUIRED_INSTRUCTION_KEYS = ("method", "format", "frontmatter")
 VALID_FORMATS = ("markdown", "mdc", "skill-md")
+# "web-workspace" = a hosted agent with an uploadable workspace and no CLI.
+# There is no config directory to write to, so paths do not apply.
+VALID_WIRE_PROTOCOLS = (
+    "openai-chat", "openai-responses", "anthropic-messages", "acp", "web-workspace"
+)
 
 
 def validate_profile(profile: dict, source: str = "<profile>") -> None:
@@ -140,7 +177,23 @@ def validate_profile(profile: dict, source: str = "<profile>") -> None:
             f"(expected one of {', '.join(VALID_FORMATS)})"
         )
 
-    if not instruction.get("project_paths") and not instruction.get("global_paths"):
+    if profile["wire_protocol"] not in VALID_WIRE_PROTOCOLS:
+        raise ValueError(
+            f"{source}: unknown wire_protocol {profile['wire_protocol']!r} "
+            f"(expected one of {', '.join(VALID_WIRE_PROTOCOLS)})"
+        )
+
+    is_web = profile["wire_protocol"] == "web-workspace"
+    if is_web:
+        # A hosted workspace agent has no config directory. Insisting on a path
+        # here would force the profile to invent one, and the whole point of
+        # these profiles is to never state an unverified path.
+        if not instruction.get("paste_dir"):
+            raise ValueError(
+                f"{source}: web-workspace agent must declare instruction.paste_dir — "
+                "the directory its uploadable files are prepared into"
+            )
+    elif not instruction.get("project_paths") and not instruction.get("global_paths"):
         raise ValueError(f"{source}: instruction declares no install path at all")
 
     verification = profile["verification"]
@@ -204,7 +257,16 @@ def render_agent_readme(profile: dict, variants: dict[str, Variant]) -> str:
     lines.append("")
     lines.append(f"Install the agent: `{profile['install']}`")
     lines.append("")
-    lines.append("### Option A — paste into the instruction file")
+    is_web = profile["wire_protocol"] == "web-workspace"
+    if is_web:
+        # A hosted workspace agent has no instruction file to paste into; the
+        # file itself is uploaded, or its text pasted into the session.
+        lines.append(
+            f"### Option A — upload [`{instruction['paste_dir']}/`]({instruction['paste_dir']}/) "
+            "or paste its text"
+        )
+    else:
+        lines.append("### Option A — paste into the instruction file")
     lines.append("")
     if instruction["global_paths"]:
         lines.append("Global (all projects):")
@@ -216,10 +278,18 @@ def render_agent_readme(profile: dict, variants: dict[str, Variant]) -> str:
         lines.append("")
         lines.append(_paths(instruction["project_paths"]))
         lines.append("")
-    lines.append(
-        "Copy the contents of one variant file from this directory into it — no\n"
-        "frontmatter, ready to paste."
-    )
+    if is_web:
+        lines.append(
+            f"Attach one variant file from [`{instruction['paste_dir']}/`]({instruction['paste_dir']}/) "
+            "to the agent's workspace, or paste its text at the start of a session.\n"
+            "No frontmatter — these read as ordinary text, which is the route that\n"
+            "works whether or not the agent parses skill files."
+        )
+    else:
+        lines.append(
+            "Copy the contents of one variant file from this directory into it — no\n"
+            "frontmatter, ready to paste."
+        )
     lines.append("")
     if instruction.get("notes"):
         lines.append(f"> {instruction['notes']}")
@@ -272,41 +342,75 @@ def render_agent_readme(profile: dict, variants: dict[str, Variant]) -> str:
     return "\n".join(lines)
 
 
+_EXTERNAL_LINK_RE = re.compile(r"\[([^\]]+)\]\((\.\./[^)]+)\)")
+
+
+def _external_links_to_text(text: str) -> str:
+    """Turn links pointing outside the pack into plain paths.
+
+    Inside the repo, `../../philosophy/caveman.md` resolves. Once the file is
+    copied into packs/<agent>/skills/<name>/ it does not, and a broken link is
+    worse than a bare path the reader can find in the same repo.
+    """
+    return _EXTERNAL_LINK_RE.sub(lambda m: f"`{m.group(2)}`", text)
+
+
+def render_flattened(variant: Variant) -> str:
+    """SKILL.md body + inlined support files, as one self-contained document.
+
+    A pasted instruction file has no filesystem beside it, so relative links to
+    references/ would be dead on arrival. The support material is therefore
+    appended inline. This is the pseudo-skill route: the same content, delivered
+    as text an agent will read regardless of whether it parses frontmatter.
+    """
+    body = _external_links_to_text(variant.body).strip()
+    if variant.references or variant.examples:
+        # The source SKILL.md ends with a "Reference material" block that links
+        # to references/ and examples.md. Those links are dead in a pasted file
+        # and the content follows inline, so the pointer block is dropped.
+        body = re.sub(
+            r"\n?## Reference material\n(?:\n|[-*].*\n|.*\n)*?(?=\n## |\Z)",
+            "\n",
+            body,
+        ).strip()
+    parts = [body]
+    if variant.references:
+        parts.append("")
+        parts.append("---")
+        parts.append("")
+        parts.append("## Reference material (inlined)")
+        parts.append("")
+        for name in sorted(variant.references):
+            body = _external_links_to_text(variant.references[name]).strip()
+            # Promote the file's H1 to H2 so the inlined sections nest correctly.
+            body = re.sub(r"^#\s+", "## ", body, count=1)
+            parts.append(body)
+            parts.append("")
+            parts.append("---")
+            parts.append("")
+    if variant.examples:
+        body = _external_links_to_text(variant.examples).strip()
+        body = re.sub(r"^#\s+", "## ", body, count=1)
+        parts.append(body)
+        parts.append("")
+    return "\n".join(parts).rstrip() + "\n"
+
+
 def render_paste_file(variant: Variant, profile: dict) -> str:
     """Plain markdown, frontmatter stripped, ready to paste into a context file."""
-    return variant.body
+    return render_flattened(variant)
 
 
 def render_skill_file(variant: Variant, profile: dict) -> str:
-    """YAML-frontmatter SKILL.md for agents that discover skills."""
-    meta = {
-        "name": variant.name,
-        "description": variant.description or VARIANT_BLURB[variant.key],
-    }
-    extra = {
-        "version": variant.meta.get("version", "1.0"),
-        "layer": variant.meta.get("layer", ""),
-        "register": variant.meta.get("register", ""),
-    }
-    lines = ["---", f"name: {meta['name']}", f"description: >"]
-    # Wrap the description so long descriptions stay readable and valid YAML.
-    words = meta["description"].split()
-    chunk: list[str] = []
-    for word in words:
-        chunk.append(word)
-        if len(" ".join(chunk)) > 76:
-            lines.append("  " + " ".join(chunk))
-            chunk = []
-    if chunk:
-        lines.append("  " + " ".join(chunk))
-    for key, value in extra.items():
-        if value:
-            lines.append(f"{key}: {value}")
-    lines.append("---")
-    lines.append("")
-    lines.append(variant.body.strip())
-    lines.append("")
-    return "\n".join(lines)
+    """The SKILL.md itself, emitted verbatim.
+
+    The source SKILL.md already carries the complete frontmatter — name,
+    description, version, layer, register, triggers, metadata, and for
+    grug-reasoning a disallowed-tools list. Rewriting it here would strip the
+    optional fields that make it a real skill rather than a text file, so the
+    only change is rewriting links that would break once copied.
+    """
+    return _external_links_to_text(variant.raw).strip() + "\n"
 
 
 def _yaml_scalar(value: str) -> str:
@@ -325,7 +429,8 @@ def render_mdc_file(variant: Variant, profile: dict) -> str:
 
     Cursor reads exactly three frontmatter fields and ignores a plain .md
     file in .cursor/rules/, so getting this block right is the difference
-    between a rule that loads and one that silently does nothing.
+    between a rule that loads and one that silently does nothing. Cursor rules
+    are single files, so the support material is inlined.
     """
     description = variant.description or VARIANT_BLURB[variant.key]
     return (
@@ -334,7 +439,7 @@ def render_mdc_file(variant: Variant, profile: dict) -> str:
         "globs: \n"
         "alwaysApply: true\n"
         "---\n\n"
-        + variant.body.strip()
+        + render_flattened(variant).strip()
         + "\n"
     )
 
@@ -405,9 +510,16 @@ def main() -> None:
 
     for profile in profiles:
         agent_dir = PACKS_DIR / profile["id"]
-        (agent_dir / "skills").mkdir(parents=True, exist_ok=True)
+        agent_dir.mkdir(parents=True, exist_ok=True)
         instruction = profile["instruction"]
         skills = profile.get("skills")
+
+        # Hosted workspace agents get a dedicated folder, because their files are
+        # uploaded rather than written into the repo.
+        paste_dir = agent_dir
+        if instruction.get("paste_dir"):
+            paste_dir = agent_dir / instruction["paste_dir"]
+            paste_dir.mkdir(parents=True, exist_ok=True)
 
         (agent_dir / "README.md").write_text(
             render_agent_readme(profile, variants), encoding="utf-8"
@@ -417,15 +529,28 @@ def main() -> None:
             if key not in variants:
                 continue
             variant = variants[key]
-            (agent_dir / f"{key}.md").write_text(
+            (paste_dir / f"{key}.md").write_text(
                 render_paste_file(variant, profile), encoding="utf-8"
             )
             if skills and skills.get("supported"):
                 skill_dir = agent_dir / "skills" / variant.name
-                skill_dir.mkdir(parents=True, exist_ok=True)
+                (skill_dir / "references").mkdir(parents=True, exist_ok=True)
                 (skill_dir / "SKILL.md").write_text(
                     render_skill_file(variant, profile), encoding="utf-8"
                 )
+                # Progressive disclosure: the support files ship beside SKILL.md
+                # so the agent loads them only when the task needs them. This is
+                # what separates a skill from a single instruction document.
+                for name in sorted(variant.references):
+                    (skill_dir / "references" / name).write_text(
+                        _external_links_to_text(variant.references[name]).strip() + "\n",
+                        encoding="utf-8",
+                    )
+                if variant.examples:
+                    (skill_dir / "examples.md").write_text(
+                        _external_links_to_text(variant.examples).strip() + "\n",
+                        encoding="utf-8",
+                    )
             if instruction["format"] == "mdc":
                 rules_dir = agent_dir / "rules"
                 rules_dir.mkdir(parents=True, exist_ok=True)
