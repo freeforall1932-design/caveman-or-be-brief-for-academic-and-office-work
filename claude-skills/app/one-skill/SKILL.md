@@ -228,9 +228,10 @@ marked them `disable-model-invocation`; that policy is kept, so a row here is an
 
 ### Setup order
 
-On a fresh repo run `setup-repo` before `to-spec`, `to-tickets`, `triage` or
-`wayfinder`: it configures the tracker, the labels, and where the glossary and ADRs
-live.
+On a fresh repo run `setup-matt-pocock-skills` before `to-spec`, `to-tickets`,
+`triage` or `wayfinder`: it configures the issue tracker, the triage labels, and
+where `GLOSSARY.md` and the ADRs live. (`setup-repo` is the reference file that
+carries it, not a command.)
 
 ## Provenance
 
