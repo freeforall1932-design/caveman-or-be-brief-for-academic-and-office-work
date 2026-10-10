@@ -30,23 +30,28 @@ jobs:
       - name: Test the merge (fidelity, links, budget, determinism)
         run: pytest one-skill/tests -q
 
-      - name: Fail if the published skill is stale or the build is not reproducible
+      - name: Fail if a published copy is stale
+        # `check` rebuilds from the manifest into a temp dir and diffs the result
+        # against .claude/skills/, claude-skills/app/ and the paste file. It does not
+        # read one-skill/dist/, which is gitignored and so absent here: a gate that
+        # trusts a directory that may not exist is a gate that passes on nothing.
         run: |
           python one-skill/build.py check || {
-            echo "::error::one-skill/dist is out of date, or the build is not reproducible."
+            echo "::error::a published copy of the skill is out of date with one-skill/sources.json."
             echo "::error::Run 'python one-skill/build.py build install' and commit the result."
             exit 1
           }
 
-      - name: Refuse a network dependency in the build
-        # `build` reads only one-skill/upstream/, so a merge can be reproduced and
-        # audited offline. Only `sync` may reach the network, and only when a
-        # maintainer asks for it.
+      - name: Build twice, offline, and prove it settles
+        # `build` reads only one-skill/{sources.json,core,upstream}, so a merge is
+        # reproducible with no network. Only `sync` may reach it, and only when a
+        # maintainer asks. Re-checking after a second build proves the output is a
+        # fixed point rather than something that drifts a little per run.
         run: |
           python one-skill/build.py build >/dev/null
           python one-skill/build.py check >/dev/null
-          git diff --exit-code -- one-skill/dist || {
-            echo "::error::building offline changed one-skill/dist"; exit 1; }
+          python one-skill/build.py build >/dev/null
+          python one-skill/build.py check >/dev/null
 
   skillopt-tests:
     name: SkillOpt reward function
