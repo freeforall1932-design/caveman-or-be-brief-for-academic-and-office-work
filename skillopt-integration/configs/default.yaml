@@ -4,7 +4,7 @@
 # Trains ONE skill document across all four registers. Use this when
 # you want a single artifact. If you would rather keep the three
 # philosophies separate (they do conflict — see
-# coding-agents/philosophy/conflicts.md), use be-brief.yaml,
+# legacy/coding-agents/philosophy/conflicts.md), use be-brief.yaml,
 # caveman.yaml, grug.yaml or coding-agent.yaml instead.
 #
 # Run from the repository root:

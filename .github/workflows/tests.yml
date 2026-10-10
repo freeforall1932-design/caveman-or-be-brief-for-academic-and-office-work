@@ -11,8 +11,11 @@ on:
     - cron: "0 6 * * 1"
 
 jobs:
-  pack-tests:
-    name: Coding-agent packs
+  one-skill:
+    name: One skill (generated bundle)
+    # The bundle in .claude/skills/, claude-skills/app/ and pseudo-skills/ is the
+    # output of one-skill/build.py. This job is what keeps "the repo publishes X"
+    # and "the manifest says Y" from drifting apart.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,20 +25,33 @@ jobs:
           python-version: "3.11"
 
       - name: Install test deps
-        run: python -m pip install --upgrade pip pytest pyyaml
+        run: python -m pip install --upgrade pip pytest
 
-      - name: Compile packs and run tests
-        run: |
-          python coding-agents/compile.py
-          pytest coding-agents/tests -q
+      - name: Test the merge (fidelity, links, budget, determinism)
+        run: pytest one-skill/tests -q
 
-      - name: Fail if generated packs are stale
+      - name: Fail if a published copy is stale
+        # `check` rebuilds from the manifest into a temp dir and diffs the result
+        # against .claude/skills/, claude-skills/app/ and the paste file. It does not
+        # read one-skill/dist/, which is gitignored and so absent here: a gate that
+        # trusts a directory that may not exist is a gate that passes on nothing.
         run: |
-          python coding-agents/compile.py
-          git diff --exit-code -- coding-agents/packs || {
-            echo "::error::coding-agents/packs is out of date. Run 'python coding-agents/compile.py' and commit the result."
+          python one-skill/build.py check || {
+            echo "::error::a published copy of the skill is out of date with one-skill/sources.json."
+            echo "::error::Run 'python one-skill/build.py build install' and commit the result."
             exit 1
           }
+
+      - name: Build twice, offline, and prove it settles
+        # `build` reads only one-skill/{sources.json,core,upstream}, so a merge is
+        # reproducible with no network. Only `sync` may reach it, and only when a
+        # maintainer asks. Re-checking after a second build proves the output is a
+        # fixed point rather than something that drifts a little per run.
+        run: |
+          python one-skill/build.py build >/dev/null
+          python one-skill/build.py check >/dev/null
+          python one-skill/build.py build >/dev/null
+          python one-skill/build.py check >/dev/null
 
   skillopt-tests:
     name: SkillOpt reward function
@@ -102,3 +118,9 @@ jobs:
 
       - name: Run the full suite
         run: pytest skillopt-integration/tests -q
+
+  # `legacy/coding-agents/compile.py` and its tests are not run any more. The
+  # per-agent pack build was frozen when the four variants moved under legacy/:
+  # the one skill replaces them as the published artifact, and a job that guards
+  # frozen history turns every unrelated pull request red for no benefit. The
+  # generator still runs locally if someone wants to rebuild those packs.

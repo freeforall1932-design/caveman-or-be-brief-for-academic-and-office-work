@@ -1,255 +1,250 @@
-# Caveman or Be Brief — for Academic & Office Work
+# one skill — grug · caveman · be-brief · antislop · Pocock
 
-Token-efficient writing for thesis work, journals, reports, and DOCX/PDF review. Professional prose — not cartoon caveman.
+**Everything in this repository, in one skill.** Sixty-nine skills from eight
+sources, merged into a single loadable skill: the always-on rules in `SKILL.md`, the
+depth in eleven reference files read one at a time.
 
-A companion to [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman): **Grug** thinks, **caveman** speaks, optional **Ralph** polishes.
+Token-efficient writing for thesis work, journals, reports and office documents; the
+anti-slop filter for interfaces, product copy and diagrams; a real engineering process
+from idea to merged PR; security-review method that says what it cannot prove; and
+grug's own words from the site they came from. English and Indonesian. Web, app and
+agent — no CLI to run.
 
-English and Indonesian only. Web/app only — no CLI.
+Where a host cannot carry one big skill, three generated **fragments**
+(`one-skill-prose`, `one-skill-code`, `one-skill-design`) ship the same always-on rules
+with fewer reference files. They are a fallback, built from the same manifest.
 
-## Highlights
-
-- Latest caveman method: deletion test, facts and hedges kept, code/LaTeX/citations left untouched
-- Grug reasoning stays internal — you see the tight answer, not the monologue
-- Optional Ralph Wiggum loop for polish (`ralph on`) — off by default
-- Same rules on Claude (upload a ZIP) and everywhere else (paste one `.md`)
+```bash
+python one-skill/build.py all     # rebuild the one skill from its manifest
+```
 
 ## Install
 
-Claude app: upload the `.zip`. Everyone else: paste the matching `.md` from [`pseudo-skills.zip`](pseudo-skills.zip).
+There is one artifact, and it is generated. Upload or copy it; do not edit it.
 
-- ★ [caveman-be-brief.zip](claude-skills/app/zips/caveman-be-brief.zip) / [`.md`](pseudo-skills/caveman-be-brief.md)
-  - recommended daily driver
-- ○ [ralph-wiggum.zip](claude-skills/app/zips/ralph-wiggum.zip) / [`.md`](pseudo-skills/ralph-wiggum.md)
-  - optional polish (OFF until `ralph on`)
-- ○ [caveman-compress.zip](claude-skills/app/zips/caveman-compress.zip) / [`.md`](pseudo-skills/caveman-compress.md)
-  - optional one-shot (shrink input)
-- ○ [caveman-review.zip](claude-skills/app/zips/caveman-review.zip) / [`.md`](pseudo-skills/caveman-review.md)
-  - optional one-shot (line punch-list)
-- △ [caveman.zip](claude-skills/app/zips/caveman.zip) / [`.md`](pseudo-skills/caveman.md) + [grug-reasoning.zip](claude-skills/app/zips/grug-reasoning.zip) / [`.md`](pseudo-skills/grug-reasoning.md)
-  - modular — this pair **or** caveman-be-brief, never both
-- ★ [pseudo-skills.zip](pseudo-skills.zip)
-  - non-Claude only (extract, paste one combo)
-- △ [claude-reasoning-caveman.skill](claude-reasoning-caveman.skill)
-  - single-file Grug — skip if caveman-be-brief or grug-reasoning is already installed
+| Where | What to install |
+|---|---|
+| **Claude app / claude.ai** | [`claude-skills/app/zips/one-skill.zip`](claude-skills/app/zips/one-skill.zip) — Settings → Capabilities → enable *Code execution and file creation*, then Customize → Skills → Upload |
+| **Claude Code** | open this repo ([`.claude/skills/one-skill/`](.claude/skills/one-skill) auto-loads) or `cp -r claude-skills/app/one-skill ~/.claude/skills/` |
+| **Codex / Cursor / Copilot / OpenCode / Qwen Code** | [`claude-skills/app/one-skill/`](claude-skills/app/one-skill) into the agent's skill directory, or its `SKILL.md` into `AGENTS.md` / `CLAUDE.md` / `.cursor/rules/` |
+| **Gemini, ChatGPT, Grok, DeepSeek, Kimi** (no skill uploader) | paste [`pseudo-skills/one-skill.md`](pseudo-skills/one-skill.md), then paste a reference file when a task needs one |
+| **a host that finds one 2.4k-word skill too much** | [`claude-skills/fragments/zips/one-skill-{prose,code,design}.zip`](claude-skills/fragments) — same always-on rules, two to six reference files instead of eleven. Install one *instead* of `one-skill`, never beside it |
 
-### Combo
+Then write as usual, or say `caveman`, `be brief`, or `ringkas`. Stop with
+`stop caveman` / `stop grug` / `normal mode`.
 
-- **A** — `caveman-be-brief`
-  - default
-- **B** — A + `ralph-wiggum`
-  - polish (`ralph on`)
-- **C** — A or B + `caveman-compress` and/or `caveman-review`
-  - long PDF / punch-list
-- **D** — `caveman` + `grug-reasoning`
-  - same as A, two files
-- **E** — D + `ralph-wiggum`
-  - same as B, two files
+## What you see, and what you never see
 
-**Don't**
+| You see | You do not see |
+|---|---|
+| Tight prose in the register the destination owns | the grug internal monologue |
+| Facts, numbers, citations and hedges intact | an invented figure or a stripped *may* |
+| Code, LaTeX and `[@Cite2023]` byte-for-byte identical | "compressed" code that no longer runs |
+| Interfaces with a stated purpose behind each technique | gradient-and-glass defaults, unsourced stats, fake testimonials |
+| A spec → tickets → implement → review → PR path, on request | a process skill run uninvited |
 
-- `caveman-be-brief` + `caveman`
-- `caveman-be-brief` + `grug-reasoning`
-- `caveman-be-brief` + `claude-reasoning-caveman.skill`
-- paste the whole zip
+## The one line
 
-## Quick start
+> **grug decides, caveman measures, be-brief writes, antislop filters, pocock runs
+> the process, and nobody touches the code.**
 
-**Claude app / claude.ai** — Settings → Capabilities → enable *Code execution and file creation*, then Customize → Skills → Upload → [`caveman-be-brief.zip`](claude-skills/app/zips/caveman-be-brief.zip). Free/Pro/Max/Team/Enterprise.
+Those sources were not written for each other, and they contradict each other in
+places. A merge that hides that produces a skill that fails in both directions at
+once, so the conflicts are named and resolved **by destination** — in
+[`one-skill/core/10-precedence.md`](one-skill/core/10-precedence.md). The short
+version:
 
-**Claude Code** — open this repo (skills auto-load from `.claude/skills/`), or `cp -r claude-skills/code/* ~/.claude/skills/`.
+| The output is… | It reads like | Never like |
+|---|---|---|
+| a chat reply to a developer | caveman: terse, fragments allowed | formal |
+| a document a person reads | be-brief: full grammar, zero waste | cartoon caveman |
+| product UI copy | antislop-copywriting | AI tells, unsourced claims |
+| code, paths, errors, LaTeX, citations | untouched | compressed |
+| a persisted artifact (comment, commit, PR body) | normal prose, full length | shorthand a future human decodes |
 
-**Gemini, Qwen, ChatGPT, Grok, DeepSeek, Kimi, Copilot** — no skill uploader. Download [`pseudo-skills.zip`](pseudo-skills.zip), extract, copy **one** combo file (start with `caveman-be-brief.md`), paste into custom instructions or at the start of a chat.
+## What is merged, and how
 
-**Coding agents (Qwen Code, Claude Code, Codex, Cursor, Copilot, OpenCode)** — different job, different section: [`coding-agents/`](coding-agents/README.md).
+`one-skill/sources.json` is the manifest; `one-skill/build.py` is the merge. Every
+upstream body is carried **verbatim** — same as the four variants this repo used to
+publish, taken from [grugbrain.dev](https://grugbrain.dev/) and
+[JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) and not
+paraphrased. What the merge adds is the routing layer.
 
-Then write as usual, or say `caveman`, `be brief`, or `ringkas`. Stop with `stop caveman` / `stop grug` / `normal mode`.
+| Source | Skills | License |
+|---|---|---|
+Every source is vendored from its **origin at the latest commit**, never from a fork —
+including the anti-slop fork's own upstream, which was byte-identical to it.
 
-| You see | You should not see |
-|---------|-------------------|
-| Tight professional prose (full grammar) | Cartoon caveman / broken English |
-| Facts, numbers, citations, hedges kept | Invented figures or stripped “may / suggests” |
-| Code / LaTeX / `[@Cite2023]` unchanged | “Compressed” code that no longer runs |
-| Optional word-count note (`142 → 89`) | Grug internal monologue |
-| Until you say stop | Skills turning off by themselves |
+| Source | Skills merged | License |
+|---|---|---|
+| this repository (`legacy/`: unified, be-brief, caveman, grug, ralph, compress, review, phrase catalog, philosophy) | 12 | Unlicense / MIT |
+| [miqdadbadjuber/anti-slop](https://github.com/miqdadbadjuber/anti-slop) | 6 | MIT |
+| [mattpocock/skills](https://github.com/mattpocock/skills) — engineering, productivity, misc | 31 | MIT |
+| [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) at v3.2.0 — the voice, the six work patterns | 13 | MIT |
+| [bigskysoftware/grugbrain.dev](https://github.com/bigskysoftware/grugbrain.dev) — the grug text in full | 1 | CC BY-SA 4.0 (site) |
+| [usestrix/strix](https://github.com/usestrix/strix) — coverage honesty and triage method | 4 of 9 | Apache-2.0 |
+| [mem0ai/mem0](https://github.com/mem0ai/mem0) — additive-integration discipline | 1 of 6 | Apache-2.0 |
+| [tt-a1i/archify](https://github.com/tt-a1i/archify) — diagram authoring judgement | 1 of 2 | MIT |
 
-**Intensity:** `lite` (emails, journals) · `full` (default, thesis) · `ultra` (summaries). Say `/caveman lite` or “use lite”.
+"Of N" is a count of what was deliberately **not** merged, and every one of those
+skills is listed with its reason inside the skill, in `references/SOURCES.md`: Strix's
+skills drive a Docker-launched scanner, mem0's drive an SDK and an API key, and
+Archify's renderer is 6 MB of Node pipeline. None of it is implementable from a
+markdown file, so none of it is carried as decoration.
 
-**Ralph** (only if `ralph-wiggum` is also installed):
+`mattpocock/skills` also ships `skills/in-progress/` (betas with no docs pages that
+can vanish without warning) and `skills/deprecated/` (empty by policy). Neither is
+merged; `sources.json` says so on the record. `caveman` v3.2.0's nine
+Caveman-Cloud/plugin skills are not merged either, for the same reason: they install
+or talk to a service. There is no upstream repository for *be-brief* — searched
+2026-10-10, only unrelated `antislop-*` sampler repos exist — so its canonical text is
+this repository's own, and the brevity contract that would live in such a repo is
+carried from caveman v3.2.0.
+
+Four escapes let a merged skill stay honest, and all four fail the build when they go
+stale:
+
+- `strip_sections` drops an upstream section that only makes sense for a standalone
+  install (antislop's download wizard, Strix's `strix` command blocks).
+- `keep_sections` is its inverse, for a skill that is mostly a driver for a tool this
+  bundle does not ship: carry the two or three sections that work anyway, drop the
+  rest **by name** instead of paraphrasing them into something the author never wrote.
+- `replace` makes a literal wording edit where upstream would otherwise make this skill
+  lie about its own layout ("run `node bin/archify.mjs`", "see `delivery-contract.md`").
+- `markup` strips page furniture from a source that is really a generated web page —
+  grug's site uses anchor-wrapped headings, and the prose underneath is untouched.
+
+Each one is listed per section in `references/SOURCES.md` inside the skill, next to the
+table of everything that was cast aside and why. `build.py` refuses to emit a bundle
+where a skill upstream has — not merely one that was copied down — is neither merged
+nor excused.
+
+**Adding a fourth repository is a manifest entry and a rebuild**, not a rewrite:
+[`one-skill/README.md`](one-skill/README.md) has the four steps.
 
 ```
-ralph off   → one pass (default, deadlines)
-ralph once  → one extra check
-ralph on    → loop until you say stop / done
-ralph max 3 → cap at 3 passes
+one-skill/
+├── sources.json     ← the manifest: sources, skills, buckets, strips
+├── build.py         ← sync · build · install · all · check
+├── core/            ← the hand-written merge: layers, precedence, always-on, router
+├── upstream/        ← vendored copies, revision-pinned in PROVENANCE.json
+├── dist/skill/      ← ★ the single skill
+└── tests/           ← 24 tests: fidelity, dead links, budget, determinism, staleness
 ```
 
-**One-shots:** `caveman-compress` shrinks a long source *before* another chat. `caveman-review` prints `L15: 🔴 typo: …` only — not a rewrite.
+## Inside the skill
 
-Pairing notes for paste-in models: [`pseudo-skills/README.md`](pseudo-skills/README.md). Platform matrix: [`claude-skills/README.md`](claude-skills/README.md).
+| File | Read it when |
+|---|---|
+| `SKILL.md` | always: nine universal rules, precedence, router, commands |
+| `references/write-prose.md` | thesis, journal, report, memo, email, docs, landing copy |
+| `references/terse-chat.md` | chat, status, diagnosis, log-reading, one-shot compression |
+| `references/think-first.md` | before acting; when a plan needs attacking; `ralph on` |
+| `references/code-craft.md` | module design, tests, debugging, prototypes, comments |
+| `references/ship-workflow.md` | spec → tickets → implement → review → PR → retro |
+| `references/ui-craft.md` | any interface: colour, layout, components, motion |
+| `references/responsive-access.md` | reflow across sizes, contrast, keyboard, focus |
+| `references/setup-repo.md` | first use of the process skills, git guardrails, hooks |
+| `references/teach-and-author.md` | writing a skill or `AGENTS.md`; teaching a concept |
+| `references/origins.md` | you want the argument behind a ruling, in upstream's words |
 
-## Thinner alternatives
+**Intensity:** `lite` (emails, journals) · `full` (default) · `ultra` (summaries).
+**Ralph loop:** `ralph off` (default) · `once` · `on` · `max 3`. **Antislop mode:**
+`antislop during` · `antislop after` (numbered findings, you pick) · `antislop ask`.
 
-Optional copy-paste files in `caveman-universal/custom-instructions/` — lighter than a full skill.
+## Numbers
 
-| Use | File |
-|-----|------|
-| Minimal, zero-overhead | `caveman-adaptive-universal.md` |
-| More explicit rules | `caveman-lite-universal.md` |
-| Community-validated 85-token version | `caveman-micro-universal.md` |
-| Grug philosophy + compression | `caveman-grug-universal.md` |
-| Claude-specific (Windows app, web) | `claude.md` |
-| Qwen-specific (Android, web) | `qwen.md` |
-| Full phrase catalog (EN + ID) | `caveman-universal/references/patterns.md` |
-
-## Method
-
-Latest official caveman method: professional prose with zero wasted words — *not* broken grammar. **Deletion test:** if you delete this, does the reader lose a fact, a number, a name, a decision, or a logical link? No loss → cut. Real loss → keep, exact.
-
-When the model writes code to assemble files (python-docx, R, Pandoc, …), **code blocks stay byte-for-byte exact.** Surrounding prose is compressed. Inline code, paths, LaTeX, and citation keys stay verbatim.
-
-## vs official caveman
-
-This is a **companion**, not a replacement. [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) (v2.1) is a compression engine for tool output, logs, and JSON, plus MCP (`npx caveman-shrink`). Use that for everyday coding. Use this for academic/office writing.
-
-| | Official caveman | This project |
-|--|------------------|--------------|
-| Method | Cut-the-fluff prose | Same deletion test |
-| Languages | Universal | **English + Indonesian only** |
-| Deploy | CLI, MCP, npm, agent SDK | **Web/app only — no CLI** |
-| Reasoning | None | **Grug** (hidden) |
-| Iteration | None | **Ralph** (optional, separate) |
-| Engine | Compresses tool output | Prompt-based only |
-| Code in output | Preserved | **Preserved exactly** |
-| Token claims | 65% flat | **~65% chat/prose, ~8–21% structured tasks** |
+Measured on the four documents this skill is built from, using that corpus; not
+re-measured on the merged bundle. The merged skill changes what is *always loaded*,
+not what the rules cost when a task runs.
 
 | Metric | Value | When |
-|--------|-------|------|
-| Output token savings | ~65% | Chat/prose (thesis, reports, email) |
-| Output token savings | ~8–21% | Structured coding/document tasks |
-| Input token savings | ~46% | After caveman-compress on documents |
-| Data loss | 0% | Verified across all test runs |
+|---|---|---|
+| Output token savings | ~65% | chat and prose (thesis, reports, email) |
+| Output token savings | ~8–21% | structured coding/document tasks |
+| Input token savings | ~46% | after `caveman-compress` on a document |
+| Data loss | 0% | verified across all test runs |
+| Always loaded, per request | 2.4k words | `SKILL.md`, budgeted and enforced by `build.py`; the budget is what forced the prose out of it, not a rounding |
+| On demand | 87k words | eleven reference files, loaded one at a time |
+| Vendored skills | 69 routed, 21 excused | across eight sources, each recorded with a reason |
+| Tests | 48 | fidelity, links, budgets, determinism, published copies, the excuses themselves |
 
-Source: original caveman benchmarks + independent replication (JetBrains, community tests). Full notes: [`caveman-universal/docs/relationship-with-caveman.md`](caveman-universal/docs/relationship-with-caveman.md).
+Source: original caveman benchmarks plus independent replication (JetBrains,
+community tests). Notes: [`legacy/caveman-universal/docs/relationship-with-caveman.md`](legacy/caveman-universal/docs/relationship-with-caveman.md).
 
-## Coding agents — Qwen Code, Claude Code, Codex, Cursor, Copilot, OpenCode
+## Relationship to upstream caveman
 
-A separate section for agent CLIs: [`coding-agents/`](coding-agents/README.md).
+Still a companion, not a replacement.
+[JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) (v2.1) is a
+compression engine for tool output, logs and JSON, plus MCP via `npx caveman-shrink`.
+Use that for everyday coding; use this for writing, design judgment and process.
 
-The three philosophies this repo is built on do **not** fully agree, and a
-coding agent is where that disagreement bites. Caveman says *drop articles,
-fragments OK*. Be-brief says *professional prose, never broken grammar*. Grug
-is a reasoning voice that must never reach the user.
+| | Official caveman | one skill |
+|--|------------------|-----------|
+| Method | cut-the-fluff prose | same deletion test, plus its sources' rules |
+| Languages | universal | **English + Indonesian** |
+| Deploy | CLI, MCP, npm, agent SDK | **one skill folder — no CLI** |
+| Reasoning | none | **grug** (hidden) |
+| Iteration | none | **ralph** (opt-in) |
+| Interface design | out of scope | **antislop** filter + accessibility gate |
+| Engineering process | out of scope | **31 Pocock skills**, as commands |
+| Code in output | preserved | **preserved, byte-exact** |
 
-[`coding-agents/philosophy/conflicts.md`](coding-agents/philosophy/conflicts.md)
-states each conflict and resolves it by destination. The one-line answer:
+## Train it, do not hand-tune it
 
-> **grug decides, caveman measures, be-brief writes, and nobody touches the
-> code.**
-
-Four ready variants, taken from the actual upstream sources —
-[grugbrain.dev](https://grugbrain.dev/) and
-[JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) — not
-paraphrased:
-
-| Variant | Use |
-|---|---|
-| [`unified`](coding-agents/variants/unified/SKILL.md) | ★ default — one agent, both chat and documents |
-| [`be-brief-output`](coding-agents/variants/be-brief-output/SKILL.md) | documents, full grammar |
-| [`caveman-output`](coding-agents/variants/caveman-output/SKILL.md) | terse developer chat |
-| [`grug-reasoning`](coding-agents/variants/grug-reasoning/SKILL.md) | reasoning layer, no output rules |
-
-Generated per-agent packs (paste file, `SKILL.md`, or Cursor `.mdc` — whichever
-the agent actually reads):
-
-| Agent | Instruction file |
-|---|---|
-| Qwen Code | `QWEN.md` · `.qwen/skills/` |
-| Claude Code | `CLAUDE.md` · `.claude/skills/` |
-| Codex CLI | `AGENTS.md` · `~/.codex/skills/` |
-| Cursor | `.cursor/rules/*.mdc` |
-| GitHub Copilot | `.github/copilot-instructions.md` · `AGENTS.md` |
-| OpenCode | `AGENTS.md` |
-
-Load **one** output register at a time. `grug-reasoning` is the exception — it
-has no output rules, so it composes with either.
-
-## Train the skills, don't hand-tune them
-
-[`skillopt-integration/`](skillopt-integration/README.md) connects this repo to
+[`skillopt-integration/`](skillopt-integration/README.md) connects to
 [**SkillOpt**](https://github.com/microsoft/SkillOpt) (via
 [`freeforall1932-design/SkillOpt-fork`](https://github.com/freeforall1932-design/SkillOpt-fork)),
 which treats the skill document as the trainable state of a frozen model and
-optimises it behind a held-out validation gate. The output is a
-`best_skill.md` that costs zero extra inference-time calls.
+optimises it behind a held-out validation gate. Its reward function encodes the
+philosophy — fact and hedge retention, byte-exact code, compression achieved,
+register fidelity — and gates out the degenerate "echo the input" solution.
 
 ```bash
 pip install skillopt && pip install -e skillopt-integration
-
 python -m caveman_skillopt.train --config skillopt-integration/configs/be-brief.yaml
-# or: caveman.yaml · grug.yaml · coding-agent.yaml
 ```
 
-The reward function encodes the philosophy — fact and hedge retention,
-byte-exact code, compression achieved, register fidelity — and gates out the
-degenerate "copy the input verbatim" solution. It scores **per register**, so
-the four variants can be trained separately instead of averaged into mush.
-
-Reference vs naive baseline on the held-out test split:
-
-| Baseline | Mean reward | Hard pass |
-|---|---|---|
-| hand-written reference | 0.978 | 100% |
-| source echoed back | 0.638 | 0% |
-
-Score any outputs without spending tokens:
-
-```bash
-python -m caveman_skillopt.score \
-    --split-dir skillopt-integration/data/caveman_brief_split \
-    --split test --predictions my_outputs.json
-```
+It trains the four register documents under `legacy/`, per register, because
+averaging the registers is how the conflict gets optimised away. A trained
+`best_skill.md` becomes an input to the merge: drop it into
+`one-skill/upstream/local/`, point that skill's `entry` at it, rebuild. Training the
+merged bundle as one document is the obvious next step and is not done yet.
 
 ## Repository map
 
 ```
-├── README.md                        ← you are here
-├── claude-reasoning-caveman.skill   ← Grug engine (single-file skill)
-├── claude-skills/
-│   ├── app/                         ← Claude app/web format (SKILL.md YAML + zips/)
-│   │   └── zips/                    ← 6 ready-to-upload ZIPs
-│   ├── code/                        ← Claude Code format (SKILL.md, YAML frontmatter)
-│   └── README.md                    ← verified install guide for every platform
-├── pseudo-skills.zip                ← bundle for Gemini / Qwen / ChatGPT / Grok / etc.
-├── pseudo-skills/                   ← frontmatter-free .md (same content as the zip)
-├── caveman-universal/               ← the library
-│   ├── custom-instructions/         ← adaptive, lite, micro, grug, claude, qwen
-│   ├── skills/                      ← caveman, caveman-compress, caveman-review
-│   ├── references/                  ← EN+ID phrase catalog + official upstream files
-│   ├── examples/                    ← thesis in/out, report fixes
-│   └── docs/                        ← ralph loop, relationship, benchmarks, tests
-├── coding-agents/                   ← 7 agents (Qwen Chat, Qwen Code, Claude, Codex, …)
-│   ├── philosophy/                  ← grug · caveman · be-brief · conflicts · sources
-│   ├── variants/                    ← 4 skill directories (source of truth)
-│   │   └── <variant>/                ← SKILL.md + references/ + examples.md
-│   ├── profiles/                    ← 7 agent profiles + schema
-│   ├── packs/                       ← GENERATED per-agent files + zip
-│   └── compile.py                   ← variants + profiles → packs
-├── skillopt-integration/            ← SkillOpt training environment
-│   ├── caveman_skillopt/            ← adapter · dataloader · rollout · evaluator
-│   ├── configs/                     ← one YAML per variant
-│   ├── data/caveman_brief_split/    ← 45 items, 27 / 9 / 9
-│   └── tests/                       ← 39 tests
-├── docs/                            ← session handoff + improvement log
-└── .claude/skills/                  ← auto-loads when this repo is opened in Claude Code
+├── .claude/skills/one-skill/   ← auto-loads when this repo is opened in Claude Code
+├── claude-skills/              ← the skill, in app/web format, + the upload ZIP
+│   └── fragments/                  ← three smaller fallbacks, each with its own ZIP
+├── pseudo-skills/one-skill.md  ← paste half, for models with no skill uploader
+├── one-skill/                  ← ★ the merge: manifest, builder, hand-written core, vendored sources
+├── skillopt-integration/       ← SkillOpt training environment (39 tests)
+├── legacy/                     ← the six-skill era: per-variant skills, packs, the universal library
+│   ├── coding-agents/              variants · profiles · packs · compile.py · philosophy
+│   ├── caveman-universal/          custom-instructions · references · examples · docs
+│   ├── claude-skills/              the old app/ and code/ trees, and the old install guide
+│   ├── pseudo-skills/              the old paste files and their pairing notes
+│   └── claude-reasoning-caveman.skill
+├── docs/                       ← session handoff + improvement log
+└── .github/workflows/          ← tests for the merge and for SkillOpt
 ```
+
+`legacy/` is frozen: read it, do not add to it. It stays because
+`skillopt-integration/` trains against those documents and because the reasoning
+behind the registers is written down there.
 
 ## Project docs
 
-- [`docs/session-handoff.md`](docs/session-handoff.md) — current state, standing
-  constraints, work list, and gotchas. Read this first when picking the work back up.
-- [`docs/improvement-log.md`](docs/improvement-log.md) — substantive changes and why,
-  newest first.
+- [`one-skill/README.md`](one-skill/README.md) — how the merge works, how to add a source
+- [`docs/session-handoff.md`](docs/session-handoff.md) — current state, constraints, work list
+- [`docs/improvement-log.md`](docs/improvement-log.md) — substantive changes and why
 
 ## License
 
-Root project: Unlicense (public domain). `caveman-universal/`: MIT. See respective `LICENSE` files.
+Root: Unlicense (public domain). `legacy/caveman-universal/`: MIT. Vendored upstream
+work stays under its own license, named per source in
+`one-skill/upstream/PROVENANCE.json` and inside the skill at
+`references/SOURCES.md`: anti-slop MIT, mattpocock/skills MIT, caveman MIT, the grug
+site CC BY-SA 4.0, Strix and mem0 Apache-2.0, archify MIT. Merged output is therefore
+MIT-encumbered — keep the attribution.

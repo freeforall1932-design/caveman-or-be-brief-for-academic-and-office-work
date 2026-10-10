@@ -1,0 +1,214 @@
+{
+  "anti-slop": {
+    "attribution": "freeforall1932-design/anti-slop-fork",
+    "discovered_upstream": [
+      "antislop",
+      "antislop-code",
+      "antislop-copywriting",
+      "antislop-human",
+      "antislop-layoutmobile",
+      "antislop-ui"
+    ],
+    "files": 7,
+    "license": "MIT",
+    "origin": {
+      "license": "see upstream",
+      "note": "Vendored from the origin, not from freeforall1932-design/anti-slop-fork. Verified 2026-10-10: `diff -rq` of the two `skills/` trees is empty and both carry antislop VERSION 3.2.20, so the fork had no local edits to keep.",
+      "ref": "388cbe3b6c32e2817eba8e2199107a1f8a2f1e1e",
+      "repo": "miqdadbadjuber/anti-slop"
+    },
+    "revision": "388cbe3b6c37d5175b9f460015bb092ef9e34894",
+    "title": "anti-slop \u2014 the design filter (miqdadbadjuber/anti-slop)"
+  },
+  "anti-slop-fork": {
+    "attribution": "freeforall1932-design/anti-slop-fork",
+    "files": 7,
+    "license": "MIT",
+    "origin": {
+      "kind": "github",
+      "ref": "HEAD",
+      "repo": "freeforall1932-design/anti-slop-fork"
+    },
+    "revision": "388cbe3b6c37d5175b9f460015bb092ef9e34894",
+    "title": "anti-slop-fork \u2014 the anti-slop design filter"
+  },
+  "archify": {
+    "attribution": "tt-a1i/archify (based on Cocoon-AI/architecture-diagram-generator)",
+    "discovered_upstream": [
+      "archify",
+      "archify-review"
+    ],
+    "files": 2,
+    "license": "MIT",
+    "origin": {
+      "note": "Latest commit of the origin at sync time (2026-10-10), not the user's fork.",
+      "ref": "54edef4",
+      "repo": "tt-a1i/archify"
+    },
+    "revision": "54edef453ca3fc495f488c30de97eaea0c789f19",
+    "title": "Archify \u2014 diagram authoring discipline (tt-a1i/archify)"
+  },
+  "caveman": {
+    "attribution": "JuliusBrussee/caveman",
+    "discovered_upstream": [
+      "cavecrew",
+      "caveman",
+      "caveman-commit",
+      "caveman-compress",
+      "caveman-discover",
+      "caveman-evidence-review",
+      "caveman-explore",
+      "caveman-help",
+      "caveman-learn",
+      "caveman-manage",
+      "caveman-optimize",
+      "caveman-review",
+      "caveman-setup",
+      "caveman-stats",
+      "investigate-first",
+      "lean-build",
+      "megacave",
+      "migration",
+      "safe-refactor",
+      "surgical-patch",
+      "ultracave",
+      "verify-and-stop"
+    ],
+    "files": 22,
+    "license": "MIT",
+    "origin": {
+      "note": "Synced at the v3.2.0 tag, 2026-10-08. Replaces the repo's own v2.x-era copies. The 'be brief' instruction is this skill's own trigger wording; there is no separate upstream repository for it.",
+      "ref": "2e08b91e0a7d5c8b3ea1b1e0eb1d933f2d0da4c1",
+      "repo": "JuliusBrussee/caveman"
+    },
+    "revision": "2e08b9177c07bb7249a8a2d1a6758e5db281d002",
+    "title": "Caveman \u2014 the token-efficiency voice (upstream v3.2.0)"
+  },
+  "grug": {
+    "attribution": "bigskysoftware/grugbrain.dev",
+    "discovered_upstream": [],
+    "files": 1,
+    "license": "CC BY-SA 4.0 (site)",
+    "origin": {
+      "note": "The canonical grug text, `index.md`, at the site's latest commit (2025-05-05).",
+      "ref": "b1b1ca8",
+      "repo": "bigskysoftware/grugbrain.dev"
+    },
+    "revision": "b1b1ca855ca1242b61bd15109fab10312f5bb9b8",
+    "title": "The Grug Brained Developer (grugbrain.dev)"
+  },
+  "local": {
+    "attribution": "freeforall1932-design/skills-repo",
+    "discovered_upstream": [
+      "be-brief-output",
+      "caveman",
+      "caveman-be-brief",
+      "caveman-compress",
+      "caveman-output",
+      "caveman-review",
+      "claude-reasoning-caveman",
+      "grug-reasoning",
+      "ralph-wiggum",
+      "unified"
+    ],
+    "files": 29,
+    "license": "Unlicense (root) / MIT (caveman-universal)",
+    "origin": {
+      "kind": "local",
+      "license": "unlicensed (own work)",
+      "note": "This repo's own skill set, read from the working tree (origin.kind=local) rather than a clone, because legacy/ only exists on the merged branch. be-brief has no upstream repo: searched GitHub on 2026-10-10 for a 'be brief' skill source and found only unrelated `antislop-*` sampler repos, so its canonical text is this repo's own and the brevity contract that would live elsewhere is carried from caveman v3.2.0 instead.",
+      "ref": "HEAD",
+      "repo": "freeforall1932-design/skills-repo"
+    },
+    "revision": "00a733ea4a4164ae99e8da5fd7c6b1ad4b97844f",
+    "title": "caveman-or-be-brief (this repository)"
+  },
+  "mattpocock-skills": {
+    "attribution": "mattpocock/skills",
+    "discovered_upstream": [
+      "ask-matt",
+      "code-review",
+      "codebase-design",
+      "diagnosing-bugs",
+      "domain-modeling",
+      "git-guardrails-claude-code",
+      "grill-me",
+      "grill-with-docs",
+      "grilling",
+      "handoff",
+      "implement",
+      "implement-spec",
+      "improve-codebase-architecture",
+      "migrate-to-shoehorn",
+      "pr",
+      "prototype",
+      "research",
+      "retro",
+      "scaffold-exercises",
+      "setup-matt-pocock-skills",
+      "setup-pre-commit",
+      "tdd",
+      "teach",
+      "to-questionnaire",
+      "to-spec",
+      "to-tickets",
+      "triage",
+      "wait-what",
+      "wayfinder",
+      "wizard",
+      "writing-for-agents"
+    ],
+    "files": 57,
+    "license": "MIT",
+    "origin": {
+      "kind": "github",
+      "ref": "HEAD",
+      "repo": "mattpocock/skills"
+    },
+    "revision": "49dd158d1076134a641b33efb035946536778336",
+    "title": "mattpocock/skills \u2014 engineering, productivity, misc"
+  },
+  "mem0": {
+    "attribution": "mem0ai/mem0",
+    "discovered_upstream": [
+      "mem0",
+      "mem0-cli",
+      "mem0-integrate",
+      "mem0-oss-to-platform",
+      "mem0-test-integration",
+      "mem0-vercel-ai-sdk"
+    ],
+    "files": 6,
+    "license": "Apache-2.0",
+    "origin": {
+      "note": "Latest commit of the origin at sync time (2026-10-07), not the user's fork.",
+      "ref": "b7ad69a",
+      "repo": "mem0ai/mem0"
+    },
+    "revision": "b7ad69afda6b6ed030347c66d48a13e4de9dec08",
+    "title": "mem0 \u2014 integration discipline (mem0ai/mem0)"
+  },
+  "strix": {
+    "attribution": "usestrix/strix",
+    "discovered_upstream": [
+      "api-security-testing",
+      "application-security-testing",
+      "ci-security-scanning-with-strix",
+      "find-security-vulnerabilities-in-code",
+      "fix-security-vulnerabilities-with-strix",
+      "managed-pentesting-with-strix",
+      "owasp-top-10-testing",
+      "penetration-testing-with-strix",
+      "web-app-penetration-testing"
+    ],
+    "files": 9,
+    "license": "Apache-2.0",
+    "origin": {
+      "note": "Latest commit of the origin at sync time (2026-10-08), not the user's fork.",
+      "ref": "62b4964",
+      "repo": "usestrix/strix"
+    },
+    "revision": "62b496430da5df5e9e79a190e7af6f92529883a3",
+    "title": "Strix \u2014 security testing method (usestrix/strix)"
+  }
+}
