@@ -18,9 +18,16 @@ one-skill/
 │   ├── local/                this repository, from `legacy/`
 │   ├── anti-slop-fork/       freeforall1932-design/anti-slop-fork
 │   └── mattpocock-skills/    mattpocock/skills, engineering + productivity + misc
-├── dist/skill/       ★ the single skill: SKILL.md + 10 references + scripts/
+├── dist/skill/         scratch build output (gitignored `dist/`; not a deliverable)
 └── tests/
 ```
+
+The **published** skill is what the install mirrors hold — `.claude/skills/one-skill/`,
+`claude-skills/app/one-skill/` and the ZIP. `dist/` is scratch: the repository's
+`.gitignore` keeps generated `dist/` out of git, so 1.3 MB is not committed four
+times. `build.py check` therefore compares a fresh build against the *mirrors*, not
+against `dist/` — a gate that walks a directory which may simply be absent reports
+success on an empty tree, which is exactly how this bundle once shipped stale.
 
 ## Commands
 
@@ -110,7 +117,7 @@ revision is recorded in `upstream/PROVENANCE.json`.
 
 `entry` is the body to carry. `docs` are sibling files that ride in the same
 reference section, with links to them retargeted to in-file anchors. `scripts` are
-copied to `dist/skill/scripts/`, and `${CLAUDE_SKILL_DIR}/name.py` style runtime
+copied to `scripts/` in the built skill, and `${CLAUDE_SKILL_DIR}/name.py` style runtime
 paths are rewritten to the carried location.
 
 **4.** `python one-skill/build.py all && python one-skill/build.py check`

@@ -29,7 +29,8 @@ import pytest
 
 ONE_SKILL = Path(__file__).resolve().parents[1]
 REPO = ONE_SKILL.parent
-DIST = ONE_SKILL / "dist" / "skill"
+MIRRORS = [REPO / ".claude" / "skills" / "one-skill",
+           REPO / "claude-skills" / "app" / "one-skill"]
 
 
 def _load_build():
@@ -249,10 +250,18 @@ def test_references_are_indexed(built):
         assert "**Read this when:**" in text
 
 
-def test_commit_is_clean_and_dist_current():
+def test_check_gates_the_published_copies():
     r = subprocess.run([sys.executable, str(ONE_SKILL / "build.py"), "check"],
                        cwd=REPO, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_dist_is_scratch_not_a_second_copy_in_git():
+    """`dist/` is ignored by repository convention. If it were ever committed, this
+    skill would be four copies of 1.3 MB in git, and the extra ones would drift."""
+    r = subprocess.run(["git", "check-ignore", "-q", "one-skill/dist/skill/SKILL.md"],
+                       cwd=REPO, capture_output=True, text=True)
+    assert r.returncode == 0, "one-skill/dist is tracked; either un-commit it or fix the tests"
 
 
 # --------------------------------------------------------------------------- #
@@ -262,38 +271,50 @@ def test_commit_is_clean_and_dist_current():
     REPO / ".claude" / "skills" / "one-skill",
     REPO / "claude-skills" / "app" / "one-skill",
 ])
-def test_install_path_matches_dist(target):
+def test_published_mirror_is_what_the_manifest_builds(target, fresh_build):
+    """Compared against a rebuild, not against `one-skill/dist/`: that tree is
+    gitignored, so in CI it is simply absent, and a test that iterates an absent
+    directory passes while proving nothing. That is how a stale bundle once got
+    shipped, so the check goes through the build."""
     assert target.exists(), f"{target} missing — run `python one-skill/build.py install`"
-    for p in sorted(DIST.rglob("*")):
+    for p in sorted(fresh_build.rglob("*")):
         if p.is_file():
-            mirror = target / p.relative_to(DIST)
+            mirror = target / p.relative_to(fresh_build)
             assert mirror.exists() and b.read(mirror) == b.read(p), f"stale: {mirror}"
 
 
-def test_uploaded_zip_matches_dist():
+@pytest.fixture(scope="session")
+def fresh_build():
+    tmp = Path(tempfile.mkdtemp()) / "skill"
+    b.assemble(manifest, tmp)
+    yield tmp
+    shutil.rmtree(tmp.parent, ignore_errors=True)
+
+
+def test_uploaded_zip_contains_every_file_the_build_emits(fresh_build):
     zip_path = REPO / "claude-skills" / "app" / "zips" / "one-skill.zip"
     assert zip_path.exists()
     with zipfile.ZipFile(zip_path) as z:
         names = set(z.namelist())
         assert "one-skill/SKILL.md" in names
-        for p in sorted(DIST.rglob("*")):
+        for p in sorted(fresh_build.rglob("*")):
             if p.is_file():
-                assert f"one-skill/{p.relative_to(DIST)}" in names, p.name
-        skill_md = z.read("one-skill/SKILL.md").decode()
-    assert skill_md == b.read(DIST / "SKILL.md")
+                assert f"one-skill/{p.relative_to(fresh_build)}" in names, p.name
+        for n in names:                       # nothing extra smuggled into the upload
+            assert n.startswith("one-skill/"), n
+        assert b.read(MIRRORS[1] / "SKILL.md") == z.read("one-skill/SKILL.md").decode()
 
 
 def test_paste_file_is_the_router_not_a_monolith():
     """Paste-only models get the router plus a header explaining what is *not*
     pasted. A monolith of everything would defeat the point of the split."""
-    paste = REPO / "pseudo-skills" / "one-skill.md"
-    text = b.read(paste)
+    text = b.read(REPO / "pseudo-skills" / "one-skill.md")
     assert len(text.split()) <= b.ALWAYS_ON_BUDGET + 120, "the paste file grew past the router"
     assert "9 sections" not in text.split("# One Skill")[0]      # no reference bodies inlined + 120
     assert "**Paste-only setup.**" in text
 
 
-def test_no_legacy_skill_is_still_a_publish_path():
+def test_legacy_publish_paths_are_gone():
     """`legacy/` is frozen history: it must not be an install target any more."""
     assert not (REPO / ".claude" / "skills" / "caveman-be-brief").exists()
     assert not (REPO / "claude-skills" / "app" / "zips" / "caveman-be-brief.zip").exists()

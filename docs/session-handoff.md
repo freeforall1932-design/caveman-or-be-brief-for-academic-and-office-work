@@ -12,7 +12,7 @@ frozen under `legacy/`.
 | `one-skill/build.py` | `sync` · `build` · `install` · `all` · `check` |
 | `one-skill/core/` | six hand-written files: the merge's judgement (layers, precedence, always-on, router, commands, provenance) |
 | `one-skill/upstream/` | vendored inputs, revision-pinned in `PROVENANCE.json`. `local/` now reads from `legacy/`. |
-| `one-skill/dist/skill/` | ★ the single skill: `SKILL.md` (2373 words) + 10 references (75k words) + `scripts/` + `BUILD.json` |
+| `one-skill/dist/skill/` | scratch build output — gitignored, so it does not exist in CI. The published skill is the mirrors below. |
 | `.claude/skills/one-skill/`, `claude-skills/app/one-skill/`, `claude-skills/app/zips/one-skill.zip`, `pseudo-skills/one-skill.md` | mirrors written by `install`. Never hand-edit. |
 | `skillopt-integration/` | unchanged: trains the four **register** documents, which are now in `legacy/` |
 | `legacy/` | `coding-agents/` (variants, profiles, packs, `compile.py`, philosophy), `caveman-universal/`, old `claude-skills/` trees + old install guide, old `pseudo-skills/`, `claude-reasoning-caveman.skill` |
@@ -107,7 +107,7 @@ From the user, explicitly. Do not reverse them without asking.
 
 ## Gotchas
 
-- **Everything under `one-skill/dist/` and every install mirror is generated.**
+- **Every install mirror is generated; `one-skill/dist/` is scratch and gitignored.**
   Hand-edits revert on the next build, and `build.py check` plus
   `test_install_path_matches_dist` fail the PR. Change `core/` or `sources.json`.
 - **A skill that tells the agent to fetch files is a defect in a merged skill.**
@@ -127,6 +127,11 @@ From the user, explicitly. Do not reverse them without asking.
   new source wants a rule there, the answer is usually a reference file, or a cut.
 - **Bucket = destination, not origin.** Add a bucket only for a genuinely new kind of
   output; otherwise the router becomes a list of repos.
+- **`build.py check` compares against the mirrors, never `dist/`.** `dist/` is
+  gitignored, so it is absent in CI, and a gate that walks an absent tree passes
+  while proving nothing — that is how a stale bundle got one red run. Both the gate
+  and `test_published_mirror_is_what_the_manifest_builds` rebuild from the manifest,
+  and both were proven to bite by hand-editing a mirror and watching them fail.
 - **`build.py sync` must run from the repo root** (`python3 one-skill/build.py sync`),
   same as the legacy `compile.py` before it.
 - **PEP 668.** System-wide `pip install` fails with `externally-managed-environment`.

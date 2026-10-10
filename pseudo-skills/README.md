@@ -12,14 +12,14 @@ say `caveman`, `be brief`, `ringkas`. Stop with `normal mode`.
 
 ## Why there is no all-in-one paste file
 
-The skill's ten reference files carry 75k words of upstream rule text. Inlining them
+The skill's reference files carry 75k words of upstream rule text. Inlining them
 into one paste document would spend more context than the writing saves, which is the
 whole thing these rules exist to prevent. So paste the router, and paste a reference
 next to it when a task needs one:
 
 | Task | Paste this too |
 |---|---|
-| thesis, report, memo, docs, landing copy | [`../one-skill/dist/skill/references/write-prose.md`](../one-skill/dist/skill/references/write-prose.md) |
+| thesis, report, memo, docs, landing copy | [`write-prose.md`](../claude-skills/app/one-skill/references/write-prose.md) |
 | chat with an agent, logs, quick diagnosis | `references/terse-chat.md` |
 | a plan that needs attacking before building | `references/think-first.md` |
 | code structure, tests, debugging, comments | `references/code-craft.md` |

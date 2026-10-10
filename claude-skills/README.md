@@ -19,9 +19,11 @@ Format requirements, still verified against Anthropic's documentation:
 
 ## Do not hand-edit anything here
 
-`app/one-skill/` is a copy of [`../one-skill/dist/skill/`](../one-skill/dist/skill),
-which `python one-skill/build.py` writes from
-[`../one-skill/sources.json`](../one-skill/sources.json). A hand edit is overwritten
+`app/one-skill/` is the published copy of the build, written by
+`python one-skill/build.py` from
+[`../one-skill/sources.json`](../one-skill/sources.json) and
+[`../one-skill/core/`](../one-skill/core). (The scratch tree it comes from,
+`one-skill/dist/`, is gitignored and does not exist in a fresh checkout.) A hand edit is overwritten
 on the next build, and CI fails the pull request that ships one. To change what the
 skill says, change the manifest or [`one-skill/core/`](../one-skill/core) and rebuild.
 

@@ -9,7 +9,8 @@ dated; newest first.
 [freeforall1932-design/anti-slop-fork](https://github.com/freeforall1932-design/anti-slop-fork)
 (6 skills) and
 [mattpocock/skills](https://github.com/mattpocock/skills) (31 skills: engineering,
-productivity, misc), is merged into a single skill at `one-skill/dist/skill/`, built
+productivity, misc), is merged into a single generated skill — published as
+`.claude/skills/one-skill/`, `claude-skills/app/one-skill/` and the upload ZIP, built
 by `one-skill/build.py` from a `one-skill/sources.json` manifest. 50 upstream skills
 landed in 10 reference files (75k words) behind a 2.4k-word `SKILL.md`. The previous
 skill sets moved to `legacy/`, and `.claude/skills/`, `claude-skills/app/`,
@@ -63,6 +64,14 @@ loads all 75k words would cost more context than the writing saves. Hence the sp
 one always-loaded file, ten on-demand references, and a paste path for models with no
 uploader that ships the router alone. Also hence the decision *not* to build a
 monolith export, and to say so in `pseudo-skills/one-skill.md`.
+
+**One mistake worth recording.** The new CI job failed while every local test passed.
+The repository's `.gitignore` has a global `dist/`, so `one-skill/dist/` was never
+committed, and the tests comparing install mirrors against it iterated a directory
+that did not exist in CI — an empty loop, a green suite, a bundle nobody had verified.
+`check` and the mirror test now rebuild from the manifest and compare against the
+*published* copies, and a test pins the convention so the two cannot drift apart
+again. `dist/` stays out of git: the skill would otherwise be four copies of 1.3 MB.
 
 **Follow-ups, in order of value:**
 1. Train the merged bundle with SkillOpt as one document (today the trainer still

@@ -51,6 +51,9 @@ REPO = ROOT.parent                              # repository root
 MANIFEST_PATH = ROOT / "sources.json"
 CORE_DIR = ROOT / "core"
 UPSTREAM_DIR = ROOT / "upstream"
+# `dist/` is a scratch tree, not a deliverable: the repository's .gitignore keeps
+# generated `dist/` out of git, and the tracked artifacts are the install mirrors.
+# Comparing against a mirror instead would mean trusting a copy to verify itself.
 DIST_DIR = ROOT / "dist"
 SKILL_DIR = DIST_DIR / "skill"
 CACHE_DIR = ROOT / ".cache"
@@ -764,19 +767,46 @@ def cmd_install(man: Manifest) -> None:
 
 # --------------------------------------------------------------------------- #
 def cmd_check(man: Manifest) -> None:
+    """The gate CI runs. Rebuild from the manifest and compare against every
+    tracked artifact this skill is published as.
+
+    It compares against the mirrors rather than `dist/`, because `dist/` is
+    gitignored — in CI there is no `dist/`, and a check that reads a directory
+    which may simply be absent reports success on an empty tree. That is exactly
+    how this build once shipped a stale bundle, so the mirrors are the contract."""
     with tempfile.TemporaryDirectory() as td:
-        stats = assemble(man, Path(td) / "skill")
-        for label, generated in (("dist/skill", Path(td) / "skill"),):
-            for p in sorted(generated.rglob("*")):
+        fresh = Path(td) / "skill"
+        stats = assemble(man, fresh)
+
+        for dest in INSTALL_DIRS:
+            if not dest.exists():
+                die(f"{dest.relative_to(REPO)} does not exist — run `python one-skill/build.py install`")
+            for p in sorted(fresh.rglob("*")):
                 if not p.is_file():
                     continue
-                rel = p.relative_to(generated)
-                committed = SKILL_DIR / rel
-                if not committed.exists():
-                    die(f"{rel} is generated but not committed — run `python one-skill/build.py build install`")
-                if read(committed) != read(p):
-                    die(f"{rel} is stale — run `python one-skill/build.py build install`")
-    print(f"dist/skill is current ({stats['skills']} skills, {stats['references']} references)")
+                rel = p.relative_to(fresh)
+                mirror = dest / rel
+                if not mirror.exists():
+                    die(f"{mirror.relative_to(REPO)} is missing — run `python one-skill/build.py install`")
+                if read(mirror) != read(p):
+                    die(f"{mirror.relative_to(REPO)} is stale — run `python one-skill/build.py install`")
+            extra = [q.relative_to(dest) for q in dest.rglob("*")
+                     if q.is_file() and not (fresh / q.relative_to(dest)).exists()]
+            if extra:
+                die(f"{dest.relative_to(REPO)} holds files the build no longer emits: "
+                    f"{', '.join(map(str, extra[:5]))}")
+
+        paste = REPO / "pseudo-skills" / "one-skill.md"
+        if not paste.exists() or read(fresh / "SKILL.md") not in read(paste):
+            die("pseudo-skills/one-skill.md is missing or is not the current SKILL.md")
+
+        if SKILL_DIR.exists():
+            for p in sorted(fresh.rglob("*")):
+                if p.is_file() and (SKILL_DIR / p.relative_to(fresh)).exists():
+                    if read(SKILL_DIR / p.relative_to(fresh)) != read(p):
+                        die(f"one-skill/dist is out of step with a fresh build: {p.relative_to(fresh)}")
+    print(f"published copies are current ({stats['skills']} skills, "
+          f"{stats['references']} references, {len(stats['dead_links'])} dead links)")
 
 
 def main() -> int:
