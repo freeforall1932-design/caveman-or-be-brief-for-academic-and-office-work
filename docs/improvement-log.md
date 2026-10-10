@@ -3,6 +3,56 @@
 Chronicles substantive changes and the reasoning behind them. Entries are
 dated; newest first.
 
+## 2026-10-10 (later) — five more sources, an implementability filter, and fragments
+
+**Change:** the merge gained `usestrix/strix` (4 of 9 skills), `mem0ai/mem0` (1 of 6),
+`tt-a1i/archify` (1 of 2), `JuliusBrussee/caveman` **v3.2.0** (13 skills, replacing this
+repo's v2.x-era copy) and `bigskysoftware/grugbrain.dev` (grug's site text in full).
+69 skills now land in 11 reference files (87k words) behind the same 2.4k-word
+`SKILL.md`. `anti-slop` was re-pointed at its origin
+[`miqdadbadjuber/anti-slop`](https://github.com/miqdadbadjuber/anti-slop) after
+verifying the fork was byte-identical. Three **fragments** —
+`one-skill-prose`, `-code`, `-design` — are generated from the same manifest into
+`claude-skills/fragments/`, each with its own ZIP, as the documented fallback for a
+host that cannot carry the full bundle.
+
+**The filter:** "take only what works, cast aside what is not implementable." Strix's
+skills are a Docker-launched scanner, mem0's are an SDK plus an API key plus
+fetch-the-docs-at-runtime, and Archify's renderer is 6 MB of Node pipeline. None of it
+can be obeyed from a markdown file, so 21 upstream skills are **not** carried — and
+each one is listed with its reason in the manifest *and* in the shipped
+`references/SOURCES.md`, next to the coverage table and the honesty rules that did
+survive. Three new builder knobs serve the same idea: `keep_sections` (carry the two
+sections of a tool driver that work without the tool, drop the rest by name), `markup`
+(remove a generated page's furniture — grug's site wraps headings in anchors — without
+touching a word), and `not_merged`/`not_vendored` records.
+
+**The gate:** `build.py` now fails if a vendored `SKILL.md` is neither routed nor
+listed under its source's `not_merged`, if a cast-aside record has no reason, or if a
+declared `replace` no longer matches anything upstream. Silence was the failure mode:
+an unaccounted skill looks exactly like a merged one. `sync` also records, per source,
+every skill the *upstream tree* contains (`discover` → `discovered_upstream` in
+`PROVENANCE.json`), so a source that vendors one flat file per skill — anti-slop, and
+this repo's own `legacy/` — cannot pass the gate by having been copied narrowly.
+
+**What it cost:** `SKILL.md` was 4 words from its 2400 budget before this round. Two
+new router rows and 19 new command/trigger lines were paid for by moving the
+nine-row provenance table out of the always-on file into `SOURCES.md` (licenses now
+sit in each reference file's head, where the text they cover is actually read),
+shortening the open paragraph, and deleting the `diagrams` bucket that had been
+created for Archify in the same session — 410 words of reference material do not pay
+for a router row, and the anti-slop filter already asks a diagram the question it asks
+a page. The budget check also moved out of the reporting step into `assemble`, so no
+command can now write an over-budget `SKILL.md` at all.
+
+**Fixed on the way, both real:** `sync` deleted a vendored tree when a source path
+moved (it copied 0 files and did not care; now a missing include is a hard stop and
+`local` reads the working tree instead of cloning the default branch, where `legacy/`
+does not exist), and the link audit treated a markdown link inside a code span as a
+live link — which made `SOURCES.md`'s own record of a replaced sentence look like a
+dead link. Tests went 25 → 48, including six that mutate the manifest to prove the new gates
+bite.
+
 ## 2026-10-10 — one skill: three repositories merged behind a manifest
 
 **Change:** every skill in this repo, plus

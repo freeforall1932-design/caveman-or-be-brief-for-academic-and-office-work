@@ -1,10 +1,9 @@
 # One Skill
 
-{{SKILL_COUNT}} skills from {{SOURCE_COUNT}} repositories, merged into one. It is the only
-skill you need to load: `SKILL.md` holds the rules that apply all the time, and
-{{BUCKET_COUNT}} reference files hold the depth, read one at a time when a task asks
-for it. Upstream bodies are carried verbatim; what is added here is the layer that
-decides which of them governs which output.
+{{SKILL_COUNT}} skills from {{SOURCE_COUNT}} repositories, merged into one: the rules
+that apply all the time are here, and {{BUCKET_COUNT}} reference files hold the depth,
+read one at a time. Upstream bodies are verbatim; what is added here decides which of
+them governs which output.
 
 ## The one line
 
@@ -20,5 +19,7 @@ decides which of them governs which output.
 | **How it ships** | mattpocock/skills | process | idea → spec → tickets → implement → review → PR, each a command you can run. |
 | **Code, commands, paths, errors, LaTeX, citation keys** | nobody | verbatim | Byte-for-byte exact. Always. |
 
-The layers **do not** agree with each other, and a merged skill cannot pretend
-otherwise. Hence precedence.
+Too much for the host? `one-skill-prose`, `one-skill-code` and `one-skill-design`
+carry these rules with fewer reference files — install one instead, never beside it.
+
+{{SCOPE_NOTE}}

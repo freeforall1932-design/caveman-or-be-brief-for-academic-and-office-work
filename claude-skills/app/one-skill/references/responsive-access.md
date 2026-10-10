@@ -10,14 +10,14 @@ provenance and every declared edit listed in `SOURCES.md` beside this file.
 
 | section | from | load |
 |---|---|---|
-| [antislop-human — contrast, keyboard, focus, states](#antislop-human-contrast-keyboard-focus-states) | `anti-slop-fork` | always |
-| [antislop-layoutmobile — breakpoints, scale, grids, overflow, tap targets](#antislop-layoutmobile-breakpoints-scale-grids-overflow-tap-targets) | `anti-slop-fork` | always |
+| [antislop-human — contrast, keyboard, focus, states](#antislop-human-contrast-keyboard-focus-states) | `anti-slop` | always |
+| [antislop-layoutmobile — breakpoints, scale, grids, overflow, tap targets](#antislop-layoutmobile-breakpoints-scale-grids-overflow-tap-targets) | `anti-slop` | always |
 
 ---
 
 ## antislop-human — contrast, keyboard, focus, states
 
-> `anti-slop-fork` / `antislop-human` / any shipped interface, before review is complete
+> `anti-slop` / `antislop-human` / any shipped interface, before review is complete
 
 > **Merge note.** The contrast checker no longer sits next to a standalone SKILL.md: it is carried at `scripts/contrast-check.py` inside this skill, which is what the command below resolves to.
 
@@ -164,7 +164,7 @@ Run these alongside the core Delivery Gate when the task involves UI. All answer
 
 ## antislop-layoutmobile — breakpoints, scale, grids, overflow, tap targets
 
-> `anti-slop-fork` / `antislop-layoutmobile` / layout that has to reflow phone to desktop
+> `anti-slop` / `antislop-layoutmobile` / layout that has to reflow phone to desktop
 
 > Anti Slop: Rules for AI Coding Agents. Mobile Layout skill
 

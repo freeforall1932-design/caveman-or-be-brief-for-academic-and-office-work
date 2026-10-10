@@ -1,36 +1,111 @@
 {
   "generated_by": "one-skill/build.py",
-  "manifest_sha": "028f41ed3a32",
+  "manifest_sha": "c9b0925b043c",
   "skills": {
-    "anti-slop-fork/antislop-code": {
+    "anti-slop/antislop-code": {
       "bucket": "code-craft",
-      "entry": "upstream/anti-slop-fork/antislop-code.md",
+      "entry": "upstream/anti-slop/antislop-code.md",
       "sha": "004933009d35"
     },
-    "anti-slop-fork/antislop-copywriting": {
+    "anti-slop/antislop-copywriting": {
       "bucket": "write-prose",
-      "entry": "upstream/anti-slop-fork/antislop-copywriting.md",
+      "entry": "upstream/anti-slop/antislop-copywriting.md",
       "sha": "2434a6fb0603"
     },
-    "anti-slop-fork/antislop-core": {
+    "anti-slop/antislop-core": {
       "bucket": "ui-craft",
-      "entry": "upstream/anti-slop-fork/antislop.md",
+      "entry": "upstream/anti-slop/antislop.md",
       "sha": "64a1ff70bafb"
     },
-    "anti-slop-fork/antislop-human": {
+    "anti-slop/antislop-human": {
       "bucket": "responsive-access",
-      "entry": "upstream/anti-slop-fork/antislop-human.md",
+      "entry": "upstream/anti-slop/antislop-human.md",
       "sha": "5bc7c8e56cc7"
     },
-    "anti-slop-fork/antislop-layoutmobile": {
+    "anti-slop/antislop-layoutmobile": {
       "bucket": "responsive-access",
-      "entry": "upstream/anti-slop-fork/antislop-layoutmobile.md",
+      "entry": "upstream/anti-slop/antislop-layoutmobile.md",
       "sha": "8613395a5109"
     },
-    "anti-slop-fork/antislop-ui": {
+    "anti-slop/antislop-ui": {
       "bucket": "ui-craft",
-      "entry": "upstream/anti-slop-fork/antislop-ui.md",
+      "entry": "upstream/anti-slop/antislop-ui.md",
       "sha": "47d989277125"
+    },
+    "archify/archify-method": {
+      "bucket": "ui-craft",
+      "entry": "upstream/archify/archify/SKILL.md",
+      "sha": "cf348309c535"
+    },
+    "caveman/cavecrew": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/cavecrew/SKILL.md",
+      "sha": "534c0a70d4c7"
+    },
+    "caveman/caveman-commit": {
+      "bucket": "ship-workflow",
+      "entry": "upstream/caveman/skills/caveman-commit/SKILL.md",
+      "sha": "c788a282fc75"
+    },
+    "caveman/caveman-compress-upstream": {
+      "bucket": "terse-chat",
+      "entry": "upstream/caveman/skills/caveman-compress/SKILL.md",
+      "sha": "377b0b8682d9"
+    },
+    "caveman/caveman-explore": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/caveman-explore/SKILL.md",
+      "sha": "908f504ce45f"
+    },
+    "caveman/caveman-review-code": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/caveman-review/SKILL.md",
+      "sha": "599330563f19"
+    },
+    "caveman/caveman-voice": {
+      "bucket": "terse-chat",
+      "entry": "upstream/caveman/skills/caveman/SKILL.md",
+      "sha": "415d43518f2b"
+    },
+    "caveman/investigate-first": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/investigate-first/SKILL.md",
+      "sha": "7cc19dd2fc45"
+    },
+    "caveman/lean-build": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/lean-build/SKILL.md",
+      "sha": "4d498073c631"
+    },
+    "caveman/migration": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/migration/SKILL.md",
+      "sha": "fe7cf96a58b0"
+    },
+    "caveman/safe-refactor": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/safe-refactor/SKILL.md",
+      "sha": "cd52867aba26"
+    },
+    "caveman/surgical-patch": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/surgical-patch/SKILL.md",
+      "sha": "81ea9f7b5140"
+    },
+    "caveman/ultracave": {
+      "bucket": "terse-chat",
+      "entry": "upstream/caveman/skills/ultracave/SKILL.md",
+      "sha": "a8da5b0b3501"
+    },
+    "caveman/verify-and-stop": {
+      "bucket": "code-craft",
+      "entry": "upstream/caveman/skills/verify-and-stop/SKILL.md",
+      "sha": "3d5599f49771"
+    },
+    "grug/grug-canonical": {
+      "bucket": "origins",
+      "entry": "upstream/grug/index.md",
+      "sha": "7c6e1ce4be4c"
     },
     "local/be-brief-output": {
       "bucket": "write-prose",
@@ -56,11 +131,6 @@
       "bucket": "terse-chat",
       "entry": "upstream/local/app/caveman-review.md",
       "sha": "d1976f2b4246"
-    },
-    "local/caveman-upstream": {
-      "bucket": "terse-chat",
-      "entry": "upstream/local/universal/skills/caveman.md",
-      "sha": "b2bfaf96799f"
     },
     "local/grug-engine": {
       "bucket": "think-first",
@@ -251,6 +321,31 @@
       "bucket": "teach-and-author",
       "entry": "upstream/mattpocock-skills/productivity/writing-for-agents/SKILL.md",
       "sha": "551adca94222"
+    },
+    "mem0/mem0-integration-principles": {
+      "bucket": "ship-workflow",
+      "entry": "upstream/mem0/skills/mem0-integrate/SKILL.md",
+      "sha": "41a676307b7c"
+    },
+    "strix/strix-appsec-baseline": {
+      "bucket": "secure-and-harden",
+      "entry": "upstream/strix/skills/application-security-testing/SKILL.md",
+      "sha": "b3041c800a9a"
+    },
+    "strix/strix-owasp-coverage": {
+      "bucket": "secure-and-harden",
+      "entry": "upstream/strix/skills/owasp-top-10-testing/SKILL.md",
+      "sha": "02b1cbe60d40"
+    },
+    "strix/strix-pr-review": {
+      "bucket": "secure-and-harden",
+      "entry": "upstream/strix/skills/find-security-vulnerabilities-in-code/SKILL.md",
+      "sha": "e7c25f1a0aea"
+    },
+    "strix/strix-triage-fix": {
+      "bucket": "secure-and-harden",
+      "entry": "upstream/strix/skills/fix-security-vulnerabilities-with-strix/SKILL.md",
+      "sha": "bb1b351fd60c"
     }
   }
 }

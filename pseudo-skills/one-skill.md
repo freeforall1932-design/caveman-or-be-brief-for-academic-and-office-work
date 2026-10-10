@@ -1,8 +1,11 @@
 > **Paste-only setup.** This is the router half of the `one-skill` skill. The
-> nine reference files it points at carry the upstream rule sets; they are not
-> pasted here because a monolith of all of them would cost more context than it
-> saves. For a task that needs one, paste this file plus that reference, or point
-> the model at the repo copy in `coding-agents/variants/one-skill/`.
+> 11 reference files it points at carry the upstream rule sets, SOURCES.md the
+> provenance; none of them are pasted here, because a monolith of all of them
+> would cost more context than it saves.
+> For a task that needs one, paste this file plus that reference. In the
+> repo they live next to this file at `one-skill/dist/skill/references/`; a host
+> that cannot read files at all should use a fragment instead
+> (`claude-skills/fragments/`), which is the same rules with fewer files.
 
 ---
 name: one-skill
@@ -11,16 +14,15 @@ description: >
 version: 1.0.0
 allowed-tools: Read Write Edit Glob Grep Bash(python3 *)
 license: mixed — see references/SOURCES.md
-sources: 3 · skills: 50 · references: 10
+sources: 8 · skills: 69 · references: 11
 ---
 
 # One Skill
 
-50 skills from 3 repositories, merged into one. It is the only
-skill you need to load: `SKILL.md` holds the rules that apply all the time, and
-10 reference files hold the depth, read one at a time when a task asks
-for it. Upstream bodies are carried verbatim; what is added here is the layer that
-decides which of them governs which output.
+69 skills from 8 repositories, merged into one: the rules
+that apply all the time are here, and 11 reference files hold the depth,
+read one at a time. Upstream bodies are verbatim; what is added here decides which of
+them governs which output.
 
 ## The one line
 
@@ -36,14 +38,18 @@ decides which of them governs which output.
 | **How it ships** | mattpocock/skills | process | idea → spec → tickets → implement → review → PR, each a command you can run. |
 | **Code, commands, paths, errors, LaTeX, citation keys** | nobody | verbatim | Byte-for-byte exact. Always. |
 
-The layers **do not** agree with each other, and a merged skill cannot pretend
-otherwise. Hence precedence.
+Too much for the host? `one-skill-prose`, `one-skill-code` and `one-skill-design`
+carry these rules with fewer reference files — install one instead, never beside it.
+
+
 
 ## Precedence — who wins, by destination
 
 Different people, different jobs: they collide. Do not average them out — **pick
 the layer that owns the destination of this specific text.** Each ruling's argument
 is carried verbatim in [references/origins.md](references/origins.md).
+
+
 
 ### The table
 
@@ -91,8 +97,7 @@ is carried verbatim in [references/origins.md](references/origins.md).
 
 ## Always on
 
-These nine apply whether or not a reference file gets read: the union of every
-source's hard gates, deduplicated.
+These apply whether or not a reference file gets read.
 
 1. **The deletion test.** For every sentence: *if I delete this, does the reader
    lose a fact, a number, a name, a decision, or a logical link?* No loss → cut.
@@ -106,9 +111,9 @@ source's hard gates, deduplicated.
    budgets: <80 words simple, 120–250 typical, ≤400 complex, lowercase, no markdown
    emphasis. This is the one hard boundary in the package.
 5. **No invention.** A rewrite adds no fact, name, number, date, quote or citation
-   absent from the source. No unsourced statistics, no fabricated testimonials, no
-   numbers in an empty state. If a sentence needs real detail to work, ask or
-   write the plain version without it.
+   absent from the source; a report claims no check, scan or test that did not
+   actually run. No unsourced statistics or fabricated testimonials. If a sentence
+   needs real detail to work, ask or write the plain version without it.
 6. **Hedges are facts.** *may*, *suggests*, *is associated with*, *in this sample*
    stay. Stripping a hedge turns a claim into a lie.
 7. **Purpose test for every visual technique.** *What does this serve?* "It looks
@@ -160,15 +165,16 @@ If a check fails, fix it before answering. Do not announce the check.
 | If the task is… | Read |
 |---|---|
 | thesis, journal, report, memo, professional email, landing copy, docs, PR/issue bodies | [`write-prose.md`](references/write-prose.md) (4 sections) |
-| chat replies, status, logs, diagnosis, shrinking a long input, code-review punch-list | [`terse-chat.md`](references/terse-chat.md) (6 sections) |
+| chat replies, status, logs, diagnosis, shrinking a long input, code-review punch-list | [`terse-chat.md`](references/terse-chat.md) (8 sections) |
 | before acting, when a plan is vague, when the user wants their thinking attacked, when polishing has budget | [`think-first.md`](references/think-first.md) (9 sections) |
-| writing or restructuring code, choosing a seam, diagnosing a bug, touching a comment | [`code-craft.md`](references/code-craft.md) (7 sections) |
-| spec, tickets, implement, review, PR, triage, retro, research, hand-built wizards | [`ship-workflow.md`](references/ship-workflow.md) (12 sections) |
-| any interface: layout, colour, components, motion, decoration | [`ui-craft.md`](references/ui-craft.md) (2 sections) |
+| writing or restructuring code, choosing a seam, diagnosing a bug, touching a comment | [`code-craft.md`](references/code-craft.md) (16 sections) |
+| spec, tickets, implement, review, PR, triage, retro, research, hand-built wizards | [`ship-workflow.md`](references/ship-workflow.md) (14 sections) |
+| a page, component, email, mobile layout, accessibility pass, or a diagram of any kind | [`ui-craft.md`](references/ui-craft.md) (3 sections) |
 | breakpoints, overflow, tap targets, contrast, keyboard, focus, states | [`responsive-access.md`](references/responsive-access.md) (2 sections) |
 | first use of the process skills, git guardrails, pre-commit, test typing migrations, exercise scaffolds | [`setup-repo.md`](references/setup-repo.md) (5 sections) |
 | writing or editing a skill/AGENTS.md/CLAUDE.md, or teaching a concept in a workspace | [`teach-and-author.md`](references/teach-and-author.md) (2 sections) |
-| you need to know why a rule reads the way it does, or want the upstream source behind a layer | [`origins.md`](references/origins.md) (1 section) |
+| you need to know why a rule reads the way it does, or want the upstream source behind a layer | [`origins.md`](references/origins.md) (2 sections) |
+| a security review, an OWASP-shaped audit, or findings to triage | [`secure-and-harden.md`](references/secure-and-harden.md) (4 sections) |
 
 Two rows fit? Read the one governing the *artifact being produced*, not the one
 describing the topic: "write the migration guide for this schema change" is
@@ -198,7 +204,7 @@ in English, numbers and citations stay exact.
 ## Commands
 
 Most of what this skill holds is *policy*, applied to whatever you are doing.
-17 of the 50 merged skills are different: they are
+18 of the 69 merged skills are different: they are
 **procedures** you run when named, each with its own start and stop. Upstream
 marked them `disable-model-invocation`; that policy is kept, so a row here is an
 **offer, never an action** — do not run one unless the user named it.
@@ -216,6 +222,7 @@ marked them `disable-model-invocation`; that policy is kept, so a row here is an
 | `triage` | [`ship-workflow.md`](references/ship-workflow.md) | the tracker needs moving |
 | `wayfinder` | [`ship-workflow.md`](references/ship-workflow.md) | the work is bigger than the context window |
 | `teach` | [`teach-and-author.md`](references/teach-and-author.md) | the user wants to be taught, not helped |
+| `ultracave` | [`terse-chat.md`](references/terse-chat.md) | the user asks for the maximum compression level |
 | `wait-what` | [`terse-chat.md`](references/terse-chat.md) | the user says they did not follow it |
 | `grill-me` | [`think-first.md`](references/think-first.md) | someone says "grill me" |
 | `grill-with-docs` | [`think-first.md`](references/think-first.md) | the interview should leave documentation behind |
@@ -241,19 +248,16 @@ carries it, not a command.)
 
 ## Provenance
 
-| Source | Skills in here | License |
-|---|---|---|
-| caveman-or-be-brief (this repository) | 13 | Unlicense (root) / MIT (caveman-universal) |
-| anti-slop-fork — the anti-slop design filter | 6 | MIT |
-| mattpocock/skills — engineering, productivity, misc | 31 | MIT |
+Nothing here is original. Every source repository, its license, the revision vendored
+here, and what the merge cut and why is in
+[references/SOURCES.md](references/SOURCES.md); each reference file also names the
+sources and licenses of the text it carries. Read the provenance file before quoting
+upstream at length.
 
-Every section, which upstream file it came from, and what the merge cut and why:
-[references/SOURCES.md](references/SOURCES.md).
+**Generated: do not hand-edit.** `python one-skill/build.py` writes `SKILL.md` and
+`references/` from `one-skill/sources.json` plus the vendored copies in
+`one-skill/upstream/`. A hand-edit to a merged section silently reverts on the next
+build, and `build.py check` fails the pull request that shipped it.
 
-**Generated: do not hand-edit.** `SKILL.md` and `references/` are written by
-`python one-skill/build.py` from `one-skill/sources.json` plus the vendored copies
-in `one-skill/upstream/`. A hand-edit to a merged section silently reverts on the
-next build, and `build.py check` will fail the pull request that shipped it.
-
-Upstream text is verbatim except for four mechanical normalisations, listed in that
-file. Nothing was paraphrased to make the packaging convenient.
+Upstream text is verbatim except for the mechanical normalisations listed in that file.
+Nothing was paraphrased to make the packaging convenient.

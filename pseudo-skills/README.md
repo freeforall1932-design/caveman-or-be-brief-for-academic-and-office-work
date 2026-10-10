@@ -27,6 +27,8 @@ next to it when a task needs one:
 | any interface | `references/ui-craft.md` |
 | phone layouts, contrast, keyboard, focus | `references/responsive-access.md` |
 | wiring a repo up for the process skills | `references/setup-repo.md` |
+| a security review, an OWASP-shaped audit, findings to triage | `references/secure-and-harden.md` |
+| why a rule reads the way it does | `references/origins.md` |
 | writing a skill or `AGENTS.md`; teaching | `references/teach-and-author.md` |
 
 One at a time. Two at once is already the point where the model is reading a library

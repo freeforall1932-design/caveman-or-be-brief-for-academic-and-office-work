@@ -12,7 +12,7 @@ provenance and every declared edit listed in `SOURCES.md` beside this file.
 |---|---|---|
 | [Be brief — professional prose with zero wasted words](#be-brief-professional-prose-with-zero-wasted-words) | `local` | always |
 | [Caveman be brief — document modes, intensity, Indonesian](#caveman-be-brief-document-modes-intensity-indonesian) | `local` | always |
-| [antislop-copywriting — tone, rhythm, honesty of claims](#antislop-copywriting-tone-rhythm-honesty-of-claims) | `anti-slop-fork` | always |
+| [antislop-copywriting — tone, rhythm, honesty of claims](#antislop-copywriting-tone-rhythm-honesty-of-claims) | `anti-slop` | always |
 | [Phrase catalog — EN + ID filler to cut](#phrase-catalog-en-id-filler-to-cut) | `local` | always |
 
 ---
@@ -310,7 +310,7 @@ Active until "stop caveman" / "stop grug" / "normal mode". Default intensity: fu
 
 ## antislop-copywriting — tone, rhythm, honesty of claims
 
-> `anti-slop-fork` / `antislop-copywriting` / product copy, landing text, and any persuasive or marketing-flavoured prose
+> `anti-slop` / `antislop-copywriting` / product copy, landing text, and any persuasive or marketing-flavoured prose
 
 > Anti Slop: Rules for AI Coding Agents. Copy & Text skill
 

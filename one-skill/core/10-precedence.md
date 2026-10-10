@@ -4,6 +4,8 @@ Different people, different jobs: they collide. Do not average them out — **pi
 the layer that owns the destination of this specific text.** Each ruling's argument
 is carried verbatim in [references/origins.md](references/origins.md).
 
+{{PRECEDENCE_SCOPE}}
+
 ## The table
 
 | The text is going to… | Governs it | Does not govern it |

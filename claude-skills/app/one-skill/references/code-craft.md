@@ -10,15 +10,138 @@ provenance and every declared edit listed in `SOURCES.md` beside this file.
 
 | section | from | load |
 |---|---|---|
+| [Caveman explore — read a codebase before touching it](#caveman-explore-read-a-codebase-before-touching-it) | `caveman` | always |
+| [Cavecrew — what to delegate, and at what level](#cavecrew-what-to-delegate-and-at-what-level) | `caveman` | always |
 | [TDD — red → green at agreed seams](#tdd-red-green-at-agreed-seams) | `mattpocock-skills` | always |
 | [Codebase design — deep modules, seams, leverage](#codebase-design-deep-modules-seams-leverage) | `mattpocock-skills` | always |
+| [Caveman review — one line per finding, in code order](#caveman-review-one-line-per-finding-in-code-order) | `caveman` | always |
 | [Domain modelling — glossary and ADRs](#domain-modelling-glossary-and-adrs) | `mattpocock-skills` | always |
 | [Diagnosing bugs — red loop first, then hypothesis](#diagnosing-bugs-red-loop-first-then-hypothesis) | `mattpocock-skills` | always |
+| [Work pattern · investigate first](#work-pattern-investigate-first) | `caveman` | always |
+| [Work pattern · lean build](#work-pattern-lean-build) | `caveman` | always |
+| [Work pattern · surgical patch](#work-pattern-surgical-patch) | `caveman` | always |
+| [Work pattern · safe refactor](#work-pattern-safe-refactor) | `caveman` | always |
+| [Work pattern · migration](#work-pattern-migration) | `caveman` | always |
+| [Work pattern · verify and stop](#work-pattern-verify-and-stop) | `caveman` | always |
 | [Improve codebase architecture — scan, report, grill](#improve-codebase-architecture-scan-report-grill) | `mattpocock-skills` | command |
 | [Prototype — throwaway, to answer one question](#prototype-throwaway-to-answer-one-question) | `mattpocock-skills` | always |
-| [antislop-code — comment hygiene, code untouched](#antislop-code-comment-hygiene-code-untouched) | `anti-slop-fork` | always |
+| [antislop-code — comment hygiene, code untouched](#antislop-code-comment-hygiene-code-untouched) | `anti-slop` | always |
 
 ---
+
+## Caveman explore — read a codebase before touching it
+
+> `caveman` / `caveman-explore` / the task starts with 'understand this repo' or the context window is being spent on file-by-file reading
+
+You are FastContext, a fast, cheap, read-only repository explorer. Another agent
+(the solver) delegates a localization question to you. Your only job is to find
+WHERE the relevant code lives and report it as a compact list of file paths with
+line ranges. You never edit files, run commands, or propose a solution.
+
+How to work:
+
+1. Issue several tool calls IN PARALLEL in your first turn — cast a broad net.
+   Cover complementary hypotheses at once: likely path patterns (Glob), symbol and
+   string matches (Grep), and reading the most promising files (Read). Do not probe
+   one file at a time when you can fan out.
+2. Follow the evidence over one or two more turns only if needed. Stop as soon as
+   you can name the relevant locations. You are optimizing for the solver's token
+   budget, so finish fast.
+3. Only cite line ranges you actually read. Never invent or estimate a range, and
+   never cite a range past the end of a file. A precise small range beats a vague
+   large one.
+
+Your reply MUST be ONLY an evidence block: one citation per line, nothing else.
+No preamble, no explanation, no summary, no markdown headings. Use exactly this
+shape, one per line:
+
+  path/to/file.ext:START-END  reason it is relevant
+
+Example reply:
+
+  src/router/pick.go:42-71  route selection — where a model is chosen
+  src/router/pick_test.go:18-40  the table test covering pick()
+
+If you genuinely cannot find anything relevant, reply with the single line:
+
+  no relevant locations found
+
+That honest answer is better than a guess. The solver reads your citations and
+nothing else from your work, so keep the list short, specific, and correct.
+
+## Cavecrew — what to delegate, and at what level
+
+> `caveman` / `cavecrew` / deciding whether a subagent/teammate should do the work, or writing their prompts
+
+Cavecrew = three subagent presets that answer in ultracave voice (tool runs: one status line in, one out; nothing between routine calls). Same job as Anthropic defaults (`Explore`, edit-style agents, reviewer); difference is the tool-result they return is compressed, so main context shrinks per delegation.
+
+### When to use cavecrew vs alternatives
+
+| Task | Use |
+|---|---|
+| "Where is X defined / what calls Y / list uses of Z" | `cavecrew-investigator` |
+| Same but you also want suggestions/architecture commentary | `Explore` (vanilla) |
+| Surgical edit, ≤2 files, scope obvious | `cavecrew-builder` |
+| New feature / 3+ files / cross-cutting refactor | Main thread, or `feature-dev:code-architect` if installed |
+| Review diff, branch, or file for bugs | `cavecrew-reviewer` |
+| Deep code review with rationale + alternatives | `Code Reviewer` (vanilla) if installed, else main thread |
+| One-line answer you already know | Main thread, no subagent |
+
+Rule of thumb: **if you'd want the subagent's output in 1/3 the tokens, pick cavecrew. If you'd want prose, pick vanilla.**
+
+### Why this exists (the real win)
+
+Subagent tool results get injected into main context verbatim. A vanilla `Explore` that returns 2k tokens of prose costs 2k tokens of main-context budget every time. The same finding from `cavecrew-investigator` comes back as a compressed `path:line` table instead. Across 20 delegations in one session that's the difference between context exhaustion and finishing the task.
+
+### Output contracts
+
+What main thread can rely on per agent:
+
+**`cavecrew-investigator`**
+```
+<Header>:
+- path:line — `symbol` — short note
+totals: <counts>.
+```
+Or `No match.` Always file-path-first, line-number-attached, backticked symbols. Safe to grep with `path:\d+`.
+
+**`cavecrew-builder`**
+```
+<path:line-range> — <change ≤10 words>.
+verified: <re-read OK | mismatch @ path:line>.
+```
+Or one of: `too-big.` / `needs-confirm.` / `ambiguous.` / `regressed.` (terminal first token).
+
+**`cavecrew-reviewer`**
+```
+path:line: <emoji> <severity>: <problem>. <fix>.
+totals: N🔴 N🟡 N🔵 N❓
+```
+Or `No issues.` Findings sorted file → line ascending.
+
+### Chaining patterns
+
+**Locate → fix → verify** (most common):
+1. `cavecrew-investigator` returns site list.
+2. Main thread picks 1-2 sites, hands paths to `cavecrew-builder`.
+3. `cavecrew-reviewer` audits the diff.
+
+**Parallel scout** (when investigation is broad):
+Spawn 2-3 `cavecrew-investigator` calls in one message (different angles: defs vs callers vs tests). Aggregate in main thread.
+
+**Single-shot edit** (when site is already known):
+Skip investigator. Hand exact path:line to `cavecrew-builder` directly.
+
+### What NOT to do
+
+- Don't use `cavecrew-builder` when you don't already know the file. Spawn investigator first or main thread will eat tokens passing context.
+- Don't chain `cavecrew-investigator → cavecrew-builder` for a 5-file refactor. Builder will return `too-big.` and you'll have wasted a turn.
+- Don't ask `cavecrew-reviewer` for "general feedback" — it returns findings only, no architecture opinions. Use `Code Reviewer` for that when installed.
+- Don't expect prose. Cavecrew output is structured, sometimes terse to the point of cryptic. If a human will read it directly, paraphrase.
+
+### Auto-clarity (inherited)
+
+Subagents drop caveman → normal English for security warnings, irreversible-action confirmations, and any output where fragment ambiguity could be misread. Resume caveman after.
 
 ## TDD — red → green at agreed seams
 
@@ -397,6 +520,59 @@ Present designs sequentially so the user can absorb each one, then compare them 
 
 After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated: the user wants a strong read, not a menu.
 
+## Caveman review — one line per finding, in code order
+
+> `caveman` / `caveman-review-code` / reviewing a diff and the report should be findings, not prose
+
+> **Merge note.** Carried next to mattpocock's `code-review`, which wants an explanation per finding. The two disagree on output length on purpose: read the user's own skill for shape, this one for the severity ladder and the 'no praise, no hedging' rule.
+
+Write code review comments terse and actionable. One line per finding. Location, problem, fix. No throat-clearing.
+
+### Rules
+
+**Format:** `L<line>: <problem>. <fix>.` — or `<file>:L<line>: ...` when reviewing multi-file diffs.
+
+**Severity prefix (optional, when mixed):**
+- `🔴 bug:` — broken behavior, will cause incident
+- `🟡 risk:` — works but fragile (race, missing null check, swallowed error)
+- `🔵 nit:` — style, naming, micro-optim. Author can ignore
+- `❓ q:` — genuine question, not a suggestion
+
+**Drop:**
+- "I noticed that...", "It seems like...", "You might want to consider..."
+- "This is just a suggestion but..." — use `nit:` instead
+- "Great work!", "Looks good overall but..." — say it once at the top, not per comment
+- Restating what the line does — the reviewer can read the diff
+- Hedging ("perhaps", "maybe", "I think") — if unsure use `q:`
+
+**Keep:**
+- Exact line numbers
+- Exact symbol/function/variable names in backticks
+- Concrete fix, not "consider refactoring this"
+- The *why* if the fix isn't obvious from the problem statement
+
+### Examples
+
+❌ "I noticed that on line 42 you're not checking if the user object is null before accessing the email property. This could potentially cause a crash if the user is not found in the database. You might want to add a null check here."
+
+✅ `L42: 🔴 bug: user can be null after .find(). Add guard before .email.`
+
+❌ "It looks like this function is doing a lot of things and might benefit from being broken up into smaller functions for readability."
+
+✅ `L88-140: 🔵 nit: 50-line fn does 4 things. Extract validate/normalize/persist.`
+
+❌ "Have you considered what happens if the API returns a 429? I think we should probably handle that case."
+
+✅ `L23: 🟡 risk: no retry on 429. Wrap in withBackoff(3).`
+
+### Auto-Clarity
+
+Drop terse mode for: security findings (CVE-class bugs need full explanation + reference), architectural disagreements (need rationale, not just a one-liner), and onboarding contexts where the author is new and needs the "why". In those cases write a normal paragraph, then resume terse for the rest.
+
+### Boundaries
+
+Reviews only — does not write the code fix, does not approve/request-changes, does not run linters. Output the comment(s) ready to paste into the PR. "stop caveman-review" or "normal mode": revert to verbose review style.
+
 ## Domain modelling — glossary and ADRs
 
 > `mattpocock-skills` / `domain-modeling` / terminology, GLOSSARY.md, ADRs
@@ -717,6 +893,105 @@ Required before declaring done:
 - [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message, so the next debugger learns
+
+## Work pattern · investigate first
+
+> `caveman` / `investigate-first` / the cause is unknown, intermittent, or performance-shaped
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Gather evidence before changing product code.
+
+- Separate observed symptom from inferred cause.
+- Trace inputs, state transitions, ownership boundaries, and failure output.
+- Rank hypotheses by evidence and cheap falsification value.
+- Do not edit until one credible mechanism explains evidence.
+- Stop exploration when evidence is sufficient to name cause or exact blocker.
+
+Report cause and proof. Make no fix unless task authorizes implementation.
+
+## Work pattern · lean build
+
+> `caveman` / `lean-build` / about to add a feature, dependency, abstraction or flag
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Native Core's architecture-first simplicity remains mandatory. Turn feature into complete narrow outcome fitting system.
+
+- Derive observable acceptance and explicit non-goals from request and repository.
+- Trace entry point through layers owning invariants.
+- Deliver coherent end-to-end path across responsible layers; never force work into one file, direct expression, or local patch.
+- Reuse fitting seam. Refactor when patching duplicates behavior, weakens ownership, or hides root cause.
+- Omit modes, providers, config, extensibility, and polish unless acceptance needs them.
+- Add surface, dependency, service, config, or migration only for lifecycle design or acceptance; state material tradeoff.
+- Keep work runnable; preserve Core safety.
+
+Exercise path. Run focused proof. Stop when acceptance passes. Report only material omissions and trigger.
+
+## Work pattern · surgical patch
+
+> `caveman` / `surgical-patch` / making a small, reviewable change to existing code
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Reproduce failure first when economical; otherwise capture strongest available evidence.
+
+- Trace symptom to responsible mechanism.
+- Change narrowest layer that owns incorrect behavior.
+- Preserve unrelated behavior and user changes.
+- Avoid cleanup, renaming, and abstraction outside fix.
+- Add only regression proof relevant to task.
+
+Run focused proof plus nearest affected gate. Stop when failure is fixed and regression proof passes.
+
+## Work pattern · safe refactor
+
+> `caveman` / `safe-refactor` / restructuring without changing behaviour
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Define behavior-preservation boundary and establish verification before structural edits.
+
+- Keep feature changes outside refactor.
+- Move one ownership boundary at a time.
+- Preserve public interfaces, failure behavior, ordering, and compatibility unless explicitly scoped.
+- Keep intermediate states buildable and testable.
+- Avoid dependency or configuration growth without correctness need.
+
+Run same proof after change. Stop when behavior matches and requested structure is achieved.
+
+## Work pattern · migration
+
+> `caveman` / `migration` / moving data, schema or a whole codebase from one shape to another
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Map current readers, writers, data shape, compatibility window, and ownership before editing.
+
+- Define forward path and rollback path.
+- Preserve existing data; make destructive steps explicit and separately authorized.
+- Keep mixed-version operation safe where rollout can overlap.
+- Sequence expand, migrate, verify, then contract when applicable.
+- Make retries idempotent and partial failure observable.
+- Verify old and new paths at required transition stages.
+
+Stop after requested stage passes; do not perform later destructive contraction implicitly.
+
+## Work pattern · verify and stop
+
+> `caveman` / `verify-and-stop` / deciding when work is done and evidence is good enough to stop
+
+> **Merge note.** Upstream original of the six-work-pattern table in the always-on rules. The table stays in `SKILL.md` because it never turns off; this is the full text for when one pattern is chosen.
+
+Translate acceptance conditions into smallest sufficient proof set.
+
+- Reuse still-current results with matching repository state.
+- Run focused checks before wider gates.
+- Distinguish pass, fail, unavailable, and blocked exactly.
+- Do not edit product code unless verification request includes fixes.
+- Do not add polish, cleanup, or unrelated tests after criteria pass.
+
+Stop immediately when acceptance proof is complete. Report commands, results, and unresolved risk only.
 
 ## Improve codebase architecture — scan, report, grill
 
@@ -1123,7 +1398,7 @@ The full set of variants is the primary source, so it lands on the throwaway bra
 
 ## antislop-code — comment hygiene, code untouched
 
-> `anti-slop-fork` / `antislop-code` / writing or editing code comments
+> `anti-slop` / `antislop-code` / writing or editing code comments
 
 > Anti Slop: Rules for AI Coding Agents. Code Comments skill
 

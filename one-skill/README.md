@@ -1,7 +1,8 @@
 # one-skill — the merge, and how to grow it
 
-One skill, built from fifty others across three repositories. Nothing in
-`dist/skill/` is hand-written, so nothing in it has to be kept in sync by hand.
+One skill, built from sixty-nine others across eight sources. Nothing in
+`dist/skill/` is hand-written, so nothing in it has to be kept in sync by hand —
+including the three fragment fallbacks under `dist/families/`.
 
 ```
 one-skill/
@@ -15,10 +16,14 @@ one-skill/
 │   ├── 40-commands.md        the procedure table (generated) + how to run one
 │   └── 50-sources.md          provenance summary (generated)
 ├── upstream/           vendored copies the builder reads (see PROVENANCE.json)
-│   ├── local/                this repository, from `legacy/`
-│   ├── anti-slop-fork/       freeforall1932-design/anti-slop-fork
-│   └── mattpocock-skills/    mattpocock/skills, engineering + productivity + misc
+│   ├── local/                this repository, read from the working tree (`legacy/`)
+│   ├── anti-slop/                miqdadbadjuber/anti-slop — the origin, not the fork
+│   ├── mattpocock-skills/        mattpocock/skills, engineering + productivity + misc
+│   ├── caveman/                  JuliusBrussee/caveman at v3.2.0, SKILL.md only
+│   ├── grug/                     bigskysoftware/grugbrain.dev, `index.md`
+│   ├── strix/ mem0/ archify/     usestrix/strix, mem0ai/mem0, tt-a1i/archify
 ├── dist/skill/         scratch build output (gitignored `dist/`; not a deliverable)
+├── dist/families/      the three fragments, generated from the same manifest
 └── tests/
 ```
 
@@ -34,7 +39,8 @@ success on an empty tree, which is exactly how this bundle once shipped stale.
 ```bash
 python one-skill/build.py sync      # re-vendor upstream (clones into .cache/, gitignored)
 python one-skill/build.py build     # upstream/ + core/ + sources.json → dist/skill/
-python one-skill/build.py install   # mirror dist into every install path + rebuild the zip
+python one-skill/build.py install   # mirror dist into every install path + rebuild every zip
+                                    # (the three fragments included)
 python one-skill/build.py all       # build + install
 python one-skill/build.py check     # rebuild in a temp dir and fail if dist/ is stale
 python -m pytest one-skill/tests -q
@@ -74,7 +80,17 @@ Anything else is left exactly as upstream wrote it.
 This is the reason the manifest exists: the merge is a build step, so the fourth
 source is an entry, not a rewrite.
 
-**1.** Declare it in `sources.json` → `sources`:
+**0.** Decide what is *implementable from a markdown file*. This is the filter that
+decided four fifths of Strix, five sixths of mem0 and all of Archify's renderer: a skill
+whose instructions are "run this binary", "fetch these docs" or "install this package"
+cannot be obeyed here, and carrying it anyway does not add capability, it adds
+hallucinated capability. Write the answer down per skill as `not_merged` — the build now
+fails if a vendored `SKILL.md` is neither routed nor excused, so a cast-aside list
+cannot rot when upstream grows.
+
+**1.** Declare it in `sources.json` → `sources`. Vendored from the **origin at its
+latest commit**, never from a personal fork — if a fork exists, clone both and
+`diff -rq`; when they are identical, say so in `origin.note` and point at the origin:
 
 ```jsonc
 {
@@ -82,19 +98,34 @@ source is an entry, not a rewrite.
   "title": "owner/my-new-source — short description",
   "license": "MIT",
   "attribution": "owner/my-new-source",
-  "origin": { "kind": "github", "repo": "owner/my-new-source", "ref": "HEAD" },
+  "origin": { "repo": "owner/my-new-source", "ref": "HEAD", "license": "MIT", "note": "" },
   "sync": {
     "include": [
-      { "from": "skills", "to": "upstream/my-new-source", "skip": ["README.md", "agents"] }
+      { "from": "skills", "to": "upstream/my-new-source",
+        "skip": ["README.md", "agents"], "only": ["SKILL.md"] }
     ]
   },
   "skills": [],
-  "not_routed": []
+  "not_routed": [], "not_merged": [], "not_vendored": []
 }
 ```
 
-`ref` may pin a tag or SHA; `HEAD` follows the default branch. `skip` drops
-per-agent duplicates and non-instruction files at vendoring time.
+`ref` may pin a tag or SHA; `HEAD` follows the default branch. `skip` drops per-agent
+duplicates and non-instruction files at vendoring time; `only` narrows a whole
+directory down to one file type, which is how a repo whose skills each carry an SDK
+manual contributes only its instructions. `origin.kind: "local"` reads this
+repository's working tree instead of cloning — needed for `legacy/`, which exists only
+on the merged branch.
+
+`discover` is a list of upstream directories to account for: at sync time every
+`SKILL.md` beneath them is recorded in `PROVENANCE.json` as `discovered_upstream`, and
+the build then requires each of those names to be routed or excused. Without it the
+gate only sees what was already copied down, and a source that vendors one flat file
+per skill (anti-slop, this repo's `legacy/`) would pass it by construction.
+
+A missing path in `sync.include` is a hard stop, never a delete. An earlier version of
+`sync` wiped a vendored tree because one path had moved upstream; if the source is not
+there the builder now refuses to touch what it already has.
 
 **2.** `python one-skill/build.py sync` — the files land in `upstream/` and their
 revision is recorded in `upstream/PROVENANCE.json`.
@@ -111,11 +142,24 @@ revision is recorded in `upstream/PROVENANCE.json`.
   "command": true,                       // a procedure to offer, not to run unasked
   "entry": "upstream/my-new-source/new-skill/SKILL.md",
   "docs":    [{ "path": "upstream/my-new-source/new-skill/extra.md", "label": "Extra" }],
-  "scripts": ["upstream/my-new-source/new-skill/check.py"]
+  "scripts": ["upstream/my-new-source/new-skill/check.py"],
+  "strip_sections": ["Run it"], "strip_reason": "the command is not here; the judgement is",
+  "keep_sections": ["Integration principles (non-negotiable)"],
+  "markup": ["strip-html-lines", "unwrap-heading-anchors"],
+  "replace": [{ "from": "run `node bin/tool`", "to": "this bundle ships no such command",
+                "reason": "names a CLI the merged skill does not carry" }],
+  "note": "one paragraph on what the merge took and why, shown above the section"
 }
 ```
 
-`entry` is the body to carry. `docs` are sibling files that ride in the same
+`keep_sections` is the inverse of `strip_sections`: for a skill that is mostly a tool
+driver, keep the sections that survive on their own and drop the rest **by name**. The
+alternative — rewriting a CLI walkthrough into tool-free prose — produces text whose
+author is the build script.
+
+`entry` is the body to carry. `markup` removes page furniture from a source that is
+really a generated web page (the grug site wraps its headings in anchors); it may not
+change a word. `docs` are sibling files that ride in the same
 reference section, with links to them retargeted to in-file anchors. `scripts` are
 copied to `scripts/` in the built skill, and `${CLAUDE_SKILL_DIR}/name.py` style runtime
 paths are rewritten to the carried location.
@@ -138,11 +182,25 @@ repository moves.
 * **The always-on budget is real.** `SKILL.md` rides in every request;
   `build.py` fails it above `ALWAYS_ON_BUDGET` words (2400). When a new source
   wants a rule there, the answer is usually a reference file, or a cut.
-* **Every vendored file is accounted for.** A file in `upstream/` that no skill
-  routes and no source lists under `not_routed` fails the build: either merge it
-  or record why it is not worth the tokens.
-* **Add a bucket only for a new destination.** Ten buckets for four sources is
-  already the point where a router needs to be a table rather than a list.
+* **Every vendored file and skill is accounted for.** A file in `upstream/` that no
+  skill routes and no source lists under `not_routed` fails the build; a `SKILL.md`
+  that is neither routed nor listed under its source's `not_merged` fails it too, and so
+  does an excuse with no reason. Three gates, one rule: skipping is a decision, so make
+  it in writing.
+* **A declared edit must land.** `strip_sections`, `keep_sections` and `replace` all
+  fail the build when their target moves upstream. A `replace` that matches nothing is
+  worse than no `replace` at all: `SOURCES.md` would advertise an edit that never
+  happened while the misleading sentence stayed in the skill.
+* **Add a bucket only for a new destination, and only for a big one.** Eleven buckets
+  for eight sources is already the point where a router has to be a table rather than a
+  list. Archify's diagram method first got its own bucket and the cut removed it: 410
+  words of reference material did not pay for a router row and a file, so it sits in
+  `ui-craft` beside the filter that asks it the same question.
+* **Fragments are a projection, not a copy.** A family is a list of buckets in the
+  manifest; `build.py` assembles each one with the same functions and the same verbatim
+  rules. Never hand-edit `dist/families/` or `claude-skills/fragments/`: `check`
+  compares them against a rebuild exactly like the main mirrors, and a stale fallback is
+  worse than no fallback.
 
 ## Install paths refreshed by `install`
 

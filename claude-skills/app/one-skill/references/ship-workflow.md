@@ -11,7 +11,9 @@ provenance and every declared edit listed in `SOURCES.md` beside this file.
 | section | from | load |
 |---|---|---|
 | [ask-matt — which flow fits this situation](#ask-matt-which-flow-fits-this-situation) | `mattpocock-skills` | command |
+| [Caveman commit — the message format](#caveman-commit-the-message-format) | `caveman` | always |
 | [To spec — conversation into a published spec](#to-spec-conversation-into-a-published-spec) | `mattpocock-skills` | command |
+| [Third-party integration, the additive way](#third-party-integration-the-additive-way) | `mem0` | always |
 | [To tickets — tracer-bullet vertical slices with blocking edges](#to-tickets-tracer-bullet-vertical-slices-with-blocking-edges) | `mattpocock-skills` | command |
 | [Implement — build the described work, drive tdd, close with review](#implement-build-the-described-work-drive-tdd-close-with-review) | `mattpocock-skills` | command |
 | [Implement spec — whole spec on one branch, subagents on the frontier](#implement-spec-whole-spec-on-one-branch-subagents-on-the-frontier) | `mattpocock-skills` | command |
@@ -177,6 +179,67 @@ This is why question 1 comes first. You only pay the lossiness when staying cost
 
 The questions are not objective: each has taste in it, and the same boundary can go two ways on two days. The value is in asking them **in order**, at the boundary rather than in the middle of the work.
 
+## Caveman commit — the message format
+
+> `caveman` / `caveman-commit` / writing a commit message, a PR title, or changelog lines
+
+Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.
+
+### Rules
+
+**Subject line:**
+- `<type>(<scope>): <imperative summary>` — `<scope>` optional
+- Types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`, `build`, `ci`, `style`, `revert`
+- Imperative mood: "add", "fix", "remove" — not "added", "adds", "adding"
+- ≤50 chars when possible, hard cap 72
+- No trailing period
+- Match project convention for capitalization after the colon
+
+**Body (only if needed):**
+- Skip entirely when subject is self-explanatory
+- Add body only for: non-obvious *why*, breaking changes, migration notes, linked issues
+- Wrap at 72 chars
+- Bullets `-` not `*`
+- Reference issues/PRs at end: `Closes #42`, `Refs #17`
+
+**What NEVER goes in:**
+- "This commit does X", "I", "we", "now", "currently" — the diff says what
+- "As requested by..." — use Co-authored-by trailer
+- "Generated with Claude Code" or any AI attribution — unless the user's own rule requires an `Assisted-by`/AI-attribution trailer, then add it as a trailer
+- Emoji (unless project convention requires)
+- Restating the file name when scope already says it
+
+### Examples
+
+Diff: new endpoint for user profile with body explaining the why
+- ❌ "feat: add a new endpoint to get user profile information from the database"
+- ✅
+  ```
+  feat(api): add GET /users/:id/profile
+
+  Mobile client needs profile data without the full user payload
+  to reduce LTE bandwidth on cold-launch screens.
+
+  Closes #128
+  ```
+
+Diff: breaking API change
+- ✅
+  ```
+  feat(api)!: rename /v1/orders to /v1/checkout
+
+  BREAKING CHANGE: clients on /v1/orders must migrate to /v1/checkout
+  before 2026-06-01. Old route returns 410 after that date.
+  ```
+
+### Auto-Clarity
+
+Always include body for: breaking changes, security fixes, data migrations, anything reverting a prior commit. Never compress these into subject-only — future debuggers need the context.
+
+### Boundaries
+
+Only generates the commit message. Does not run `git commit`, does not stage files, does not amend. Output the message as a code block ready to paste. "stop caveman-commit" or "normal mode": revert to verbose commit style.
+
 ## To spec — conversation into a published spec
 
 > `mattpocock-skills` / `to-spec` / the discussion is finished and needs writing down
@@ -250,6 +313,50 @@ A description of the things that are out of scope for this spec.
 Any further notes about the feature.
 
 </spec-template>
+
+## Third-party integration, the additive way
+
+> `mem0` / `mem0-integration-principles` / adding a library, service or memory layer to someone else's working codebase
+
+> **Merge note.** This is the only part of mem0's skill set that is a rule rather than an SDK walkthrough, so it is the only part carried: keep one H2 section verbatim and drop the rest by name. Everything the dropped sections ask for (`npm view`, fetching docs at runtime, delegating to published skills) is not implementable here and would have been invented if kept.
+
+> *(not carried here: Canonical sources (fetch before deciding anything), Agent-ready docs, Published Mem0 skills — delegate; do not reimplement, SDK source (read when docs are ambiguous), Quickstarts (for bootstrapping unfamiliar stacks), Skill delegation rules, Preconditions, Pipeline, Artifacts (all under `.mem0-integration/`), Modes, Invocation, Exit codes, Explicitly out of scope. Its procedure is a run of the upstream tool, which this bundle does not ship. Nothing to fetch, install or delegate to inside a merged skill.)*
+
+### Integration principles (non-negotiable)
+
+The true goal of this skill is to produce a **PR the maintainers can accept
+without argument**. That rules out anything invasive.
+
+1. **Additive, not replacing.** If the target repo already has a memory
+   system, a session store, a user-context layer, or anything named
+   `Memory` / `memory_*`, Mem0 sits **alongside** it, not in place of it.
+   The existing system keeps working unchanged.
+2. **Opt-in by default.** Gate all new Mem0 code behind a feature flag
+   (env var like `MEM0_ENABLED=1`, a config key, or a strategy selector).
+   With the flag unset, behavior is the repo's original behavior,
+   byte-for-byte.
+3. **No breakage.** No removed exports, no renamed public functions,
+   no changed method signatures, no modified existing tests, no changed
+   behavior of existing tests. All pre-existing tests must pass unchanged
+   both with the flag set and unset.
+4. **Minimal dependency surface.** Add `mem0ai` (plus any deps the
+   delegated skill requires) and nothing else. No new vector stores, no
+   graph databases, no provider SDKs the repo does not already use.
+5. **Separable commits.** Code, tests, and config/docs land in separate
+   commits so reviewers can cherry-pick.
+6. **The null hypothesis wins.** If no additive, gated fit exists after the plan step, stop and write the rationale down. A bad PR
+   is worse than no PR.
+7. **Backend only.** Mem0 integration lives in server-side code. API keys,
+   memory scope, and user-identity resolution are not safe client-side.
+   If the repo has both backend and frontend, the call sites live in
+   backend files. Frontend-only repos are rejected at preconditions.
+
+Enforced at four gates: **preconditions** (reject frontend-only repos
+and repos where additive fit is impossible), **step 2 comprehension**
+(confirm a backend exists and name candidate surfaces), **step 6 plan
+review** (reject plans that mutate existing exports or name client-side
+call sites), and **step 10 self-healing loop** (refuse to "fix" principle
+violations — surface them instead).
 
 ## To tickets — tracer-bullet vertical slices with blocking edges
 

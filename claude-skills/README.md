@@ -32,13 +32,28 @@ skill says, change the manifest or [`one-skill/core/`](../one-skill/core) and re
 | Path | What it is |
 |---|---|
 | `SKILL.md` | the always-loaded half: nine universal rules, precedence by destination, the router, the command table |
-| `references/*.md` | ten on-demand files, one per destination: prose, chat, thinking, code craft, ship workflow, UI, reflow + access, repo setup, teaching, origins |
+| `references/*.md` | eleven on-demand files, one per destination: prose, chat, thinking, code craft, ship workflow, UI and diagrams, reflow + access, repo setup, teaching, security method, origins |
 | `references/SOURCES.md` | which upstream file every section came from, what was not carried, and why |
 | `scripts/` | the carried executables: `contrast-check.py` (the WCAG AA gate), `block-dangerous-git.sh`, and the diagnosis and wizard templates |
 | `BUILD.json` | a checksum for every input, so a vendored file that moved without a rebuild is detectable |
 
 The previous setup spread ~1.5k words of rules across six documents; this is one
-2.4k-word file plus nothing, with 75k words behind it read a file at a time.
+2.4k-word file plus nothing, with 87k words behind it read a file at a time.
+
+## Fallback fragments — [`../fragments/`](../fragments)
+
+| Install | For | Reference files |
+|---|---|---|
+| `zips/one-skill-prose.zip` | anything a human reads: documents, email, theses, chat replies, and the reasoning behind them | 5 |
+| `zips/one-skill-code.zip` | working in a repo: design, tests, debugging, review, commits, setup, security method | 6 |
+| `zips/one-skill-design.zip` | screens and diagrams: the anti-slop filter, reflow and accessibility | 3 |
+
+Each is generated from the same manifest as `one-skill` and carries the same
+always-on rules; only the reference files are a subset. They exist for a host that
+cannot do the two-hop read (open `SKILL.md`, then one reference), or that treats a
+bundle this size as a cost. Install **one** of them *instead* of `one-skill` — never
+beside it, or the always-on rules load twice. A fragment names what it left out, and
+says to stop rather than guess when a task turns into something else.
 
 ## The six-skill era
 

@@ -1,8 +1,8 @@
 # UI craft — the anti-slop visual filter
 
-**Read this when:** any interface: layout, colour, components, motion, decoration
+**Read this when:** a page, component, email, mobile layout, accessibility pass, or a diagram of any kind
 
-**Layer:** antislop core + antislop-ui
+**Layer:** Visual layer for interfaces and diagrams, both. Anti-slop's rule and Archify's type router are two applications of one question — what does this element serve? — so they sit in one file; the diagram half carries authoring judgement only, since the upstream Node renderer is not part of this bundle.
 
 Loaded on demand: the always-on rules live in the skill's `SKILL.md`. The
 bodies below are upstream text carried verbatim, with the per-section
@@ -10,14 +10,15 @@ provenance and every declared edit listed in `SOURCES.md` beside this file.
 
 | section | from | load |
 |---|---|---|
-| [antislop core — craftsmanship standard, R-rules, liveliness](#antislop-core-craftsmanship-standard-r-rules-liveliness) | `anti-slop-fork` | always |
-| [antislop-ui — colour, layout, components, decoration, motion](#antislop-ui-colour-layout-components-decoration-motion) | `anti-slop-fork` | always |
+| [antislop core — craftsmanship standard, R-rules, liveliness](#antislop-core-craftsmanship-standard-r-rules-liveliness) | `anti-slop` | always |
+| [antislop-ui — colour, layout, components, decoration, motion](#antislop-ui-colour-layout-components-decoration-motion) | `anti-slop` | always |
+| [Pick the diagram type, then be honest about the artifact](#pick-the-diagram-type-then-be-honest-about-the-artifact) | `archify` | always |
 
 ---
 
 ## antislop core — craftsmanship standard, R-rules, liveliness
 
-> `anti-slop-fork` / `antislop-core` / always for interface work
+> `anti-slop` / `antislop-core` / always for interface work
 
 > **Merge note.** The upstream install wizard and its pointer-block step are dropped: in this merged skill every sibling is already inside the same skill, so there is nothing for the agent to fetch and no entry file to edit.
 
@@ -670,7 +671,7 @@ If even one answer is **yes** (or **no** in Block 3), do not deliver. Fix it, re
 
 ## antislop-ui — colour, layout, components, decoration, motion
 
-> `anti-slop-fork` / `antislop-ui` / building or editing any interface
+> `anti-slop` / `antislop-ui` / building or editing any interface
 
 > Anti Slop: Rules for AI Coding Agents. UI & Visual skill
 
@@ -976,3 +977,37 @@ Run these alongside the core Delivery Gate when the task is UI work. All answers
 - [ ] Do empty form fields and table cells stay empty or carry honest placeholders (Your Name, email@example.com) instead of fake-looking data (John Doe, johndoe@example.com)? (R-23, R-38)
 - [ ] Do the empty, loading, and error states name the cause and the next action instead of saying "No data"? (R-27)
 - [ ] Does the page hold up at every breakpoint, theme, and state, and pass keyboard-only use? (R-03, R-34, C-4)
+
+## Pick the diagram type, then be honest about the artifact
+
+> `archify` / `archify-method` / any request for a system, flow, sequence, dataflow or lifecycle picture
+
+> **Merge note.** Three sections of a 1 456-word skill: the five-type router, the Mermaid mapping, and the reporting rule. The renderer sections (fast authoring path, delivery gates, setup and fallback, update awareness) are dropped by name because every one of them runs the Node toolchain. The three declared edits below exist because upstream keeps pointing at artifacts this bundle does not ship. Read the type table as a *choice of what to draw*, not as a validation step.
+
+> *(not carried here: Existing candidate handoff, Fast authoring path, Update awareness, Delivery, Optional viewer capabilities, Setup and fallback. Its procedure is a run of the upstream tool, which this bundle does not ship. Nothing to fetch, install or delegate to inside a merged skill.)*
+
+### Type router
+
+| Type | Use for | Schema | Example |
+|---|---|---|---|
+| `architecture` | Components, services, cloud/security boundaries, infrastructure; what something everyday is made of | `schemas/architecture.schema.json` | System descriptions, services, libraries, and CLI repos: `examples/web-app.architecture.json`; deployment repos: `examples/production-deployment.architecture.json` |
+| `workflow` | Processes, approval gates, tool calls, runbooks, CI/CD; plans and step-by-step life processes | `schemas/workflow.schema.json` | `examples/agent-tool-call.workflow.json` |
+| `sequence` | API call chains, request lifecycles, async traces, returns; back-and-forth between people | `schemas/sequence.schema.json` | `examples/cache-miss-request.sequence.json` |
+| `dataflow` | Pipelines, ETL/ELT, lineage, governance, consumers; where money or documents go | `schemas/dataflow.schema.json` | `examples/product-analytics.dataflow.json` |
+| `lifecycle` | State/status transitions, retries, waiting and terminal states; where an application or order stands | `schemas/lifecycle.schema.json` | `examples/deployment-release.lifecycle.json` |
+
+When ambiguous, choose the row whose `Use for` column matches the question being asked. The `Schema` and `Example` cells name files in the upstream package, which this skill does not carry: read the type and its use, then author the diagram by hand. Scenario proof examples are structural references, not facts to copy.
+
+For an everyday subject, keep the same five modes and semantic types, then name them for the reader: choose everyday `icon` values and `meta.legend` labels, the way the upstream authoring contract asks of its node icons. Ask for missing personal facts instead of inventing dates, amounts, or rules.
+
+### Mermaid input
+
+Read Mermaid for topology and meaning, then author fresh Archify JSON; do not mechanically render Mermaid styling.
+
+- `flowchart` / `graph` → `workflow`, or `architecture` for a component map.
+- `sequenceDiagram` → `sequence`; participants become semantic participants and arrows become messages.
+- `stateDiagram` → `lifecycle`; states and transitions retain meaning, not Mermaid style.
+
+### Output
+
+Report what you actually have: the file you wrote and where, the diagram type you chose, and explicitly which of these you did not do — validate against a schema, render, open in a browser, review it visually. Do not claim success for a command that did not run, and do not claim visual inspection you did not perform.

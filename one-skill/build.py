@@ -44,7 +44,8 @@ import sys
 import tempfile
 import zipfile
 from dataclasses import dataclass, field
-from pathlib import Path
+from fnmatch import fnmatch
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent          # one-skill/
 REPO = ROOT.parent                              # repository root
@@ -217,6 +218,11 @@ class Manifest:
                 die(f"{cfg['id']}: entry file missing: {cfg['entry']} (run `python one-skill/build.py sync`)")
             meta, body = split_frontmatter(read(entry))
             body, dropped = strip_named_sections(body, cfg.get("strip_sections", []))
+            if cfg.get("keep_sections"):
+                body, kept_dropped = keep_only_sections(body, cfg["keep_sections"])
+                dropped = dropped + kept_dropped
+            if cfg.get("markup"):
+                body = markup_transforms(body, cfg["markup"])
             sk = Skill(cfg=cfg, source_slug=src["slug"], source_title=src["title"],
                        meta=meta, body=body, dropped=dropped)
             wanted = {w.strip().lower() for w in cfg.get("strip_sections", [])}
@@ -227,6 +233,8 @@ class Manifest:
                         f"source ({w!r}); the upstream section was renamed or the strip is "
                         f"stale. Update sources.json rather than shipping a dead rule.")
             for doc in cfg.get("docs", []):
+                if not isinstance(doc, dict) or "path" not in doc or "label" not in doc:
+                    die(f"{cfg['id']}: every doc needs {{label, path}}; got {doc!r}")
                 p = ROOT / doc["path"]
                 if not p.exists():
                     die(f"{cfg['id']}: doc missing: {doc['path']}")
@@ -273,7 +281,8 @@ def git_rev(path: Path) -> str:
         return "unversioned"
 
 
-def copy_entry(base: Path, rel: str, dest: Path, skip: set[str]) -> int:
+def copy_entry(base: Path, rel: str, dest: Path, skip: set[str],
+               only: list[str] | None = None) -> int:
     src = base / rel
     if not src.exists():
         print(f"  ! missing: {rel}", file=sys.stderr)
@@ -285,6 +294,11 @@ def copy_entry(base: Path, rel: str, dest: Path, skip: set[str]) -> int:
                 continue
             if p.suffix not in {".md", ".py", ".sh", ".json", ".txt"}:
                 continue
+            # Some upstream skills are a SKILL.md plus a pile of SDK docs and helper
+            # scripts. Vendoring the pile would put files in the bundle that nothing
+            # routes to; `only` keeps the unit the merge actually works on.
+            if only and not any(fnmatch(p.name, pat) for pat in only):
+                continue
             target = dest / p.relative_to(src)
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(p, target)
@@ -294,6 +308,11 @@ def copy_entry(base: Path, rel: str, dest: Path, skip: set[str]) -> int:
         shutil.copyfile(src, dest if dest.suffix else dest / src.name)
         n = 1
     return n
+
+
+def repo_hint(src: dict) -> str:
+    origin = src.get("origin", {})
+    return origin.get("repo") or "this repository"
 
 
 def cmd_sync(man: Manifest, only: str | None = None) -> dict:
@@ -308,14 +327,36 @@ def cmd_sync(man: Manifest, only: str | None = None) -> dict:
         base, rev = resolve_checkout(src)
         skip = set(SKIP_NAMES) | set()
         n = 0
+        missing: list[str] = []
         for item in sync["include"]:
             skip |= set(item.get("skip", []))
             dest = ROOT / item["to"]
-            if dest.exists() and not (dest / item["from"].split("/")[-1]).exists() and dest.is_dir():
+            if not (base / item["from"]).exists():
+                # a missing source is a hard error, and above all not a reason to
+                # wipe: an earlier build silently deleted a whole vendored tree
+                # this way when a path moved in the source repo
+                missing.append(item["from"])
+                continue
+            if dest.exists() and dest.is_dir() and not dest.exists():
                 shutil.rmtree(dest)
-            n += copy_entry(base, item["from"], dest, skip)
-        print(f"  {src['slug']}: {n} files ({rev[:10]})")
+            n += copy_entry(base, item["from"], dest, skip, item.get("only"))
+        if missing:
+            die(f"{src['slug']}: sync found nothing at {missing} in {base} — the path moved "
+                "in the source repo or the ref is wrong; the vendored tree was left untouched")
+        discovered: list[str] = []
+        for rel_dir in src.get("discover", []):
+            root = base / rel_dir
+            if not root.exists():
+                die(f"{src['slug']}: discover path {rel_dir!r} is not in {repo_hint(src)} at "
+                    f"{rev[:10]} — upstream moved, so the account of what exists there is wrong")
+            for q in sorted(root.rglob("SKILL.md")):
+                discovered.append(q.parent.name if q.name == "SKILL.md" else q.stem)
+        if n == 0 and not discovered:
+            die(f"{src['slug']}: sync copied 0 files")
+        print(f"  {src['slug']}: {n} files, {len(discovered)} skills upstream "
+              f"({rev[:10]})")
         prov[src["slug"]] = {
+            "discovered_upstream": sorted(set(discovered)),
             "title": src["title"],
             "attribution": src.get("attribution", ""),
             "license": src.get("license", ""),
@@ -372,6 +413,81 @@ def section_anchor(sk: Skill) -> str:
     return slugify(sk.title)
 
 
+def validate_records(man: Manifest) -> None:
+    """A thing left out without a reason is a thing nobody decided to leave out."""
+    for src in man.sources:
+        for x in src.get("not_merged", []) + src.get("not_routed", []) + src.get("not_vendored", []):
+            key = x.get("skill") or x.get("path") or x.get("what")
+            if not isinstance(x, dict) or "reason" not in x:
+                die(f"{src['slug']}: {key} is cast aside without a recorded reason")
+            if not (x["reason"] or "").strip():
+                die(f"{src['slug']}: {key} has an empty reason; say what is missing and "
+                    "who would need it")
+            if isinstance(key, dict):
+                die(f"{src['slug']}: a cast-aside record needs 'skill', 'path' or 'what'")
+
+
+def skill_name(src: dict, vendored: str) -> str | None:
+    """Which upstream *skill* a vendored path came from. A source may vendor one file
+    per skill under its own name (this repo's `legacy/` tree does), so the vendored
+    directory is not always the identity; the include map is what says where a file
+    actually came from."""
+    for inc in src.get("sync", {}).get("include", []):
+        to, frm = PurePosixPath(inc["to"]), PurePosixPath(inc["from"])
+        v = PurePosixPath(vendored)
+        if v == to:
+            return frm.parent.name if frm.name == "SKILL.md" else None
+    parent = PurePosixPath(vendored).parent.name
+    return parent or None
+
+
+def prov_for(man: Manifest, slug: str) -> list[str]:
+    """The skill names this source was found to contain when it was last synced."""
+    if not PROVENANCE.exists():
+        return []
+    data = json.loads(read(PROVENANCE))
+    return (data.get(slug) or {}).get("discovered_upstream", [])
+
+
+def inventory(man: Manifest) -> list[str]:
+    """Every SKILL.md vendored from a source must be either merged or recorded as
+    cast aside, with a reason. This is the difference between 'I merged what
+    mattered' and 'I quietly skipped what was inconvenient': upstream grows, and a
+    new skill that nobody looked at would otherwise stay invisible."""
+    routed: dict[str, set[str]] = {}
+    excused: dict[str, set[str]] = {}
+    for src, cfg in man.entries():
+        routed.setdefault(src["slug"], set()).add(skill_name(src, cfg["entry"]) or "")
+    for src in man.sources:
+        excused.setdefault(src["slug"], set()).update(
+            n for n in (skill_name(src, x["path"]) for x in src.get("not_routed", [])) if n)
+    problems: list[str] = []
+    for src in man.sources:
+        slug = src["slug"]
+        up = UPSTREAM_DIR / slug if (UPSTREAM_DIR / slug).exists() else None
+        if up is None:
+            continue
+        declared = {x["skill"] for x in src.get("not_merged", [])}
+        missing_reason = [x["skill"] for x in src.get("not_merged", []) if not x.get("reason")]
+        for r in missing_reason:
+            problems.append(f"{slug}: not_merged entry {r!r} has no reason")
+        found = {p.parent.name for p in up.rglob("SKILL.md")}
+        # the vendored set is not the upstream set: a source may vendor one file per
+        # skill under other names, and upstream may have grown a skill nobody copied
+        # down at all. PROVENANCE.json records what the source held at the pinned
+        # revision, and that list is what has to be accounted for.
+        found |= set(prov_for(man, slug))
+        seen = routed.get(slug, set()) | declared | excused.get(slug, set())
+        for name in sorted(found - seen):
+            problems.append(f"{slug}: vendored skill {name!r} is neither routed nor in not_merged")
+        for name in sorted(declared - found):
+            if not any(name == skill_name(src, cfg["entry"]) for _s, cfg in man.entries()):
+                problems.append(f"{slug}: not_merged names {name!r}, which is not vendored "
+                                "and not in what the source held at its pinned revision "
+                                "(upstream moved or renamed it — re-check the inventory)")
+    return problems
+
+
 def orphans(man: Manifest) -> list[str]:
     """A vendored file that no skill routes to is a skill that silently did not get
     merged. Either route it or record it in `not_routed` with a reason."""
@@ -383,12 +499,20 @@ def orphans(man: Manifest) -> list[str]:
         for s in cfg.get("scripts", []):
             routed.add(s)
     allowed = {x["path"] for src in man.sources for x in src.get("not_routed", [])}
+    # a file vendored under a skill that the source records as cast aside is not an
+    # unmerged skill: the record is the point, and inventory() is what checks it
+    cast: dict[str, set[str]] = {}
+    for src in man.sources:
+        cast[src["slug"]] = {x["skill"] for x in src.get("not_merged", [])}
     out: list[str] = []
     for p in sorted(UPSTREAM_DIR.rglob("*")):
         if not p.is_file() or p.name == "PROVENANCE.json":
             continue
         rel = str(p.relative_to(ROOT))
-        if rel not in routed and rel not in allowed:
+        up_parts = p.relative_to(UPSTREAM_DIR).parts
+        slug = up_parts[0] if up_parts else ""
+        excused = bool(set(up_parts[1:-1]) & cast.get(slug, set()))
+        if rel not in routed and rel not in allowed and not excused:
             out.append(rel)
     return out
 
@@ -444,11 +568,122 @@ def apply_replaces(text: str, sk: Skill) -> tuple[str, list[str]]:
     # across the whole skill, not per text: see render_skill's check at the end.
     applied: list[str] = []
     for item in sk.cfg.get("replace", []):
+        if not isinstance(item, dict) or "from" not in item or "to" not in item:
+            die(f"{sk.id}: every replace needs {{from, to, reason?}}; got {item!r}")
         needle, replacement = item["from"], item["to"]
         if needle in text:
             text = text.replace(needle, replacement)
             applied.append(needle)
     return text, applied
+
+
+def _heading_lines(body: str):
+    """Yield (line_index, rank, normalized_title, raw_title) for every heading."""
+    out = []
+    for i, line in enumerate(body.splitlines()):
+        m = re.match(r"^(#{1,6})\s+(.*)$", line)
+        if m:
+            raw = m.group(2).strip()
+            norm = re.sub(r"\[|\]|\(#[^)]*\)", "", raw).strip().lower()
+            out.append((i, len(m.group(1)), norm, raw))
+    return out
+
+
+def _section_span(heads, idx: int, lines_n: int) -> tuple[int, int]:
+    """Half-open line range of the section that starts at heads[idx]: up to the
+    next heading of the same rank or shallower."""
+    rank = heads[idx][1]
+    for j in range(idx + 1, len(heads)):
+        if heads[j][1] <= rank:
+            return heads[idx][0], heads[j][0]
+    return heads[idx][0], lines_n
+
+
+PRECEDENCE_SCOPE_NOTE = (
+    "Rows below name layers this fragment does not carry. They stay so the ruling is\n"
+    "visible; do not invent what an absent layer would have said.")
+
+
+def family_scope_note(man: Manifest, family: dict) -> str:
+    """A fragment must say what it left out, or a model reading only this tree
+    assumes the rules it cannot see do not exist."""
+    held = set(family["buckets"])
+    routed = {cfg["bucket"] for _src, cfg in man.entries()}
+    missing = [f"{man.buckets[b]['heading'].split(' — ')[0]} (`{Path(man.buckets[b]['file']).name}`)"
+               for b in man.buckets if b not in held and b in routed]
+    lines = [
+        "## Scope of this fragment",
+        "",
+        f"This is the **{family['title']}** fragment: {family['summary']}",
+        "",
+        f"It is a subset of `{man.skill['name']}`, built from the same manifest, and it is",
+        f"**a fallback, not the default**. Install it instead of the full skill, never",
+        "beside it: the always-on rules would load twice.",
+    ]
+    if missing:
+        lines += ["", "Not included here — if the task turns into one of these, say so and",
+                  "stop guessing from the rules that are present:", ""]
+        lines += [f"- {m}" for m in missing]
+    return "\n".join(lines)
+
+
+def keep_only_sections(body: str, names: list[str]) -> tuple[str, list[str]]:
+    """The inverse of strip_named_sections, for a skill that is mostly a driver for
+    a tool this bundle does not ship: carry the sections that work without it, drop
+    the rest by name. Keeping it this way is auditable; paraphrasing the rest into
+    a tool-free version would not be. A name matching nothing fails the build."""
+    wanted = {n.strip().lower().lstrip("#").strip() for n in names}
+    lines = body.splitlines()
+    heads = _heading_lines(body)
+    keep: set[int] = set()
+    matched: set[str] = set()
+    for idx, (start, rank, norm, raw) in enumerate(heads):
+        hit = norm in wanted or any(norm.startswith(w) for w in wanted if len(w) > 6)
+        if not hit:
+            continue
+        matched.add(next(w for w in wanted if norm == w or norm.startswith(w)))
+        a, b = _section_span(heads, idx, len(lines))
+        keep.update(range(a, b))
+    # a heading inside a kept section is kept, not dropped; only a section that
+    # starts a discarded span counts as dropped, or the report lies about the cut
+    # a leading H1 is dropped by the merge for every skill, so it is not a "cut section"
+    dropped = [raw for i, rank, norm, raw in heads if i not in keep and rank > 1]
+    missing = wanted - matched
+    if missing:
+        die(f"keep_sections names a heading that is not in the source: {sorted(missing)}")
+    # text before the first heading is the skill's own framing; keep it with the
+    # first kept section, or a kept section loses the sentence saying what applies
+    first_head = heads[0][0] if heads else 0
+    if keep:
+        keep.update(range(0, first_head))
+    out = [lines[i] for i in range(len(lines)) if i in keep]
+    return "\n".join(out).strip() + "\n", dropped
+
+
+def markup_transforms(body: str, kinds: list[str]) -> str:
+    """Markup-only cleanups for sources whose text is a website or a generator
+    template. Words are never changed: HTML wrapper lines go, and an
+    anchor-in-heading becomes a plain heading. Both are recorded as normalisations."""
+    for kind in kinds:
+        if kind == "strip-html-lines":
+            body = "\n".join(l for l in body.splitlines()
+                              if not re.match(r"^\s*</?(div|a|img|small|h1|br|p|span|figure|script|style|iframe)\b", l)) + "\n"
+        elif kind == "unwrap-heading-anchors":
+            # two shapes the site generator leaves behind:
+            #   ## <a name="x"></a>[Title](#x)      (anchor then self-link)
+            #   ## <a name="x">[Title](#x)</a>      (link wrapped in the anchor)
+            body = re.sub(r"<a name=\"[^\"]*\"></a>\s*", "", body)
+            body = re.sub(r"^(#{1,6})\s*(?:<a name=\"[^\"]*\">\s*)?\[([^\]]+)\]\(#[^)]*\)\s*(?:</a>)?\s*$",
+                          r"\1 \2", body, flags=re.M)
+            body = re.sub(r"^(#{1,6})\s*<a name=\"[^\"]*\">(.*?)</a>\s*$", r"\1 \2", body, flags=re.M)
+        elif kind == "strip-inline-html":
+            body = re.sub(r"</?(?:br|small|big|em2|center|sup|sub|wbr)\s*/?>", "", body)
+        elif kind == "drop-bookmark-blocks":
+            body = re.sub(r"<a name=\"[^\"]*\"></a>", "", body)
+            body = re.sub(r"\s{2,}$", "", body, flags=re.M)
+        else:
+            die(f"unknown markup transform {kind!r}")
+    return body.strip() + "\n"
 
 
 def render_skill(sk: Skill, registry: dict, mine: str) -> str:
@@ -484,6 +719,14 @@ def render_skill(sk: Skill, registry: dict, mine: str) -> str:
         sk.edited = sorted(set(sk.edited) | set(more))
         parts.append(demote(rewrite_links(doc_text, doc_dir, registry, mine), 1).rstrip())
         parts.append("")
+    # A replace that matched nothing is worse than no replace: the record in
+    # SOURCES.md would describe an edit that never happened, and the misleading
+    # upstream sentence stays in the shipped skill.
+    unmatched = [i["from"] for i in sk.cfg.get("replace", []) if i["from"] not in sk.edited]
+    if unmatched:
+        die(f"{sk.id}: a declared replace matches nothing in the source any more: "
+            f"{unmatched[0][:70]!r} — upstream moved, so update sources.json instead of "
+            "shipping an edit that never happened")
     return "\n".join(parts).rstrip() + "\n"
 
 
@@ -502,15 +745,15 @@ def audit(registry: dict, out: Path) -> list[str]:
     for p in out.rglob("*.md"):
         anchors[p] = {slugify(m.group(1)) for m in re.finditer(r"^#{1,6}\s+(.*)$", read(p), re.M)}
     for p in sorted(out.rglob("*.md")):
-        text = read(p)
+        raw = read(p)
+        # A link inside a code span is an *example* of a link, not one: SOURCES.md
+        # quotes the exact text it replaced, so without this the audit blames the
+        # record for the crime.
+        text = re.sub(r"`[^`\n]*`", "", re.sub(r"```.*?```", "", raw, flags=re.S))
         well_formed = {m.span() for m in re.finditer(r"\[[^\[\]]*\]\(", text)}
         covered = set()
         for start, _end in well_formed:
             covered.add(start)
-        for m in re.finditer(r"\]\(", text):
-            # the "]" of a real link is the last char of its label span
-            if not any(s < m.start() <= e - 2 for s, e in [] if False) and m.start() not in {s + len(text[s:e].split("]")[0]) for s, e in []}:
-                pass
         for m in re.finditer(r"\]\(", text):
             label = text[:m.start()].rfind("[")
             close = text[:m.start()].rfind("]")
@@ -531,13 +774,39 @@ def audit(registry: dict, out: Path) -> list[str]:
                 continue
             if resolved.suffix not in {".md", ".py", ".sh", ".json", ".txt"}:
                 continue
+            # a target the *builder* wrote (references/… is our own layout) has no
+            # excuse for missing: upstream never links that way, so if one appears
+            # it is a rewire that pointed at a file this bundle does not carry
+            if head.startswith("references/") or head.startswith("./references/"):
+                problems.append(f"{p.relative_to(out)}: link into the bundle that goes nowhere: {target}")
+                continue
             if any(c.name == Path(head).name for c in carried_files(registry)):
                 problems.append(f"{p.relative_to(out)}: unrewritten link {target} (link text: {label!r})")
     return problems
 
 
-def assemble(man: Manifest, out: Path) -> dict:
+def assemble(man: Manifest, out: Path, family: dict | None = None) -> dict:
+    """Build one skill tree. `family` is None for the unified bundle, or an entry
+    from the manifest's `families` list, in which case exactly those buckets are
+    assembled and the scope note says what was left behind."""
+    validate_records(man)          # before writing: a broken record must not be
+    if not family:                  # discoverable only in the output it produced
+        problems = inventory(man)
+        for msg in problems:
+            print(f"  inventory: {msg}", file=sys.stderr)
+        if problems:
+            die(f"{len(problems)} upstream skill(s) are unaccounted for: merge them or record "
+                "them under the source's not_merged with a reason")
     skills = man.load()
+    if family:
+        wanted = set(family["buckets"])
+        unknown = wanted - set(man.buckets)
+        if unknown:
+            die(f"family {family['id']} names unknown buckets: {sorted(unknown)}")
+        bucket_ids = [b for b in man.buckets if b in wanted]
+        skills = [s for s in skills if s.cfg["bucket"] in wanted]
+    else:
+        bucket_ids = list(man.buckets)
     if out.exists():
         shutil.rmtree(out)
 
@@ -545,7 +814,8 @@ def assemble(man: Manifest, out: Path) -> dict:
     registry = build_registry(man, skills)
 
     # --- references -------------------------------------------------------- #
-    for bid, bucket in man.buckets.items():
+    for bid in bucket_ids:
+        bucket = man.buckets[bid]
         members = sorted(
             [s for s in skills if s.cfg["bucket"] == bid],
             key=lambda s: (s.cfg.get("order", 50), s.id),
@@ -591,7 +861,8 @@ def assemble(man: Manifest, out: Path) -> dict:
 
     # --- SKILL.md ---------------------------------------------------------- #
     router = ["| If the task is… | Read |", "|---|---|"]
-    for bid, bucket in man.buckets.items():
+    for bid in bucket_ids:
+        bucket = man.buckets[bid]
         members = [s for s in skills if s.cfg["bucket"] == bid]
         if not members:
             continue
@@ -618,11 +889,14 @@ def assemble(man: Manifest, out: Path) -> dict:
         "COMMANDS_TABLE": "\n".join(commands),
         "SOURCES_TABLE": "\n".join(sources_rows),
         "SKILL_COUNT": str(len(skills)),
-        "SOURCE_COUNT": str(len(man.sources)),
+        "SOURCE_COUNT": str(len({s.source_slug for s in skills})),
+        "FAMILY_SUMMARY": family["summary"] if family else "",
         "COMMAND_COUNT": str(len([s for s in skills if s.is_command])),
         "BUCKET_COUNT": str(stats["references"]),
         "WORD_COUNT": f"{stats['words'] // 1000}k",
         "VERSION": man.skill["version"],
+        "SCOPE_NOTE": family_scope_note(man, family) if family else "",
+        "PRECEDENCE_SCOPE": PRECEDENCE_SCOPE_NOTE if family else "",
     }
     # One document, one H1: every core file after the first is demoted a level so
     # the assembled SKILL.md reads as one file instead of six concatenated ones.
@@ -635,17 +909,34 @@ def assemble(man: Manifest, out: Path) -> dict:
         if i:
             text = re.sub(r"^(#{1,5})(\s+)", lambda m: "#" * (len(m.group(1)) + 1) + m.group(2), text, flags=re.M)
         chunks.append(text)
+    name = man.skill["name"] if not family else f"{man.skill['name']}-{family['id']}"
+    if family:
+        # a fragment must not promise the whole package in its frontmatter: the
+        # description is what a host matches on before anything else is read
+        desc = (f"{family['title']} fragment of One Skill — {family['summary']} "
+                "Fallback for a host that cannot carry the full bundle: install this "
+                "instead of one-skill, never beside it. Same always-on rules, fewer "
+                "reference files. Register by destination, code byte-exact, one "
+                "reference at a time.")
+    else:
+        desc = man.skill["description"]
     fm = [
         "---",
-        f"name: {man.skill['name']}",
-        f"description: >\n  {' '.join(man.skill['description'].split())}",
+        f"name: {name}",
+        f"description: >\n  {' '.join(desc.split())}",
         f"version: {man.skill['version']}",
         f"allowed-tools: {man.skill['allowed_tools']}",
         f"license: mixed — see references/SOURCES.md",
-        f"sources: {len(man.sources)} · skills: {len(skills)} · references: {stats['references']}",
+        f"sources: {len({s.source_slug for s in skills})} · skills: {len(skills)} · references: {stats['references']}",
         "---",
     ]
     write(out / "SKILL.md", "\n".join(fm) + "\n\n" + "\n\n".join(chunks) + "\n")
+    if family:
+        # the fragment's own title, above everything else, so nobody mistakes it
+        # for the full skill
+        text = read(out / "SKILL.md").replace(
+            "# One Skill", f"# One Skill · {family['title']}", 1)
+        write(out / "SKILL.md", text)
 
     # --- provenance -------------------------------------------------------- #
     prov = PROVENANCE.exists() and json.loads(read(PROVENANCE)) or {}
@@ -671,6 +962,10 @@ def assemble(man: Manifest, out: Path) -> dict:
              "   ride in the same reference file.",
              "4. The sections listed in `strip_sections` — only the ones that instruct the",
              "   agent to fetch files or edit an entry file, which a merged skill must not do.",
+             "5. Where a skill is mostly a driver for a tool this skill does not ship,",
+             "   `keep_sections` carries only the sections that work without it, and",
+             "   `markup` removes website markup (never words) from sources that are",
+             "   generated pages. Both are listed per section below.",
              "",
              "Everything else is the author's wording. Nothing was paraphrased to make the",
              "packaging convenient.",
@@ -686,6 +981,21 @@ def assemble(man: Manifest, out: Path) -> dict:
                 note += " Literal edits recorded in `replace`: " + "; ".join(f"`{e}`" for e in s.edited) + "."
             rows.append(f"| {s.title} | `{s.source_slug}/{s.id}` | {note} |")
         rows.append("")
+    cast = [s for s in man.sources if s.get("not_merged") or s.get("not_vendored") or s.get("not_routed")]
+    if cast and not family:
+        rows += ["", "## What was deliberately not merged", "",
+                 "Everything vendored from a source is either routed into a reference file above, or",
+                 "listed here with the reason it was cast aside. The build fails if a vendored `SKILL.md`",
+                 "is neither, so this table cannot go stale while upstream grows.", "",
+                 "| source | left out | why |", "|---|---|---|"]
+        for src in cast:
+            for x in src.get("not_merged", []):
+                rows.append(f"| `{src['slug']}` | skill `{x['skill']}` | {x['reason']} |")
+            for x in src.get("not_routed", []):
+                rows.append(f"| `{src['slug']}` | file `{Path(x['path']).name}` | {x['reason']} |")
+            for x in src.get("not_vendored", []):
+                rows.append(f"| `{src['slug']}` | not vendored: {x['what']} | {x['reason']} |")
+        rows.append("")
     write(out / "references" / "SOURCES.md", "\n".join(rows).rstrip() + "\n")
 
     # upstream checksums, so a stale vendored file is detectable
@@ -699,10 +1009,66 @@ def assemble(man: Manifest, out: Path) -> dict:
         }
     write(out / "BUILD.json", json.dumps(lock, indent=2, sort_keys=True) + "\n")
 
+    if family:
+        downgrade_foreign_links(out)
+    # measured on disk, after every post-pass: a fix that grows SKILL.md must be
+    # paid for too, or the budget only guards the text before the last transform
+    always = len(read(out / "SKILL.md").split())
+    stats["always_words"] = always
+    if always > ALWAYS_ON_BUDGET:
+        die(f"{out.name}/SKILL.md is {always} words; the always-loaded file must stay under "
+            f"{ALWAYS_ON_BUDGET}. Move depth into a bucket, shorten a table column, or "
+            "cut a rule that no source asked for.")
     stats["dead_links"] = audit(registry, out)
     stats["orphans"] = orphans(man)
+    if stats["orphans"] and not family:
+        for o in stats["orphans"]:
+            print(f"  unaccounted vendored file: {o}", file=sys.stderr)
+        die(f"{len(stats['orphans'])} vendored file(s) are neither routed to a bucket nor "
+            "listed in a source's not_routed with a reason")
     return stats
 
+
+
+def downgrade_foreign_links(out: Path) -> None:
+    """A fragment is a projection of the same bundle, so link rewriting is done
+    against the full registry — which leaves links pointing at a reference file this
+    tree does not carry. Those become a plain mention: the reader is told the file
+    exists and where, instead of being handed a link that goes nowhere."""
+    have = {p.name for p in (out / "references").glob("*.md")}
+    pat = re.compile(r"\[([^\]]*)\]\((?!http|mailto|#)([^)\s]*?([A-Za-z0-9._-]+\.md))(#[^\s)]*)?\)")
+
+    def fix(m: re.Match, cur: Path = Path(".")) -> str:
+        label, resolved = m.group(1), cur / m.group(2)
+        fname = m.group(3)
+        if fname in have and (p.parent / m.group(2)).resolve().exists():
+            return m.group(0)
+        if (p.parent / m.group(2)).resolve().exists():
+            return m.group(0)
+        # the label of such a link is usually the file name itself; saying it twice
+        # reads like a bug in the generator, which it is not
+        if fname in label.replace("*", "").strip():
+            return f"`{fname}`, in the full skill"
+        return f"**{label}** (`{fname}`, in the full skill)"
+
+    for p in sorted(out.rglob("*.md")):
+        text = read(p)
+
+        def sub(m: re.Match) -> str:
+            return fix(m, cur=p)
+        new = pat.sub(sub, text)
+        if new != text:
+            write(p, new)
+
+
+def build_all(man: Manifest, base: Path) -> dict:
+    """The unified skill, then every fragment. One manifest, one load, N trees: a
+    fragment is a bucket subset, never a fork of the content."""
+    stats = assemble(man, base / "skill")
+    for fam in man.data.get("families", []):
+        fam_stats = assemble(man, base / "families" / fam["id"], family=fam)
+        stats.setdefault("families", {})[fam["id"]] = fam_stats
+    return stats
 
 
 def report(stats: dict) -> dict:
@@ -714,11 +1080,8 @@ def report(stats: dict) -> dict:
         print(f"  dead link: {p}", file=sys.stderr)
     if stats["dead_links"]:
         die(f"{len(stats['dead_links'])} dead link(s) in the merged skill")
-    for o in stats["orphans"]:
-        print(f"  unaccounted vendored file: {o}", file=sys.stderr)
-    if stats["orphans"]:
-        die(f"{len(stats['orphans'])} vendored file(s) are neither routed to a bucket nor "
-            "listed in a source's not_routed with a reason")
+    if stats.get("orphans"):
+        print("  (orphans reported by the build; see above)")
     if len(always) > ALWAYS_ON_BUDGET:
         die(f"SKILL.md is {len(always)} words; the always-loaded file must stay under {ALWAYS_ON_BUDGET}. "
             "Move depth into a bucket, or shorten a table column.")
@@ -743,6 +1106,23 @@ def cmd_install(man: Manifest) -> None:
         shutil.copytree(SKILL_DIR, dest)
         print(f"  installed → {dest.relative_to(REPO)}")
 
+    for fam in man.data.get("families", []):
+        src = DIST_DIR / "families" / fam["id"]
+        dest = REPO / "claude-skills" / "fragments" / f"one-skill-{fam['id']}"
+        if not src.exists():
+            die(f"{src} missing — run `python one-skill/build.py build`")
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(src, dest)
+        fz = REPO / "claude-skills" / "fragments" / "zips" / f"one-skill-{fam['id']}.zip"
+        fz.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(fz, "w", zipfile.ZIP_DEFLATED) as z:
+            for q in sorted(src.rglob("*")):
+                if q.is_file():
+                    z.write(q, Path(f"one-skill-{fam['id']}") / q.relative_to(src))
+        print(f"  fragment → {dest.relative_to(REPO)} "
+              f"(+ {fz.relative_to(REPO)}, {fz.stat().st_size // 1024} KiB)")
+
     zip_path = REPO / "claude-skills" / "app" / "zips" / "one-skill.zip"
     zip_path.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
@@ -754,12 +1134,16 @@ def cmd_install(man: Manifest) -> None:
     # paste-only platforms: the router file alone, unchanged in substance
     pseudo = REPO / "pseudo-skills" / "one-skill.md"
     body = read(SKILL_DIR / "SKILL.md")
+    refs = len(list((SKILL_DIR / "references").glob("*.md"))) - 1  # minus SOURCES.md
     head = (
-        "> **Paste-only setup.** This is the router half of the `one-skill` skill. The\n"
-        "> nine reference files it points at carry the upstream rule sets; they are not\n"
-        "> pasted here because a monolith of all of them would cost more context than it\n"
-        "> saves. For a task that needs one, paste this file plus that reference, or point\n"
-        "> the model at the repo copy in `coding-agents/variants/one-skill/`.\n\n"
+        f"> **Paste-only setup.** This is the router half of the `one-skill` skill. The\n"
+        f"> {refs} reference files it points at carry the upstream rule sets, SOURCES.md the\n"
+        f"> provenance; none of them are pasted here, because a monolith of all of them\n"
+        f"> would cost more context than it saves.\n"
+        "> For a task that needs one, paste this file plus that reference. In the\n"
+        "> repo they live next to this file at `one-skill/dist/skill/references/`; a host\n"
+        "> that cannot read files at all should use a fragment instead\n"
+        "> (`claude-skills/fragments/`), which is the same rules with fewer files.\n\n"
     )
     write(pseudo, head + body)
     print(f"  paste file → {pseudo.relative_to(REPO)}")
@@ -773,40 +1157,50 @@ def cmd_check(man: Manifest) -> None:
     It compares against the mirrors rather than `dist/`, because `dist/` is
     gitignored — in CI there is no `dist/`, and a check that reads a directory
     which may simply be absent reports success on an empty tree. That is exactly
-    how this build once shipped a stale bundle, so the mirrors are the contract."""
+    how this build once shipped a stale bundle, so the mirrors are the contract.
+    The fragments are mirrors too: a stale fragment is as broken as a stale skill."""
     with tempfile.TemporaryDirectory() as td:
-        fresh = Path(td) / "skill"
-        stats = assemble(man, fresh)
+        base = Path(td)
+        stats = build_all(man, base)
 
-        for dest in INSTALL_DIRS:
+        trees = [(d, base / "skill") for d in INSTALL_DIRS]
+        trees += [(REPO / "claude-skills" / "fragments" / f"one-skill-{fam['id']}",
+                   base / "families" / fam["id"]) for fam in man.data.get("families", [])]
+        for dest, src in trees:
             if not dest.exists():
                 die(f"{dest.relative_to(REPO)} does not exist — run `python one-skill/build.py install`")
-            for p in sorted(fresh.rglob("*")):
+            for p in sorted(src.rglob("*")):
                 if not p.is_file():
                     continue
-                rel = p.relative_to(fresh)
-                mirror = dest / rel
+                mirror = dest / p.relative_to(src)
                 if not mirror.exists():
                     die(f"{mirror.relative_to(REPO)} is missing — run `python one-skill/build.py install`")
                 if read(mirror) != read(p):
                     die(f"{mirror.relative_to(REPO)} is stale — run `python one-skill/build.py install`")
             extra = [q.relative_to(dest) for q in dest.rglob("*")
-                     if q.is_file() and not (fresh / q.relative_to(dest)).exists()]
+                     if q.is_file() and not (src / q.relative_to(dest)).exists()]
             if extra:
                 die(f"{dest.relative_to(REPO)} holds files the build no longer emits: "
                     f"{', '.join(map(str, extra[:5]))}")
 
         paste = REPO / "pseudo-skills" / "one-skill.md"
-        if not paste.exists() or read(fresh / "SKILL.md") not in read(paste):
+        if not paste.exists() or read(base / "skill" / "SKILL.md") not in read(paste):
             die("pseudo-skills/one-skill.md is missing or is not the current SKILL.md")
 
         if SKILL_DIR.exists():
-            for p in sorted(fresh.rglob("*")):
-                if p.is_file() and (SKILL_DIR / p.relative_to(fresh)).exists():
-                    if read(SKILL_DIR / p.relative_to(fresh)) != read(p):
-                        die(f"one-skill/dist is out of step with a fresh build: {p.relative_to(fresh)}")
+            for p in sorted((base / "skill").rglob("*")):
+                if not p.is_file():
+                    continue
+                q = SKILL_DIR / p.relative_to(base / "skill")
+                if q.exists() and read(q) != read(p):
+                    die(f"one-skill/dist is out of step with a fresh build: {p.relative_to(base / 'skill')}")
+    fam_note = ""
+    if stats.get("families"):
+        fam_note = "; fragments " + ", ".join(
+            f"{k} ({v['skills']} skills, {v['words'] // 1000}k words of reference)"
+            for k, v in stats["families"].items())
     print(f"published copies are current ({stats['skills']} skills, "
-          f"{stats['references']} references, {len(stats['dead_links'])} dead links)")
+          f"{stats['references']} references, {len(stats['dead_links'])} dead links{fam_note})")
 
 
 def main() -> int:
@@ -819,13 +1213,13 @@ def main() -> int:
     if args.cmd == "sync":
         cmd_sync(man, args.only)
     elif args.cmd == "build":
-        stats = report(assemble(man, SKILL_DIR))
+        stats = report(build_all(man, DIST_DIR))
     elif args.cmd == "install":
         cmd_install(man)
     elif args.cmd == "check":
         cmd_check(man)
     else:
-        report(assemble(man, SKILL_DIR))
+        report(build_all(man, DIST_DIR))
         cmd_install(man)
     return 0
 
