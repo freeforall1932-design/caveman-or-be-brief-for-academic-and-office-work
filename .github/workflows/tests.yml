@@ -11,8 +11,11 @@ on:
     - cron: "0 6 * * 1"
 
 jobs:
-  pack-tests:
-    name: Coding-agent packs
+  one-skill:
+    name: One skill (generated bundle)
+    # The bundle in .claude/skills/, claude-skills/app/ and pseudo-skills/ is the
+    # output of one-skill/build.py. This job is what keeps "the repo publishes X"
+    # and "the manifest says Y" from drifting apart.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,20 +25,28 @@ jobs:
           python-version: "3.11"
 
       - name: Install test deps
-        run: python -m pip install --upgrade pip pytest pyyaml
+        run: python -m pip install --upgrade pip pytest
 
-      - name: Compile packs and run tests
-        run: |
-          python coding-agents/compile.py
-          pytest coding-agents/tests -q
+      - name: Test the merge (fidelity, links, budget, determinism)
+        run: pytest one-skill/tests -q
 
-      - name: Fail if generated packs are stale
+      - name: Fail if the published skill is stale or the build is not reproducible
         run: |
-          python coding-agents/compile.py
-          git diff --exit-code -- coding-agents/packs || {
-            echo "::error::coding-agents/packs is out of date. Run 'python coding-agents/compile.py' and commit the result."
+          python one-skill/build.py check || {
+            echo "::error::one-skill/dist is out of date, or the build is not reproducible."
+            echo "::error::Run 'python one-skill/build.py build install' and commit the result."
             exit 1
           }
+
+      - name: Refuse a network dependency in the build
+        # `build` reads only one-skill/upstream/, so a merge can be reproduced and
+        # audited offline. Only `sync` may reach the network, and only when a
+        # maintainer asks for it.
+        run: |
+          python one-skill/build.py build >/dev/null
+          python one-skill/build.py check >/dev/null
+          git diff --exit-code -- one-skill/dist || {
+            echo "::error::building offline changed one-skill/dist"; exit 1; }
 
   skillopt-tests:
     name: SkillOpt reward function
@@ -102,3 +113,9 @@ jobs:
 
       - name: Run the full suite
         run: pytest skillopt-integration/tests -q
+
+  # `legacy/coding-agents/compile.py` and its tests are not run any more. The
+  # per-agent pack build was frozen when the four variants moved under legacy/:
+  # the one skill replaces them as the published artifact, and a job that guards
+  # frozen history turns every unrelated pull request red for no benefit. The
+  # generator still runs locally if someone wants to rebuild those packs.

@@ -1,0 +1,982 @@
+{
+  "_comment": [
+    "Single manifest for the one-skill builder. Everything the merged skill contains is",
+    "declared here: which upstream repos feed it, which files each contributes, and which",
+    "bucket (destination) each contribution lands in.",
+    "",
+    "TO ADD ANOTHER REPO LATER:",
+    "  1. add an entry to \"sources\" with an \"origin\" (github repo + the glob list to vendor)",
+    "  2. add skill entries to that source's \"skills\" list, each with a bucket + when + entry",
+    "  3. run:  python one-skill/build.py sync && python one-skill/build.py all",
+    "Nothing else in the repository needs to change; SKILL.md, the router table, the",
+    "provenance block and the install copies are all regenerated from this file."
+  ],
+  "skill": {
+    "name": "one-skill",
+    "title": "One Skill \u2014 grug \u00b7 caveman \u00b7 be-brief \u00b7 antislop \u00b7 matt-pocock",
+    "tagline": "Everything in this repository, in one skill: how to think, how much to write, how it reads, how the interface looks, and how the work moves from idea to merged.",
+    "version": "1.0.0",
+    "description": "Single skill merging this repo's grug/caveman/be-brief/ralph modes, the antislop design filter, and Matt Pocock's engineering and productivity skills. Use for any coding, writing, review, design or planning task, or on \"one skill\", \"caveman\", \"be brief\", \"ringkas\", \"antislop\", \"grill me\", \"tdd\", \"code review\". Register by destination, code byte-exact, one reference at a time.",
+    "allowed_tools": "Read Write Edit Glob Grep Bash(python3 *)",
+    "languages": [
+      "en",
+      "id"
+    ]
+  },
+  "buckets": [
+    {
+      "id": "write-prose",
+      "file": "references/write-prose.md",
+      "heading": "Write prose \u2014 text a human reads",
+      "when": "thesis, journal, report, memo, professional email, landing copy, docs, PR/issue bodies",
+      "layer": "be-brief writes; antislop-copywriting de-sloppens"
+    },
+    {
+      "id": "terse-chat",
+      "file": "references/terse-chat.md",
+      "heading": "Terse chat \u2014 developer-facing output and one-shots",
+      "when": "chat replies, status, logs, diagnosis, shrinking a long input, code-review punch-list",
+      "layer": "caveman measures and cuts"
+    },
+    {
+      "id": "think-first",
+      "file": "references/think-first.md",
+      "heading": "Think first \u2014 reasoning, pressure-testing, polish loops",
+      "when": "before acting, when a plan is vague, when the user wants their thinking attacked, when polishing has budget",
+      "layer": "grug decides; ralph iterates; grilling interrogates"
+    },
+    {
+      "id": "code-craft",
+      "file": "references/code-craft.md",
+      "heading": "Code craft \u2014 design, tests, debugging, comments",
+      "when": "writing or restructuring code, choosing a seam, diagnosing a bug, touching a comment",
+      "layer": "pocock's engineering discipline; antislop-code on comments"
+    },
+    {
+      "id": "ship-workflow",
+      "file": "references/ship-workflow.md",
+      "heading": "Ship workflow \u2014 idea to merged",
+      "when": "spec, tickets, implement, review, PR, triage, retro, research, hand-built wizards",
+      "layer": "pocock's process skills; each is a command, not an always-on rule"
+    },
+    {
+      "id": "ui-craft",
+      "file": "references/ui-craft.md",
+      "heading": "UI craft \u2014 the anti-slop visual filter",
+      "when": "any interface: layout, colour, components, motion, decoration",
+      "layer": "antislop core + antislop-ui"
+    },
+    {
+      "id": "responsive-access",
+      "file": "references/responsive-access.md",
+      "heading": "Reflow and real people \u2014 mobile layout, accessibility",
+      "when": "breakpoints, overflow, tap targets, contrast, keyboard, focus, states",
+      "layer": "antislop-layoutmobile + antislop-human"
+    },
+    {
+      "id": "setup-repo",
+      "file": "references/setup-repo.md",
+      "heading": "Set up the repo \u2014 one-time configuration",
+      "when": "first use of the process skills, git guardrails, pre-commit, test typing migrations, exercise scaffolds",
+      "layer": "pocock's setup and misc skills"
+    },
+    {
+      "id": "teach-and-author",
+      "file": "references/teach-and-author.md",
+      "heading": "Teach and author \u2014 for agents and for humans learning",
+      "when": "writing or editing a skill/AGENTS.md/CLAUDE.md, or teaching a concept in a workspace",
+      "layer": "pocock's writing-for-agents + teach"
+    },
+    {
+      "id": "origins",
+      "file": "references/origins.md",
+      "heading": "Origins \u2014 the three philosophies and their quarrel",
+      "when": "you need to know why a rule reads the way it does, or want the upstream source behind a layer",
+      "layer": "the repository's own analysis, quoted rather than summarised"
+    }
+  ],
+  "sources": [
+    {
+      "slug": "local",
+      "title": "caveman-or-be-brief (this repository)",
+      "license": "Unlicense (root) / MIT (caveman-universal)",
+      "attribution": "freeforall1932-design/skills-repo",
+      "origin": {
+        "kind": "local"
+      },
+      "sync": {
+        "note": "vendored from this repository's own maintained sources, not from GitHub",
+        "include": [
+          {
+            "from": "legacy/coding-agents/variants/unified",
+            "to": "upstream/local/variants/unified"
+          },
+          {
+            "from": "legacy/coding-agents/variants/be-brief-output",
+            "to": "upstream/local/variants/be-brief-output"
+          },
+          {
+            "from": "legacy/coding-agents/variants/caveman-output",
+            "to": "upstream/local/variants/caveman-output"
+          },
+          {
+            "from": "legacy/coding-agents/variants/grug-reasoning",
+            "to": "upstream/local/variants/grug-reasoning"
+          },
+          {
+            "from": "legacy/caveman-universal/skills",
+            "to": "upstream/local/universal/skills"
+          },
+          {
+            "from": "legacy/caveman-universal/references/patterns.md",
+            "to": "upstream/local/universal/references/patterns.md"
+          },
+          {
+            "from": "legacy/caveman-universal/custom-instructions/caveman-micro-universal.md",
+            "to": "upstream/local/universal/micro.md"
+          },
+          {
+            "from": "legacy/claude-skills/app/caveman-be-brief/SKILL.md",
+            "to": "upstream/local/app/caveman-be-brief.md"
+          },
+          {
+            "from": "legacy/claude-skills/app/caveman-compress/SKILL.md",
+            "to": "upstream/local/app/caveman-compress.md"
+          },
+          {
+            "from": "legacy/claude-skills/app/caveman-review/SKILL.md",
+            "to": "upstream/local/app/caveman-review.md"
+          },
+          {
+            "from": "legacy/claude-skills/app/grug-reasoning/SKILL.md",
+            "to": "upstream/local/app/grug-reasoning.md"
+          },
+          {
+            "from": "legacy/.claude-skills/ralph-wiggum/SKILL.md",
+            "to": "upstream/local/app/ralph-wiggum.md"
+          },
+          {
+            "from": "legacy/coding-agents/philosophy",
+            "to": "upstream/local/philosophy"
+          }
+        ]
+      },
+      "skills": [
+        {
+          "id": "be-brief-output",
+          "bucket": "write-prose",
+          "order": 10,
+          "title": "Be brief \u2014 professional prose with zero wasted words",
+          "when": "anything a human reads as a finished artifact",
+          "entry": "upstream/local/variants/be-brief-output/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/local/variants/be-brief-output/references/cut-lists.md",
+              "label": "Cut lists"
+            },
+            {
+              "path": "upstream/local/variants/be-brief-output/examples.md",
+              "label": "Before / after"
+            }
+          ],
+          "strip_sections": [
+            "Reference material",
+            "Language"
+          ],
+          "strip_reason": "Stated once for the whole skill, in SKILL.md, instead of repeated per section. The links those sections carried now resolve inside this file."
+        },
+        {
+          "id": "caveman-be-brief-app",
+          "bucket": "write-prose",
+          "order": 20,
+          "title": "Caveman be brief \u2014 document modes, intensity, Indonesian",
+          "when": "thesis / journal / report drafting and review in the app",
+          "entry": "upstream/local/app/caveman-be-brief.md",
+          "strip_sections": [
+            "THE CORE RULE: Deletion Test",
+            "LANGUAGE",
+            "INTENSITY LEVELS",
+            "AUTO-CLARITY",
+            "RALPH WIGGUM LOOP (separate skill \u2014 optional)"
+          ],
+          "strip_reason": "Stated once for the whole skill, in SKILL.md, instead of repeated per section. The ralph loop is carried once, in think-first."
+        },
+        {
+          "id": "caveman-output",
+          "bucket": "terse-chat",
+          "order": 10,
+          "title": "Caveman output \u2014 terse developer chat",
+          "when": "chat streaming next to tool calls",
+          "entry": "upstream/local/variants/caveman-output/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/local/variants/caveman-output/references/cut-lists.md",
+              "label": "Cut lists"
+            },
+            {
+              "path": "upstream/local/variants/caveman-output/references/work-patterns.md",
+              "label": "Work patterns"
+            },
+            {
+              "path": "upstream/local/variants/caveman-output/examples.md",
+              "label": "Before / after"
+            }
+          ],
+          "strip_sections": [
+            "Reference material",
+            "Language"
+          ],
+          "strip_reason": "Stated once for the whole skill, in SKILL.md, instead of repeated per section. The links those sections carried now resolve inside this file."
+        },
+        {
+          "id": "caveman-upstream",
+          "bucket": "terse-chat",
+          "order": 20,
+          "title": "Caveman \u2014 the upstream compression rule set",
+          "when": "maximum density, logs, structured output",
+          "entry": "upstream/local/universal/skills/caveman.md",
+          "strip_sections": [
+            "Ralph Wiggum loop (optional)"
+          ],
+          "strip_reason": "The Ralph loop is one section, in think-first; this restatement would be the fourth copy."
+        },
+        {
+          "id": "caveman-compress",
+          "bucket": "terse-chat",
+          "order": 30,
+          "title": "Caveman compress \u2014 one-shot input shrinker",
+          "when": "a long PDF or pasted source has to fit elsewhere",
+          "entry": "upstream/local/app/caveman-compress.md"
+        },
+        {
+          "id": "caveman-review",
+          "bucket": "terse-chat",
+          "order": 40,
+          "title": "Caveman review \u2014 line punch-list only",
+          "when": "a punch-list is wanted, not a rewrite",
+          "entry": "upstream/local/app/caveman-review.md"
+        },
+        {
+          "id": "micro-mode",
+          "bucket": "terse-chat",
+          "order": 50,
+          "title": "Micro mode \u2014 the 85-token floor",
+          "when": "context is tiny and the full skill cannot ride along",
+          "entry": "upstream/local/universal/micro.md",
+          "strip_sections": [
+            "Ralph Wiggum Loop (Optional)"
+          ],
+          "strip_reason": "The Ralph loop is one section, in think-first; this restatement would be the fourth copy."
+        },
+        {
+          "id": "phrase-catalog",
+          "bucket": "write-prose",
+          "order": 90,
+          "title": "Phrase catalog \u2014 EN + ID filler to cut",
+          "when": "deciding whether a specific phrase is filler",
+          "entry": "upstream/local/universal/references/patterns.md"
+        },
+        {
+          "id": "grug-reasoning",
+          "bucket": "think-first",
+          "order": 10,
+          "title": "Grug reasoning \u2014 internal, never shown",
+          "when": "every task, before acting",
+          "entry": "upstream/local/variants/grug-reasoning/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/local/variants/grug-reasoning/references/grug-canon.md",
+              "label": "Grug canon"
+            },
+            {
+              "path": "upstream/local/variants/grug-reasoning/examples.md",
+              "label": "Traces"
+            }
+          ],
+          "strip_sections": [
+            "Reference material",
+            "Language"
+          ],
+          "strip_reason": "Stated once for the whole skill, in SKILL.md, instead of repeated per section. The links those sections carried now resolve inside this file."
+        },
+        {
+          "id": "unified-workflow",
+          "bucket": "think-first",
+          "order": 20,
+          "title": "The unified workflow \u2014 sniff, fear, plan, act, speak",
+          "when": "one agent doing both chat and documents",
+          "entry": "upstream/local/variants/unified/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/local/variants/unified/references/work-patterns.md",
+              "label": "Work patterns"
+            },
+            {
+              "path": "upstream/local/variants/unified/examples.md",
+              "label": "Before / after"
+            }
+          ],
+          "strip_sections": [
+            "Reference material",
+            "Language"
+          ],
+          "strip_reason": "The merged skill states these once, in SKILL.md, instead of repeating them per section."
+        },
+        {
+          "id": "ralph-wiggum",
+          "bucket": "think-first",
+          "order": 30,
+          "title": "Ralph Wiggum loop \u2014 iterative polish",
+          "when": "\"ralph on\" only; off by default",
+          "command": true,
+          "entry": "upstream/local/app/ralph-wiggum.md"
+        },
+        {
+          "id": "philosophies",
+          "bucket": "origins",
+          "order": 10,
+          "title": "Where grug, caveman and be-brief disagree",
+          "when": "the merged precedence table is a ruling; this is the evidence behind it",
+          "entry": "upstream/local/philosophy/conflicts.md",
+          "docs": [
+            {
+              "path": "upstream/local/philosophy/grug.md",
+              "label": "Grug"
+            },
+            {
+              "path": "upstream/local/philosophy/caveman.md",
+              "label": "Caveman"
+            },
+            {
+              "path": "upstream/local/philosophy/be-brief.md",
+              "label": "Be brief"
+            },
+            {
+              "path": "upstream/local/philosophy/sources.md",
+              "label": "Sources and attribution"
+            }
+          ],
+          "note": "Verbatim, with the paths updated for where those files now live: the merge moved the per-variant skills under `legacy/`, and a skill that tells an agent to run a script at a path that no longer exists is a defect. Each substitution is a declared literal, checked at build time. A pointer that left the skill folder for its own build tooling cannot resolve once installed, so it became plain text.",
+          "replace": [
+            {
+              "from": "`python coding-agents/compile.py`",
+              "to": "`python legacy/coding-agents/compile.py`"
+            },
+            {
+              "from": "Every rule in `coding-agents/` traces",
+              "to": "Every rule in the merged skill traces"
+            },
+            {
+              "from": "which is why `coding-agents/` looks the way it does",
+              "to": "which is why `legacy/coding-agents/` looks the way it does"
+            },
+            {
+              "from": "at `caveman-universal/references/upstream/`",
+              "to": "at `legacy/caveman-universal/references/upstream/`"
+            },
+            {
+              "from": "`caveman-universal/references/upstream/official-caveman-skill.md`",
+              "to": "`legacy/caveman-universal/references/upstream/official-caveman-skill.md`"
+            },
+            {
+              "from": "this repo's `caveman-universal/`",
+              "to": "this repo's `legacy/caveman-universal/`"
+            },
+            {
+              "from": "The coding-agent packaging** in `coding-agents/`",
+              "to": "The coding-agent packaging** in `legacy/coding-agents/`"
+            },
+            {
+              "from": "MIT (`caveman-universal/`)",
+              "to": "MIT (`legacy/caveman-universal/`)"
+            },
+            {
+              "from": "[`skillopt-integration/`](../skillopt-integration/)",
+              "to": "`skillopt-integration/`, in the repository that built this skill"
+            }
+          ]
+        },
+        {
+          "id": "grug-engine",
+          "bucket": "think-first",
+          "order": 15,
+          "title": "Grug engine \u2014 the full internal reasoning rule set",
+          "when": "long documents, when the short version leaves a question open",
+          "entry": "upstream/local/app/grug-reasoning.md",
+          "strip_sections": [
+            "LANGUAGE",
+            "RALPH WIGGUM LOOP (Optional Iteration)",
+            "STICKY REASONING MODE",
+            "EXIT PHRASES (Return to normal reasoning)",
+            "CRITICAL DISTINCTION: TWO MODES"
+          ],
+          "strip_reason": "Stated once for the whole skill, in SKILL.md, instead of repeated per section. The two-modes rule is carried once, in the caveman-be-brief section of write-prose.",
+          "note": "Kept alongside the short `grug-reasoning` section because it holds what that one omits: hard length budgets, the sentence and paragraph rules for the internal trace, the word-swap table, the abbreviation trap and the continuation protocol for a truncated context."
+        }
+      ],
+      "not_routed": [
+        {
+          "path": "upstream/local/universal/skills/caveman-compress.md",
+          "reason": "the `app` copy is what every install path ships; the two differ only in frontmatter and app-vs-library wording, so one is carried."
+        },
+        {
+          "path": "upstream/local/universal/skills/caveman-review.md",
+          "reason": "same as caveman-compress."
+        },
+        {
+          "path": "upstream/local/variants/unified/references/cut-lists.md",
+          "reason": "byte-identical to be-brief-output's copy, which is carried."
+        }
+      ]
+    },
+    {
+      "slug": "anti-slop-fork",
+      "title": "anti-slop-fork \u2014 the anti-slop design filter",
+      "license": "MIT",
+      "attribution": "freeforall1932-design/anti-slop-fork",
+      "origin": {
+        "kind": "github",
+        "repo": "freeforall1932-design/anti-slop-fork",
+        "ref": "HEAD"
+      },
+      "sync": {
+        "include": [
+          {
+            "from": "skills/antislop/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop.md"
+          },
+          {
+            "from": "skills/antislop-ui/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop-ui.md"
+          },
+          {
+            "from": "skills/antislop-copywriting/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop-copywriting.md"
+          },
+          {
+            "from": "skills/antislop-human/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop-human.md"
+          },
+          {
+            "from": "skills/antislop-human/contrast-check.py",
+            "to": "upstream/anti-slop-fork/contrast-check.py"
+          },
+          {
+            "from": "skills/antislop-layoutmobile/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop-layoutmobile.md"
+          },
+          {
+            "from": "skills/antislop-code/SKILL.md",
+            "to": "upstream/anti-slop-fork/antislop-code.md"
+          }
+        ]
+      },
+      "skills": [
+        {
+          "id": "antislop-core",
+          "bucket": "ui-craft",
+          "order": 10,
+          "title": "antislop core \u2014 craftsmanship standard, R-rules, liveliness",
+          "when": "always for interface work",
+          "entry": "upstream/anti-slop-fork/antislop.md",
+          "strip_sections": [
+            "First-Run Install Wizard",
+            "Already installed, and the user asks how to update"
+          ],
+          "note": "The upstream install wizard and its pointer-block step are dropped: in this merged skill every sibling is already inside the same skill, so there is nothing for the agent to fetch and no entry file to edit.",
+          "strip_reason": "Install-time instructions: a merged skill has nothing to fetch and no entry file to edit."
+        },
+        {
+          "id": "antislop-ui",
+          "bucket": "ui-craft",
+          "order": 20,
+          "title": "antislop-ui \u2014 colour, layout, components, decoration, motion",
+          "when": "building or editing any interface",
+          "entry": "upstream/anti-slop-fork/antislop-ui.md"
+        },
+        {
+          "id": "antislop-copywriting",
+          "bucket": "write-prose",
+          "order": 40,
+          "title": "antislop-copywriting \u2014 tone, rhythm, honesty of claims",
+          "when": "product copy, landing text, and any persuasive or marketing-flavoured prose",
+          "entry": "upstream/anti-slop-fork/antislop-copywriting.md"
+        },
+        {
+          "id": "antislop-human",
+          "bucket": "responsive-access",
+          "order": 10,
+          "title": "antislop-human \u2014 contrast, keyboard, focus, states",
+          "when": "any shipped interface, before review is complete",
+          "entry": "upstream/anti-slop-fork/antislop-human.md",
+          "scripts": [
+            "upstream/anti-slop-fork/contrast-check.py"
+          ],
+          "note": "The contrast checker no longer sits next to a standalone SKILL.md: it is carried at `scripts/contrast-check.py` inside this skill, which is what the command below resolves to.",
+          "replace": [
+            {
+              "from": "(`contrast-check.py`, next to this `SKILL.md`)",
+              "to": "(`scripts/contrast-check.py`, inside this skill)"
+            },
+            {
+              "from": "point the script path at this skill's folder directly",
+              "to": "point the script path at `scripts/contrast-check.py` inside this skill directly"
+            }
+          ]
+        },
+        {
+          "id": "antislop-layoutmobile",
+          "bucket": "responsive-access",
+          "order": 20,
+          "title": "antislop-layoutmobile \u2014 breakpoints, scale, grids, overflow, tap targets",
+          "when": "layout that has to reflow phone to desktop",
+          "entry": "upstream/anti-slop-fork/antislop-layoutmobile.md"
+        },
+        {
+          "id": "antislop-code",
+          "bucket": "code-craft",
+          "order": 90,
+          "title": "antislop-code \u2014 comment hygiene, code untouched",
+          "when": "writing or editing code comments",
+          "entry": "upstream/anti-slop-fork/antislop-code.md"
+        }
+      ],
+      "not_routed": []
+    },
+    {
+      "slug": "mattpocock-skills",
+      "title": "mattpocock/skills \u2014 engineering, productivity, misc",
+      "license": "MIT",
+      "attribution": "mattpocock/skills",
+      "origin": {
+        "kind": "github",
+        "repo": "mattpocock/skills",
+        "ref": "HEAD"
+      },
+      "sync": {
+        "include": [
+          {
+            "from": "skills/engineering",
+            "to": "upstream/mattpocock-skills/engineering",
+            "skip": [
+              "README.md",
+              "agents"
+            ]
+          },
+          {
+            "from": "skills/productivity",
+            "to": "upstream/mattpocock-skills/productivity",
+            "skip": [
+              "README.md",
+              "agents"
+            ]
+          },
+          {
+            "from": "skills/misc",
+            "to": "upstream/mattpocock-skills/misc",
+            "skip": [
+              "README.md",
+              "agents"
+            ]
+          }
+        ],
+        "exclude_note": "skills/in-progress and skills/deprecated are deliberately not vendored: betas with no docs pages that can disappear without warning."
+      },
+      "skills": [
+        {
+          "id": "ask-matt",
+          "bucket": "ship-workflow",
+          "order": 5,
+          "title": "ask-matt \u2014 which flow fits this situation",
+          "when": "the user asks what to do next",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/ask-matt/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/ask-matt/PHASE-BOUNDARIES.md",
+              "label": "Phase boundaries"
+            }
+          ]
+        },
+        {
+          "id": "tdd",
+          "bucket": "code-craft",
+          "order": 10,
+          "title": "TDD \u2014 red \u2192 green at agreed seams",
+          "when": "building a feature or fixing a bug test-first",
+          "entry": "upstream/mattpocock-skills/engineering/tdd/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/tdd/tests.md",
+              "label": "What a good test looks like"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/tdd/mocking.md",
+              "label": "Mocking"
+            }
+          ]
+        },
+        {
+          "id": "codebase-design",
+          "bucket": "code-craft",
+          "order": 20,
+          "title": "Codebase design \u2014 deep modules, seams, leverage",
+          "when": "interface shape, module depth, where a seam goes",
+          "entry": "upstream/mattpocock-skills/engineering/codebase-design/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/codebase-design/DEEPENING.md",
+              "label": "Deepening"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/codebase-design/DESIGN-IT-TWICE.md",
+              "label": "Design it twice"
+            }
+          ]
+        },
+        {
+          "id": "domain-modeling",
+          "bucket": "code-craft",
+          "order": 30,
+          "title": "Domain modelling \u2014 glossary and ADRs",
+          "when": "terminology, GLOSSARY.md, ADRs",
+          "entry": "upstream/mattpocock-skills/engineering/domain-modeling/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/domain-modeling/ADR-FORMAT.md",
+              "label": "ADR format"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/domain-modeling/GLOSSARY-FORMAT.md",
+              "label": "Glossary format"
+            }
+          ]
+        },
+        {
+          "id": "diagnosing-bugs",
+          "bucket": "code-craft",
+          "order": 40,
+          "title": "Diagnosing bugs \u2014 red loop first, then hypothesis",
+          "when": "broken, throwing, failing, slow",
+          "entry": "upstream/mattpocock-skills/engineering/diagnosing-bugs/SKILL.md",
+          "scripts": [
+            "upstream/mattpocock-skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh"
+          ]
+        },
+        {
+          "id": "improve-codebase-architecture",
+          "bucket": "code-craft",
+          "order": 50,
+          "title": "Improve codebase architecture \u2014 scan, report, grill",
+          "when": "codebase health is the question",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/improve-codebase-architecture/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/improve-codebase-architecture/HTML-REPORT.md",
+              "label": "HTML report format"
+            }
+          ]
+        },
+        {
+          "id": "prototype",
+          "bucket": "code-craft",
+          "order": 60,
+          "title": "Prototype \u2014 throwaway, to answer one question",
+          "when": "sanity-checking a state model or a UI direction",
+          "entry": "upstream/mattpocock-skills/engineering/prototype/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/prototype/LOGIC.md",
+              "label": "Logic branch"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/prototype/UI.md",
+              "label": "UI branch"
+            }
+          ]
+        },
+        {
+          "id": "to-spec",
+          "bucket": "ship-workflow",
+          "order": 10,
+          "title": "To spec \u2014 conversation into a published spec",
+          "when": "the discussion is finished and needs writing down",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/to-spec/SKILL.md"
+        },
+        {
+          "id": "to-tickets",
+          "bucket": "ship-workflow",
+          "order": 20,
+          "title": "To tickets \u2014 tracer-bullet vertical slices with blocking edges",
+          "when": "a plan has to become work",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/to-tickets/SKILL.md"
+        },
+        {
+          "id": "implement",
+          "bucket": "ship-workflow",
+          "order": 30,
+          "title": "Implement \u2014 build the described work, drive tdd, close with review",
+          "when": "a spec or ticket set is ready",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/implement/SKILL.md"
+        },
+        {
+          "id": "implement-spec",
+          "bucket": "ship-workflow",
+          "order": 40,
+          "title": "Implement spec \u2014 whole spec on one branch, subagents on the frontier",
+          "when": "the spec is big and parallelisable",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/implement-spec/SKILL.md"
+        },
+        {
+          "id": "code-review",
+          "bucket": "ship-workflow",
+          "order": 50,
+          "title": "Code review \u2014 standards axis and spec axis, in parallel",
+          "when": "reviewing a branch, a PR, or work since a fixed point",
+          "entry": "upstream/mattpocock-skills/engineering/code-review/SKILL.md"
+        },
+        {
+          "id": "pr",
+          "bucket": "ship-workflow",
+          "order": 60,
+          "title": "PR \u2014 summary, before/after evidence, merge-danger call",
+          "when": "writing a pull-request body",
+          "entry": "upstream/mattpocock-skills/engineering/pr/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/pr/CREDITS.md",
+              "label": "Credits"
+            }
+          ]
+        },
+        {
+          "id": "triage",
+          "bucket": "ship-workflow",
+          "order": 70,
+          "title": "Triage \u2014 issues and PRs through a role state machine",
+          "when": "the tracker needs moving",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/triage/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/triage/AGENT-BRIEF.md",
+              "label": "Agent brief format"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/triage/OUT-OF-SCOPE.md",
+              "label": "Out-of-scope file"
+            }
+          ]
+        },
+        {
+          "id": "wayfinder",
+          "bucket": "ship-workflow",
+          "order": 80,
+          "title": "Wayfinder \u2014 plan more than one session can hold",
+          "when": "the work is bigger than the context window",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/wayfinder/SKILL.md"
+        },
+        {
+          "id": "retro",
+          "bucket": "ship-workflow",
+          "order": 90,
+          "title": "Retro \u2014 improve the agent's environment, worst first",
+          "when": "a session just ended",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/retro/SKILL.md"
+        },
+        {
+          "id": "research",
+          "bucket": "ship-workflow",
+          "order": 95,
+          "title": "Research \u2014 primary sources, cited file in the repo",
+          "when": "reading legwork to delegate",
+          "entry": "upstream/mattpocock-skills/engineering/research/SKILL.md"
+        },
+        {
+          "id": "wizard",
+          "bucket": "ship-workflow",
+          "order": 96,
+          "title": "Wizard \u2014 bash wizard for steps only a human can do",
+          "when": "credentials, provisioning, dashboards, a cutover",
+          "entry": "upstream/mattpocock-skills/engineering/wizard/SKILL.md",
+          "scripts": [
+            "upstream/mattpocock-skills/engineering/wizard/template.sh"
+          ]
+        },
+        {
+          "id": "grilling",
+          "bucket": "think-first",
+          "order": 40,
+          "title": "Grilling \u2014 relentless interview on a plan",
+          "when": "\"grill me\", or thinking that needs pressure-testing",
+          "entry": "upstream/mattpocock-skills/productivity/grilling/SKILL.md"
+        },
+        {
+          "id": "grill-with-docs",
+          "bucket": "think-first",
+          "order": 45,
+          "title": "Grill with docs \u2014 grilling that writes ADRs and glossary",
+          "when": "the interview should leave documentation behind",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/grill-with-docs/SKILL.md",
+          "rewrite_internal": {
+            "grilling": "Think first \u2014 grilling",
+            "domain-modeling": "Code craft \u2014 domain modelling"
+          }
+        },
+        {
+          "id": "handoff",
+          "bucket": "think-first",
+          "order": 50,
+          "title": "Handoff \u2014 compact the conversation for the next agent",
+          "when": "context is nearly gone, or work moves to a fresh session",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/productivity/handoff/SKILL.md"
+        },
+        {
+          "id": "wait-what",
+          "bucket": "terse-chat",
+          "order": 60,
+          "title": "Wait-what \u2014 the last message did not land",
+          "when": "the user says they did not follow it",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/productivity/wait-what/SKILL.md"
+        },
+        {
+          "id": "to-questionnaire",
+          "bucket": "think-first",
+          "order": 60,
+          "title": "To questionnaire \u2014 a decision you cannot answer, sent to someone",
+          "when": "the missing facts live in another head",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/productivity/to-questionnaire/SKILL.md"
+        },
+        {
+          "id": "writing-for-agents",
+          "bucket": "teach-and-author",
+          "order": 10,
+          "title": "Writing for agents \u2014 how a skill or steering file should read",
+          "when": "editing SKILL.md, AGENTS.md, CLAUDE.md \u2014 including this one",
+          "entry": "upstream/mattpocock-skills/productivity/writing-for-agents/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/productivity/writing-for-agents/SKILL-MECHANICS.md",
+              "label": "Skill mechanics"
+            }
+          ]
+        },
+        {
+          "id": "teach",
+          "bucket": "teach-and-author",
+          "order": 20,
+          "title": "Teach \u2014 learn a concept inside the workspace",
+          "when": "the user wants to be taught, not helped",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/productivity/teach/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/productivity/teach/MISSION-FORMAT.md",
+              "label": "Mission format"
+            },
+            {
+              "path": "upstream/mattpocock-skills/productivity/teach/GLOSSARY-FORMAT.md",
+              "label": "Glossary format"
+            },
+            {
+              "path": "upstream/mattpocock-skills/productivity/teach/LEARNING-RECORD-FORMAT.md",
+              "label": "Learning record format"
+            },
+            {
+              "path": "upstream/mattpocock-skills/productivity/teach/RESOURCES-FORMAT.md",
+              "label": "Resources format"
+            }
+          ]
+        },
+        {
+          "id": "setup-matt-pocock-skills",
+          "bucket": "setup-repo",
+          "order": 10,
+          "title": "Setup \u2014 tracker, triage labels, domain docs layout",
+          "when": "once per repo, before the process skills",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/SKILL.md",
+          "docs": [
+            {
+              "path": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/domain.md",
+              "label": "Domain docs"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md",
+              "label": "Tracker: GitHub"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/issue-tracker-gitlab.md",
+              "label": "Tracker: GitLab"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/issue-tracker-local.md",
+              "label": "Tracker: local files"
+            },
+            {
+              "path": "upstream/mattpocock-skills/engineering/setup-matt-pocock-skills/triage-labels.md",
+              "label": "Triage labels"
+            }
+          ]
+        },
+        {
+          "id": "git-guardrails-claude-code",
+          "bucket": "setup-repo",
+          "order": 20,
+          "title": "Git guardrails \u2014 block destructive git before it runs",
+          "when": "an agent works in a repo that must not be pushed or reset",
+          "entry": "upstream/mattpocock-skills/misc/git-guardrails-claude-code/SKILL.md",
+          "scripts": [
+            "upstream/mattpocock-skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh"
+          ]
+        },
+        {
+          "id": "setup-pre-commit",
+          "bucket": "setup-repo",
+          "order": 30,
+          "title": "Pre-commit \u2014 Husky, lint-staged, typecheck, tests",
+          "when": "commit-time checks are missing",
+          "entry": "upstream/mattpocock-skills/misc/setup-pre-commit/SKILL.md"
+        },
+        {
+          "id": "migrate-to-shoehorn",
+          "bucket": "setup-repo",
+          "order": 40,
+          "title": "Migrate to shoehorn \u2014 out of test type assertions",
+          "when": "tests lean on `as` casts",
+          "entry": "upstream/mattpocock-skills/misc/migrate-to-shoehorn/SKILL.md"
+        },
+        {
+          "id": "scaffold-exercises",
+          "bucket": "setup-repo",
+          "order": 50,
+          "title": "Scaffold exercises \u2014 course directories that pass lint",
+          "when": "building course material",
+          "entry": "upstream/mattpocock-skills/misc/scaffold-exercises/SKILL.md"
+        },
+        {
+          "id": "grill-me",
+          "bucket": "think-first",
+          "order": 42,
+          "title": "Grill me \u2014 the alias",
+          "when": "someone says \"grill me\"",
+          "command": true,
+          "entry": "upstream/mattpocock-skills/productivity/grill-me/SKILL.md",
+          "note": "Upstream this is a whole skill: one line that routes to `grilling`. Merged, there is no second skill to call, so the line is kept as the trigger and the work happens in the `grilling` section of this file."
+        }
+      ],
+      "not_routed": []
+    }
+  ]
+}

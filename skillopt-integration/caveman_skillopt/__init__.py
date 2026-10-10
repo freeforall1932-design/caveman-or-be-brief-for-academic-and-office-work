@@ -16,7 +16,11 @@ Quick start::
         --config skillopt-integration/configs/be-brief.yaml
 
 The loop produces a validation-gated ``best_skill.md`` that can be dropped
-straight back into ``.claude/skills/`` or ``pseudo-skills/``.
+into the merge: drop it on top of the vendored copy it came from under
+``one-skill/upstream/local/``, point that skill's ``entry`` at it in
+``one-skill/sources.json``, and rebuild with ``python one-skill/build.py all``.
+The published ``.claude/skills/one-skill/`` tree is generated and must not be
+edited directly.
 
 Nothing SkillOpt-dependent is imported at package import time. The offline
 scorer (``python -m caveman_skillopt.score``) therefore works on a machine

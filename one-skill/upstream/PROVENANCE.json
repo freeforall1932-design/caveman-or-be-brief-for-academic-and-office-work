@@ -1,0 +1,36 @@
+{
+  "anti-slop-fork": {
+    "attribution": "freeforall1932-design/anti-slop-fork",
+    "files": 7,
+    "license": "MIT",
+    "origin": {
+      "kind": "github",
+      "ref": "HEAD",
+      "repo": "freeforall1932-design/anti-slop-fork"
+    },
+    "revision": "388cbe3b6c37d5175b9f460015bb092ef9e34894",
+    "title": "anti-slop-fork \u2014 the anti-slop design filter"
+  },
+  "local": {
+    "attribution": "freeforall1932-design/skills-repo",
+    "files": 29,
+    "license": "Unlicense (root) / MIT (caveman-universal)",
+    "origin": {
+      "kind": "local"
+    },
+    "revision": "84c9518158238790cbd9c61f7e827ec61555d66c",
+    "title": "caveman-or-be-brief (this repository)"
+  },
+  "mattpocock-skills": {
+    "attribution": "mattpocock/skills",
+    "files": 57,
+    "license": "MIT",
+    "origin": {
+      "kind": "github",
+      "ref": "HEAD",
+      "repo": "mattpocock/skills"
+    },
+    "revision": "49dd158d1076134a641b33efb035946536778336",
+    "title": "mattpocock/skills \u2014 engineering, productivity, misc"
+  }
+}
